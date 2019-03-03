@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using Core.Pool;
+using Core.Generator;
+using DG.Tweening;
 
 namespace Core.Player
 {
@@ -11,6 +13,7 @@ namespace Core.Player
         [SerializeField] Transform gunTransform;
         [SerializeField] Transform nextGunTransform;
         BallsController controller;
+        BallRandom randomizator;
         public float speedRotate = 1f;
         public float speedShooting = 10f;
 
@@ -32,6 +35,7 @@ namespace Core.Player
             _transform = transform;
             poolKeeper = PoolManager.instance.GetObjectPoolKeeper(TypeObjectPool.Ball);
             controller = FindObjectOfType<BallsController>();
+            randomizator = controller.GetComponent<BallRandom>();
 
             // initialize balls
             ball = GetNewBall(gunTransform);
@@ -74,13 +78,14 @@ namespace Core.Player
             isSwapped = true;
         }
 
+
         #region Control methods (Shoot, Rotate, Swap)
 
         void ShootBall()
         {
             Vector2 direction = CalculateDirectionByMouse();
             ball.parent = null;
-            Ball obj = ball.GetComponent<Ball>();
+            Projectile obj = ball.GetComponent<Projectile>();
             obj.SetMoveDirection(speedShooting, direction);
             obj.OnCollisionBall += controller.InsertBallToChain;
 
@@ -111,12 +116,13 @@ namespace Core.Player
         }
         #endregion
 
+
         #region Extra Help Methods
 
         Transform GetNewBall(Transform parentPosition)
         {
-            Transform ball = poolKeeper.RealeseObject().transform;
-            ball.position = parentPosition.position;
+            Transform ball = poolKeeper.RealeseObject(parentPosition.position).transform;
+            ball.GetComponent<Ball>().Initialize(randomizator.GetSingleBall(controller.GetNextBallType()));
             ball.parent = _transform;
             return ball;
         }

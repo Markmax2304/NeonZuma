@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using PathCreation;
+using DG.Tweening;
 
 namespace Core
 {
@@ -14,25 +15,28 @@ namespace Core
 
         PathCreator pathCreator;
         Transform _trasform;
+        Ball ball;
 
         public void Initialize(PathCreator path, float distance = 0)
         {
             id = nextId++;
             _trasform = transform;
             pathCreator = path;
+            ball = GetComponent<Ball>();
             distanceTravelled = distance;
-
-            if (pathCreator != null) {
-                // Subscribed to the pathUpdated event so that we're notified if the path changes during the game           //maybe excess
-                pathCreator.pathUpdated += OnPathChanged;
-            }
         }
 
-        //change it if need to optimize
+        public BallType GetTypeBall()
+        {
+            return ball.Type;
+        }
+
         public float Distance {
             get { return distanceTravelled; }       
             set { distanceTravelled = value; }
         }
+
+        #region Movement
 
         public void MoveUpdate(float delta)
         {
@@ -42,11 +46,19 @@ namespace Core
             }
         }
 
-        // If the path changes during the game, update the distance travelled so that the follower's position on the new path
-        // is as close as possible to its position on the old path
-        void OnPathChanged()
+        public void MoveDistance(float distance, float time, TweenCallback action)
         {
-            distanceTravelled = pathCreator.path.GetClosestDistanceAlongPath(_trasform.position);
+            distanceTravelled += distance;
+            Vector2 position = pathCreator.path.GetPointAtDistance(distanceTravelled, endOfPathInstruction);
+            _trasform.DOMove(position, time).OnComplete(action);
         }
+
+        public void MoveDistance(float distance, float time)
+        {
+            distanceTravelled += distance;
+            Vector2 position = pathCreator.path.GetPointAtDistance(distanceTravelled, endOfPathInstruction);
+            _trasform.DOMove(position, time);
+        }
+        #endregion
     }
 }

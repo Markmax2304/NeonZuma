@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: BallTypes
+  m_EditorClassIdentifier: Assembly-CSharp:Core:BallTypesStorage
+  ballTypes:
+  - type: 0
+    color: {r: 0.21537916, g: 0.3470507, b: 0.8301887, a: 1}
+  - type: 1
+    color: {r: 0.83137256, g: 0.21568625, b: 0.24082333, a: 1}
+  - type: 2
+    color: {r: 0.81893677, g: 0.8301887, b: 0.17621933, a: 1}
+  - type: 3
+    color: {r: 0.21568625, g: 0.83137256, b: 0.35891938, a: 1}
+  - type: 4
+    color: {r: 0.83137256, g: 0.21568625, b: 0.78939, a: 1}

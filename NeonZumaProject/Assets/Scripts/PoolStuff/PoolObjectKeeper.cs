@@ -31,23 +31,22 @@ namespace Core.Pool
 
         public PoolingObject RealeseObject()
         {
-            PoolingObject obj = null;
-            for (int i = 0; i < pool.Count; i++) {
-                if (!pool[i].IsAccess) {
-                    obj = pool[i];
-                    break;
-                }
-            }
-
-            if (obj == null) {
-                AddNewObject(maxCount);
-                obj = pool[pool.Count - 1];
-            }
+            PoolingObject obj = GetFreeObject();
 
             obj.gameObject.SetActive(true);
             return obj;
         }
 
+        public PoolingObject RealeseObject(Vector2 position)
+        {
+            PoolingObject obj = GetFreeObject();
+
+            obj.transform.position = position;
+            obj.gameObject.SetActive(true);
+            return obj;
+        }
+
+        #region Private
 
         void AddNewObject()
         {
@@ -62,5 +61,18 @@ namespace Core.Pool
                 AddNewObject();
             }
         }
+
+        PoolingObject GetFreeObject()
+        {
+            for (int i = 0; i < pool.Count; i++) {
+                if (!pool[i].IsAccess) {
+                    return pool[i];
+                }
+            }
+
+            AddNewObject(maxCount);
+            return pool[pool.Count - 1];
+        }
+        #endregion
     }
 }
