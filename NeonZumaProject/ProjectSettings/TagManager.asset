@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - Chain
+  - Edge
   layers:
   - Default
   - TransparentFX

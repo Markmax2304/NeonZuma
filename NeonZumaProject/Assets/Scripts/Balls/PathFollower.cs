@@ -26,6 +26,8 @@ namespace Core
             distanceTravelled = distance;
         }
 
+        #region Property
+
         public BallType GetTypeBall()
         {
             return ball.Type;
@@ -35,6 +37,15 @@ namespace Core
             get { return distanceTravelled; }       
             set { distanceTravelled = value; }
         }
+
+        public void ActivateEdgeTag(bool active)
+        {
+            if (active)
+                _trasform.tag = "Edge";
+            else
+                _trasform.tag = "Chain";
+        }
+        #endregion
 
         #region Movement
 
@@ -55,10 +66,16 @@ namespace Core
 
         public void MoveDistance(float distance, float time)
         {
-            distanceTravelled += distance;
-            Vector2 position = pathCreator.path.GetPointAtDistance(distanceTravelled, endOfPathInstruction);
-            _trasform.DOMove(position, time);
+            MoveDistance(distance, time, delegate () { });
         }
         #endregion
+
+        public void OnCollisionEnter2D(Collision2D coll)
+        {
+            if (!_trasform.CompareTag("Edge") || !coll.transform.CompareTag("Edge"))
+                return;
+
+            //
+        }
     }
 }

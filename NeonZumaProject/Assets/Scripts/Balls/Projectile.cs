@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using PathCreation;
+using Core.Pool;
 
 namespace Core
 {
@@ -9,6 +10,7 @@ namespace Core
     {
         public event BallCollisionHandler OnCollisionBall = delegate (PathFollower ball, PathFollower coll) { };
 
+        WaitForSeconds lifeTime = new WaitForSeconds(1f);
         float speed = 0f;
         Vector3 direction = Vector3.zero;
         bool isMove = false;
@@ -33,11 +35,21 @@ namespace Core
             this.speed = speed;
             direction = dir;
             isMove = true;
+            StartCoroutine(LiveBeforeDie());
+        }
+
+        IEnumerator LiveBeforeDie()
+        {
+            yield return lifeTime;      //will optimize
+            if (isMove) {
+                isMove = false;
+                GetComponent<PoolingObject>().ReturnToPool();
+            }
         }
 
         public void OnTriggerEnter2D(Collider2D coll)
         {
-            if (!isMove || coll.tag.CompareTo("Chain") != 0)
+            if (!isMove || (!coll.CompareTag("Chain") && !coll.CompareTag("Edge")))
                 return;
 
             isMove = false;

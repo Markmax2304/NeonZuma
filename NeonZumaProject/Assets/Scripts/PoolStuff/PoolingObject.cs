@@ -7,6 +7,7 @@ namespace Core.Pool
     public class PoolingObject : MonoBehaviour
     {
         GameObject _gameObject;
+        Transform _transform;
 
         public bool IsAccess {
             get { return _gameObject.activeInHierarchy; }
@@ -15,12 +16,15 @@ namespace Core.Pool
         void Awake()
         {
             _gameObject = gameObject;
+            _transform = transform;
         }
 
         public void ReturnToPool()
         {
             _gameObject.SetActive(false);
-            transform.parent = PoolManager.instance.transform;
+            _transform.tag = "Untagged";
+            _transform.parent = PoolManager.instance.transform;
+            _transform.position = PoolManager.instance.transform.position;
         }
 
         public void SelfDestroy()

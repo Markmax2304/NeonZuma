@@ -689,9 +689,11 @@ MonoBehaviour:
   pathCreator: {fileID: 1055008349}
   randomizator: {fileID: 0}
   spawnPosition: {x: -2.4, y: 6}
-  speed: 2
+  speed: 1
   offsetBeetweenBalls: 0.36
   timeForInsertingAnimation: 0.15
+  sequencesRecords:
+    sequences: []
   spawnEnable: 1
   isMove: 1
 --- !u!114 &1488321127

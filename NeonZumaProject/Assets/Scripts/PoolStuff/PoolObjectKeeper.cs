@@ -6,6 +6,7 @@ namespace Core.Pool
 {
     public class PoolObjectKeeper
     {
+        static int id = 0;
         int maxCount;
         Transform parent;
         GameObject prefab;
@@ -51,6 +52,7 @@ namespace Core.Pool
         void AddNewObject()
         {
             GameObject obj = GameObject.Instantiate(prefab, Vector3.zero, Quaternion.identity, parent);
+            obj.name = "Ball_" + id++;                                                  // just test, will delete
             obj.SetActive(false);
             pool.Add(obj.GetComponent<PoolingObject>());
         }
