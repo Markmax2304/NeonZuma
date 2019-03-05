@@ -8,7 +8,7 @@ namespace Core
 {
     public class Projectile : MonoBehaviour
     {
-        public event BallCollisionHandler OnCollisionBall = delegate (PathFollower ball, PathFollower coll) { };
+        public event BallCollisionHandler OnCollisionBall;
 
         WaitForSeconds lifeTime = new WaitForSeconds(1f);
         float speed = 0f;
@@ -51,9 +51,14 @@ namespace Core
         {
             if (!isMove || (!coll.CompareTag("Chain") && !coll.CompareTag("Edge")))
                 return;
-
+            
             isMove = false;
+            if(OnCollisionBall == null) {
+                Debug.Log("Projectile event equal null: " + name);
+                return;
+            }
             OnCollisionBall(GetComponent<PathFollower>(), coll.GetComponent<PathFollower>());
+            OnCollisionBall = null;
         }
     }
 }

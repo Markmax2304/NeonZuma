@@ -28,6 +28,12 @@ namespace Core.Generator
             return storage.ballTypes.Find(x => x.type == type);
         }
 
+        public BallInfo GetSingleRandomBall()
+        {
+            int index = Random.Range(0, storage.ballTypes.Count);
+            return storage.ballTypes[index];
+        }
+
         public BallInfo GetRandomBallSequence(out int count)
         {
             count = Random.Range(minSequence, maxSequence + 1);

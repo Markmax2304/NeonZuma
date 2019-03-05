@@ -20,7 +20,7 @@ namespace Core
         public float timeForInsertingAnimation = 3f;
 
         [SerializeField] BallSequenceRecords sequencesRecords;
-        /*[SerializeField]*/ CountBallRecords countRecords;
+        [SerializeField] CountBallRecords countRecords;
         string tagBall = "Chain";
 
         [Space]
@@ -38,6 +38,22 @@ namespace Core
             randomizator = GetComponent<BallRandom>();
 
             StartCoroutine(ProcessAddingBalls());
+        }
+
+        public BallType GetNextBallType()
+        {
+            int index = Random.Range(0, countRecords.balls.Count);
+            return countRecords.balls[index].type;
+        }
+
+        IEnumerator ProcessAddingBalls()
+        {
+            while (true) {          // переделать спаун шаров, чтоб он зависел от тригерра коллайдера спаун объекта (последний шар вышел из него - создаём новый)
+                if (spawnEnable && isMove) {
+                    AddBallToEndOfChain();
+                }
+                yield return new WaitForSeconds(offsetBeetweenBalls / speed);        // will optimize!
+            }
         }
 
         #region Ball operation in Chain
@@ -78,15 +94,17 @@ namespace Core
                 Debug.Log("Error: Not found sequences that store this ball");
                 return;
             }
+
             int collIndex = collidingSequence.balls.FindIndex(x => x.id == coll.id);
             int frontBallIndex = 0, backBallIndex = 0;
 
             // алгоритм не оптимальный, но рабочий
             // столкновение с первым шаром рассматриваем как особый случай
+            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! может выйдет соединить эти два варианта???
             if(collIndex == 0) {
                 // теорема косинусов
                 float collDistance = Vector2.Distance(ball.transform.position, collidingSequence.balls[collIndex].transform.position);
-                float backCollDistance = Vector2.Distance(ball.transform.position, collidingSequence.balls[collIndex + 1].transform.position);
+                float backCollDistance = Vector2.Distance(ball.transform.position, collidingSequence.balls[collIndex].GetBackPosition(offsetBeetweenBalls));
                 float cosinus = (backCollDistance * backCollDistance - collDistance * collDistance - offsetBeetweenBalls * offsetBeetweenBalls)
                     / (-2 * collDistance * offsetBeetweenBalls);
 
@@ -99,17 +117,9 @@ namespace Core
                 backBallIndex = frontBallIndex + 1;
             }
             else if(collIndex > 0) {
-
-                if (collIndex == -1) {
-                    Debug.Log("Error: ball is collided with something unexpected and that exactly isn't chain of balls\n" +
-                        "Distance = " + collIndex);
-                    isMove = false;
-                    return;
-                }
-
                 // теорема косинусов
                 float collDistance = Vector2.Distance(ball.transform.position, collidingSequence.balls[collIndex].transform.position);
-                float frontCollDistance = Vector2.Distance(ball.transform.position, collidingSequence.balls[collIndex - 1].transform.position);
+                float frontCollDistance = Vector2.Distance(ball.transform.position, collidingSequence.balls[collIndex].GetBackPosition(-offsetBeetweenBalls));
                 float cosinus = (frontCollDistance * frontCollDistance - collDistance * collDistance - offsetBeetweenBalls * offsetBeetweenBalls)
                     / (-2 * collDistance * offsetBeetweenBalls);        
 
@@ -125,25 +135,25 @@ namespace Core
             float distance = frontBallIndex == -1 ? collidingSequence.balls[0].Distance + offsetBeetweenBalls : collidingSequence.balls[frontBallIndex].Distance;
             ball.Initialize(pathCreator, distance);
             ball.tag = tagBall;
-            ShiftBallsOnInserting(ball, collidingSequence, frontBallIndex);
+
             collidingSequence.AddBall(ball, backBallIndex);
             countRecords.AddBall(ball.GetComponent<Ball>().Type);
+            ShiftBallsOnInserting(ball, collidingSequence, frontBallIndex);
         }
 
-        IEnumerator ProcessAddingBalls()
+        void ShiftBallsOnInserting(PathFollower newBall, BallSequence sequence, int index)
         {
-            while (true) {          // переделать спаун шаров, чтоб он зависел от тригерра коллайдера спаун объекта (последний шар вышел из него - создаём новый)
-                if (spawnEnable && isMove) {
-                    AddBallToEndOfChain();
-                }
-                yield return new WaitForSeconds(offsetBeetweenBalls / speed);        // will optimize!
+            isMove = false;
+
+            for (int i = 0; i <= index; i++) {
+                sequence.balls[i].MoveDistance(offsetBeetweenBalls, timeForInsertingAnimation);
             }
-        }
-
-        public BallType GetNextBallType()
-        {
-            int index = Random.Range(0, countRecords.balls.Count);
-            return countRecords.balls[index].type;
+            newBall.MoveDistance(0, timeForInsertingAnimation, delegate () {
+                isMove = true;
+                if (CheckTheSameBallAround(sequence, newBall)) {
+                    TryDestroyTheSameTypeBall(sequence, newBall);
+                }
+            });
         }
 
         bool CheckTheSameBallAround(BallSequence sequence, PathFollower ball)
@@ -191,7 +201,10 @@ namespace Core
                 }
                 sequencesRecords.CutSequenceByRemoving(sequence.id, forwardIndex, length);
                 countRecords.RemoveBall(typeBall, length);
-                
+
+                // проверка на соответствие шаров по краям разрыва
+                // в случае соответствия - взаимное притяжение
+                // скорость притяжения зависит от количества шаров в последовательности: чем меньше шаров, тем больше скорость
             }
         }
         #endregion
@@ -213,21 +226,6 @@ namespace Core
                     sequence.balls[j].MoveUpdate(rateDelta);
                 }
             }
-        }
-
-        void ShiftBallsOnInserting(PathFollower newBall, BallSequence sequence, int index)
-        {
-            isMove = false;
-
-            for (int i = 0; i <= index; i++) {
-                sequence.balls[i].MoveDistance(offsetBeetweenBalls, timeForInsertingAnimation);
-            }
-            newBall.MoveDistance(0, timeForInsertingAnimation, delegate () {
-                isMove = true;
-                if (CheckTheSameBallAround(sequence, newBall)) {
-                    TryDestroyTheSameTypeBall(sequence, newBall);
-                }
-            });
         }
         #endregion
 
@@ -338,6 +336,10 @@ namespace Core
         public void CutSequenceByRemoving(int idSequence, int startRemove, int lengthRemove)
         {
             int index = sequences.FindIndex(x => x.id == idSequence);
+            if(index == -1) {
+                Debug.Log("Error: cant cut sequence(" + idSequence + ") in removing from = " + startRemove + "  length = " + lengthRemove);
+                return;
+            }
             int restStart = startRemove + lengthRemove;
             int restLength = sequences[index].balls.Count - restStart;
 
@@ -347,34 +349,74 @@ namespace Core
 
                 float speed = sequences[index].speed;
                 sequences.RemoveAt(index);
-                sequences.Insert(index, new BallSequence(speed, forwardBalls));
-                sequences.Insert(index + 1, new BallSequence(speed, backBalls));    // change it
+                sequences.Insert(index, new BallSequence(0, forwardBalls));             // шары, что впереди от разрыва по направлению движения
+                sequences.Insert(index + 1, new BallSequence(speed, backBalls));        // шары, что сзади от разрыва
+
+                //подписка на событие столкновения кромок
+                sequences[index + 1].SubsribeConnectingMethodToFirstBall(ConnectSequences);
             }
             else {
                 sequences[index].balls.RemoveRange(startRemove, lengthRemove);
                 if (sequences[index].balls.Count == 0) {
                     sequences.RemoveAt(index);
                 }
+                else {
+                    if (startRemove == 0) {
+                        sequences[index].balls[0].ActivateEdgeTag(true);
+
+                        //подписка на событие столкновения кромок
+                        sequences[index].SubsribeConnectingMethodToFirstBall(ConnectSequences);
+                    }
+                    else {
+                        int last = sequences[index].balls.Count - 1;
+                        sequences[index].balls[last].ActivateEdgeTag(true);
+                    }
+                }
             }
         }
 
-        public void ConnectSequences()
+        public void ConnectSequences(PathFollower ball, PathFollower coll)
         {
+            int ballSequenceIndex = GetSequenceIndex(ball);
+            if(ballSequenceIndex == -1) {
+                Debug.Log("Error: dont exist sequence that's keeping this ball = " + ball.name);
+                return;
+            }
+            int collSequenceIndex = GetSequenceIndex(coll);
+            if (collSequenceIndex == -1) {
+                Debug.Log("Error: dont exist sequence that's keeping this ball = " + coll.name);
+                return;
+            }
 
+            BallSequence collSequence = sequences[collSequenceIndex];
+            float distance = sequences[ballSequenceIndex].balls[0].Distance;
+            for(int i = collSequence.balls.Count - 1; i >= 0; i--) {
+                distance += 0.36f;                          //change to static variable
+                collSequence.balls[i].Distance = distance;
+            }
+            sequences[collSequenceIndex].balls.AddRange(sequences[ballSequenceIndex].balls);
+            sequences[collSequenceIndex].SetSpeed(sequences[ballSequenceIndex].speed);
+            sequences.RemoveAt(ballSequenceIndex);
         }
 
-        public BallSequence GetSequence(PathFollower ball)      //will test
+        public BallSequence GetSequence(PathFollower ball)
         {
             return sequences.Find(x => x.balls.Find(y => y.id == ball.id) != null);
         }
 
+        public int GetSequenceIndex(PathFollower ball)
+        {
+            return sequences.FindIndex(x => x.balls.Find(y => y.id == ball.id) != null);
+        }
+
+        //excess?
         public void AddToSequence(PathFollower ball, int idSequence)
         {
             int index = sequences.FindIndex(x => x.id == idSequence);
             sequences[index].balls.Add(ball);
         }
 
-        // maybe change to PathFollower?
+        // maybe change to PathFollower?            excess?
         public void SetSequenceSpeed(float speed, int idSequence)
         {
             int index = sequences.FindIndex(x => x.id == idSequence);
@@ -417,7 +459,7 @@ namespace Core
             balls[0].ActivateEdgeTag(true);
             balls[balls.Count - 1].ActivateEdgeTag(true);
         }
-
+        
         public void AddBall(PathFollower ball, int backIndex)
         {
             if (backIndex == 0) {
@@ -433,6 +475,12 @@ namespace Core
             else {
                 balls.Insert(backIndex, ball);
             }
+        }
+
+        public void SubsribeConnectingMethodToFirstBall(BallCollisionHandler handler)
+        {
+            //Debug.Log("Subsribe " + balls[0].name);
+            balls[0].ConnectWithChain += handler;
         }
 
         public void SetSpeed(float _speed)

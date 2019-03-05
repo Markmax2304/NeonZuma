@@ -38,8 +38,8 @@ namespace Core.Player
             randomizator = controller.GetComponent<BallRandom>();
 
             // initialize balls
-            ball = GetNewBall(gunTransform);
-            nextBall = GetNewBall(nextGunTransform);
+            ball = GetRandomBall(gunTransform);
+            nextBall = GetRandomBall(nextGunTransform);
         }
 
         void Update()
@@ -89,7 +89,7 @@ namespace Core.Player
             obj.SetMoveDirection(speedShooting, direction);
             obj.OnCollisionBall += controller.InsertBallToChain;
 
-            ball = GetNewBall(gunTransform);
+            ball = GetBall(gunTransform);
             SwapCurrentBalls();
         }
 
@@ -119,10 +119,18 @@ namespace Core.Player
 
         #region Extra Help Methods
 
-        Transform GetNewBall(Transform parentPosition)
+        Transform GetBall(Transform parentPosition)
         {
             Transform ball = poolKeeper.RealeseObject(parentPosition.position).transform;
             ball.GetComponent<Ball>().Initialize(randomizator.GetSingleBall(controller.GetNextBallType()));
+            ball.parent = _transform;
+            return ball;
+        }
+
+        Transform GetRandomBall(Transform parentPosition)
+        {
+            Transform ball = poolKeeper.RealeseObject(parentPosition.position).transform;
+            ball.GetComponent<Ball>().Initialize(randomizator.GetSingleRandomBall());
             ball.parent = _transform;
             return ball;
         }

@@ -8,6 +8,8 @@ namespace Core
 {
     public class PathFollower : MonoBehaviour
     {
+        public event BallCollisionHandler ConnectWithChain;
+
         public EndOfPathInstruction endOfPathInstruction;
         public float distanceTravelled;
         public int id;
@@ -17,10 +19,14 @@ namespace Core
         Transform _trasform;
         Ball ball;
 
+        void Awake()
+        {
+            _trasform = transform;
+        }
+
         public void Initialize(PathCreator path, float distance = 0)
         {
             id = nextId++;
-            _trasform = transform;
             pathCreator = path;
             ball = GetComponent<Ball>();
             distanceTravelled = distance;
@@ -36,6 +42,11 @@ namespace Core
         public float Distance {
             get { return distanceTravelled; }       
             set { distanceTravelled = value; }
+        }
+
+        public Vector2 GetBackPosition(float offset)
+        {
+            return pathCreator.path.GetPointAtDistance(distanceTravelled - offset);
         }
 
         public void ActivateEdgeTag(bool active)
@@ -70,12 +81,20 @@ namespace Core
         }
         #endregion
 
-        public void OnCollisionEnter2D(Collision2D coll)
+        public void OnTriggerEnter2D(Collider2D coll)
         {
-            if (!_trasform.CompareTag("Edge") || !coll.transform.CompareTag("Edge"))
+            if (!_trasform.CompareTag("Edge") || !coll.CompareTag("Edge"))
                 return;
 
-            //
+            if (ConnectWithChain == null) {
+                return;
+            }
+            PathFollower collPath = coll.GetComponent<PathFollower>();
+            ConnectWithChain(this, collPath);
+
+            ConnectWithChain = null;
+            ActivateEdgeTag(false);
+            collPath.ActivateEdgeTag(false);
         }
     }
 }
