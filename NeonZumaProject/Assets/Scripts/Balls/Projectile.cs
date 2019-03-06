@@ -8,9 +8,9 @@ namespace Core
 {
     public class Projectile : MonoBehaviour
     {
-        public event BallCollisionHandler OnCollisionBall;
+        public event BallCollisionHandler CollisionBalls;
 
-        WaitForSeconds lifeTime = new WaitForSeconds(1f);
+        float lifeTime = 1f;
         float speed = 0f;
         Vector3 direction = Vector3.zero;
         bool isMove = false;
@@ -40,11 +40,16 @@ namespace Core
 
         IEnumerator LiveBeforeDie()
         {
-            yield return lifeTime;      //will optimize
+            yield return new WaitForSeconds(lifeTime);
             if (isMove) {
                 isMove = false;
                 GetComponent<PoolingObject>().ReturnToPool();
             }
+        }
+
+        public void OnDisable()
+        {
+            CollisionBalls = null;
         }
 
         public void OnTriggerEnter2D(Collider2D coll)
@@ -53,12 +58,11 @@ namespace Core
                 return;
             
             isMove = false;
-            if(OnCollisionBall == null) {
+            if(CollisionBalls == null) {
                 Debug.Log("Projectile event equal null: " + name);
                 return;
             }
-            OnCollisionBall(GetComponent<PathFollower>(), coll.GetComponent<PathFollower>());
-            OnCollisionBall = null;
+            CollisionBalls(GetComponent<PathFollower>(), coll.GetComponent<PathFollower>());
         }
     }
 }

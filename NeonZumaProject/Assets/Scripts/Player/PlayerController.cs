@@ -14,8 +14,9 @@ namespace Core.Player
         [SerializeField] Transform nextGunTransform;
         BallsController controller;
         BallRandom randomizator;
-        public float speedRotate = 1f;
+        public float speedRotate = 20f;
         public float speedShooting = 10f;
+        public float timeOutBetweenShot = .3f;
 
         Transform _transform;
         PoolObjectKeeper poolKeeper;
@@ -25,6 +26,7 @@ namespace Core.Player
         bool isEnable = true;
         bool isPressed = false;
         bool isSwapped = false;
+        bool isCharge = false;
 
         public bool Enable {
             set { isEnable = value; }
@@ -87,10 +89,17 @@ namespace Core.Player
             ball.parent = null;
             Projectile obj = ball.GetComponent<Projectile>();
             obj.SetMoveDirection(speedShooting, direction);
-            obj.OnCollisionBall += controller.InsertBallToChain;
+            obj.CollisionBalls += controller.OnCollisionBalls;
 
-            ball = GetBall(gunTransform);
-            SwapCurrentBalls();
+            ChargeNewBall();
+        }
+
+        void ChargeNewBall()
+        {
+            ball = nextBall;
+            isEnable = false;
+            ball.DOMove(gunTransform.position, timeOutBetweenShot).OnComplete(delegate () { isEnable = true; });
+            nextBall = GetBall(nextGunTransform);
         }
 
         void SwapCurrentBalls()

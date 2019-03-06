@@ -27,6 +27,7 @@ namespace Core
         public void Initialize(PathCreator path, float distance = 0)
         {
             id = nextId++;
+            tag = "Chain";
             pathCreator = path;
             ball = GetComponent<Ball>();
             distanceTravelled = distance;
@@ -68,6 +69,20 @@ namespace Core
             }
         }
 
+        public void MoveDistanceToPoint(float distancePoint, float speed, TweenCallback action)
+        {
+            float time = Mathf.Abs(distancePoint - distanceTravelled) / speed;
+            //Debug.Log("connect anim time = " + time);
+            distanceTravelled = distancePoint;
+            Vector2 position = pathCreator.path.GetPointAtDistance(distanceTravelled, endOfPathInstruction);
+            _trasform.DOMove(position, time).OnComplete(action);
+        }
+
+        public void MoveDistanceToPoint(float distancePoint, float speed)
+        {
+            MoveDistanceToPoint(distancePoint, speed, delegate () { });
+        }
+
         public void MoveDistance(float distance, float time, TweenCallback action)
         {
             distanceTravelled += distance;
@@ -81,6 +96,11 @@ namespace Core
         }
         #endregion
 
+        public void OnDisable()
+        {
+            ConnectWithChain = null;
+        }
+
         public void OnTriggerEnter2D(Collider2D coll)
         {
             if (!_trasform.CompareTag("Edge") || !coll.CompareTag("Edge"))
@@ -91,10 +111,6 @@ namespace Core
             }
             PathFollower collPath = coll.GetComponent<PathFollower>();
             ConnectWithChain(this, collPath);
-
-            ConnectWithChain = null;
-            ActivateEdgeTag(false);
-            collPath.ActivateEdgeTag(false);
         }
     }
 }
