@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using PathCreation;
 using DG.Tweening;
+using Core.Pool;
 
 namespace Core
 {
@@ -16,12 +17,16 @@ namespace Core
         static int nextId = 0;
 
         PathCreator pathCreator;
-        Transform _trasform;
         Ball ball;
+        Transform _transform;
+        Animator animator;
+        Collider2D _collider;
 
         void Awake()
         {
-            _trasform = transform;
+            _transform = transform;
+            animator = GetComponent<Animator>();
+            _collider = GetComponent<Collider2D>();
         }
 
         public void Initialize(PathCreator path, float distance = 0)
@@ -31,6 +36,26 @@ namespace Core
             pathCreator = path;
             ball = GetComponent<Ball>();
             distanceTravelled = distance;
+        }
+
+        public void DestroyBall(TweenCallback action)
+        {
+            SetAnimateSpeed(0f);
+            _collider.enabled = false;
+            transform.DOScale(.1f, .15f).OnComplete(delegate() {
+                action();
+                GetComponent<PoolingObject>().ReturnToPool();
+                _transform.localScale = Vector3.one * .4f;
+                _collider.enabled = true;
+                SetAnimateSpeed(1f);
+            });
+            // particle system
+            
+        }
+
+        public void DestroyBall()
+        {
+            DestroyBall(delegate () { });
         }
 
         #region Property
@@ -53,9 +78,15 @@ namespace Core
         public void ActivateEdgeTag(bool active)
         {
             if (active)
-                _trasform.tag = "Edge";
+                _transform.tag = "Edge";
             else
-                _trasform.tag = "Chain";
+                _transform.tag = "Chain";
+        }
+
+        public void SetAnimateSpeed(float speed)
+        {
+            float direct = speed >= 0 ? 1f : -1f;
+            animator.speed = Mathf.Abs(speed);
         }
         #endregion
 
@@ -65,17 +96,19 @@ namespace Core
         {
             if (pathCreator != null) {
                 distanceTravelled += delta;
-                _trasform.position = pathCreator.path.GetPointAtDistance(distanceTravelled, endOfPathInstruction);
+                _transform.position = pathCreator.path.GetPointAtDistance(distanceTravelled, endOfPathInstruction);
+                Vector3 direction = pathCreator.path.GetDirectionAtDistance(distanceTravelled, endOfPathInstruction);
+                Quaternion rotate = Quaternion.FromToRotation(Vector3.down, direction);
+                _transform.rotation = rotate;
             }
         }
 
         public void MoveDistanceToPoint(float distancePoint, float speed, TweenCallback action)
         {
             float time = Mathf.Abs(distancePoint - distanceTravelled) / speed;
-            //Debug.Log("connect anim time = " + time);
             distanceTravelled = distancePoint;
             Vector2 position = pathCreator.path.GetPointAtDistance(distanceTravelled, endOfPathInstruction);
-            _trasform.DOMove(position, time).OnComplete(action);
+            _transform.DOMove(position, time).OnComplete(action);
         }
 
         public void MoveDistanceToPoint(float distancePoint, float speed)
@@ -87,7 +120,7 @@ namespace Core
         {
             distanceTravelled += distance;
             Vector2 position = pathCreator.path.GetPointAtDistance(distanceTravelled, endOfPathInstruction);
-            _trasform.DOMove(position, time).OnComplete(action);
+            _transform.DOMove(position, time).OnComplete(action);
         }
 
         public void MoveDistance(float distance, float time)
@@ -103,7 +136,7 @@ namespace Core
 
         public void OnTriggerEnter2D(Collider2D coll)
         {
-            if (!_trasform.CompareTag("Edge") || !coll.CompareTag("Edge"))
+            if (!_transform.CompareTag("Edge") || !coll.CompareTag("Edge"))
                 return;
 
             if (ConnectWithChain == null) {

@@ -35,12 +35,10 @@ namespace Core
             this.speed = speed;
             direction = dir;
             isMove = true;
-            StartCoroutine(LiveBeforeDie());
         }
 
-        IEnumerator LiveBeforeDie()
+        public void Die()
         {
-            yield return new WaitForSeconds(lifeTime);
             if (isMove) {
                 isMove = false;
                 GetComponent<PoolingObject>().ReturnToPool();

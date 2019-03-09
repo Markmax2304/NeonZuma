@@ -7,7 +7,7 @@ namespace Core.Generator
     public class BallRandom : MonoBehaviour
     {
         public BallTypesStorage storage;
-
+        //public string pathToStorage = "BallTypes";
         public int minSequence = 1;
         public int maxSequence = 9;
 
@@ -16,6 +16,7 @@ namespace Core.Generator
 
         void Awake()
         {
+            //storage = Resources.Load<BallTypesStorage>(pathToStorage);
             selection = new List<BallInfo>();
             lastSelected = storage.ballTypes[0];
             for (int i = 1; i < storage.ballTypes.Count; i++) {

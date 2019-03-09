@@ -90,6 +90,7 @@ namespace Core.Player
             Projectile obj = ball.GetComponent<Projectile>();
             obj.SetMoveDirection(speedShooting, direction);
             obj.CollisionBalls += controller.OnCollisionBalls;
+            obj.tag = "Projectile";
 
             ChargeNewBall();
         }
@@ -132,6 +133,8 @@ namespace Core.Player
         {
             Transform ball = poolKeeper.RealeseObject(parentPosition.position).transform;
             ball.GetComponent<Ball>().Initialize(randomizator.GetSingleBall(controller.GetNextBallType()));
+            ball.rotation = parentPosition.rotation;
+            ball.up = -ball.up;
             ball.parent = _transform;
             return ball;
         }
@@ -140,6 +143,8 @@ namespace Core.Player
         {
             Transform ball = poolKeeper.RealeseObject(parentPosition.position).transform;
             ball.GetComponent<Ball>().Initialize(randomizator.GetSingleRandomBall());
+            ball.rotation = parentPosition.rotation;
+            ball.up = -ball.up;
             ball.parent = _transform;
             return ball;
         }

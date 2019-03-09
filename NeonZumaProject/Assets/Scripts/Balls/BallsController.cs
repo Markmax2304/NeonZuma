@@ -12,23 +12,38 @@ namespace Core
         public PathCreator pathCreator;
         public PoolObjectKeeper poolKeeper;
         public BallRandom randomizator;
+        public BallSpawner ballSpawner;
 
         [Space]
-        public Vector2 spawnPosition;
-        public float speed = .5f;
-        public float attractiveSpeed = 2f;
-        public float animSpeed = 3f;                // for animation of connection and lining
+        [SerializeField] float currentSpeed = 0f;
+        public float startSpeed = 5f;
+        public float middleSpeed = .5f;
+        public float endSpeed = .25f;
+        [Range(0, 100)] public int startLengthByPercent = 30;
+        [Range(0, 100)] public int endLengthByPercent = 90;
+        float startLength;
+        float preEndLength;
+
+        [Space]
+        public float backTrackSpeed = 7f;
+        public float maxAttractiveSpeed = 5f;
+        [Range(0, 1)] public float decreaseRate = .9f;
+
         public float offsetBeetweenBalls = .36f;
+        public float animSpeed = 3f;                            // for animation of connection and lining
         public float timeForInsertingAnimation = .15f;          // time for animation of inserting
 
         [SerializeField] BallSequenceRecords sequencesRecords;
         [SerializeField] CountBallRecords countRecords;
         Queue<BallHandler> actions;
         string tagBall = "Chain";
+        WaitForSeconds createTimeOut;
 
         [Space]
+        public bool isStart = true;
         public bool spawnEnable = true;
         public bool isMove = true;
+        bool isBackTrack = false;
         bool isShifting = false;
 
         int countElementToSpawn = 0;
@@ -36,13 +51,17 @@ namespace Core
 
         void Start()
         {
+            startLength = pathCreator.path.length * startLengthByPercent / 100f;
+            preEndLength = pathCreator.path.length * endLengthByPercent / 100f;
+
             countRecords = new CountBallRecords();
-            sequencesRecords = new BallSequenceRecords(speed);
+            sequencesRecords = new BallSequenceRecords();
             poolKeeper = PoolManager.instance.GetObjectPoolKeeper(TypeObjectPool.Ball);
             randomizator = GetComponent<BallRandom>();
             actions = new Queue<BallHandler>();
+            ballSpawner.spawnBall += OnProcessAddingBalls;
 
-            StartCoroutine(ProcessAddingBalls());
+            OnPreStarting();
         }
 
         public BallType GetNextBallType()
@@ -51,18 +70,29 @@ namespace Core
             return countRecords.balls[index].type;
         }
 
-        IEnumerator ProcessAddingBalls()
+        void OnProcessAddingBalls()
         {
-            while (true) {          // переделать спаун шаров, чтоб он зависел от тригерра коллайдера спаун объекта (последний шар вышел из него - создаём новый)
-                if (spawnEnable && isMove) {
-                    AddBallToEndOfChain();
-                }
-                yield return new WaitForSeconds(offsetBeetweenBalls / speed);        // will optimize!
+            if (spawnEnable && isMove) {
+                AddBallToEndOfChain();
             }
         }
 
-        #region Ball operation in Chain
+        void OnPreStarting()
+        {
+            currentSpeed = startSpeed;
+            sequencesRecords.SetTailSpeed(currentSpeed);
+            AddBallToEndOfChain();          // create first ball
+        }
 
+        void OnPostStarting()
+        {
+            isStart = false;
+            currentSpeed = middleSpeed;
+            sequencesRecords.SetTailSpeed(currentSpeed);
+            //включить контроллер и остальные системы
+        }
+
+        // событие столкновения шара-пули с цепью шаров
         public void OnCollisionBalls(PathFollower forceBall, PathFollower collideBall)
         {
             InsertBallToChain(forceBall, collideBall);
@@ -72,9 +102,11 @@ namespace Core
                 if (CheckTheSameBallAround(forceBall)) {
                     TryDestroyTheSameTypeBall(forceBall);
                 }
+                VerifyChainsOnEdge();
             });
         }
 
+        // событие столкновения двух цепей (параметрами являются первый шар задней цепи и последний шар передней цепи)
         public void OnConnectionBalls(PathFollower forceBall, PathFollower collideBall)
         {
             ConnectSequences(forceBall, collideBall);
@@ -82,18 +114,42 @@ namespace Core
             if (isShifting) {
                 actions.Enqueue(delegate () {
                     //Debug.Log("Connecting");
-                    if(CheckTwoBallIsEqual(forceBall, collideBall)) {
-                        TryDestroyTheSameTypeBall(forceBall);       // will test
-                    }
+                    PostConnectProcess(forceBall, collideBall);
                 });
             }
             else {
-                if (CheckTwoBallIsEqual(forceBall, collideBall)) {
-                    TryDestroyTheSameTypeBall(forceBall);       // will test
-                }
+                PostConnectProcess(forceBall, collideBall);
             }
             
         }
+
+        void PostConnectProcess(PathFollower forceBall, PathFollower collideBall)
+        {
+            if (CheckTwoBallIsEqual(forceBall, collideBall)) {
+                //корутин на небольшой откат
+                if (sequencesRecords.CheckTail(forceBall) || sequencesRecords.CheckTail(collideBall)) {
+                    StartCoroutine(BackTrack());
+                }
+                TryDestroyTheSameTypeBall(forceBall);
+            }
+            VerifyChainsOnEdge();
+        }
+
+        IEnumerator BackTrack()
+        {
+            isBackTrack = true;
+            float endSpeed = currentSpeed;
+            currentSpeed = -backTrackSpeed;
+            float deltaSpeed = endSpeed - currentSpeed;
+            while (currentSpeed < endSpeed) {
+                currentSpeed += Time.deltaTime * deltaSpeed * 2;            // это задаст время выполнения интерполяции скорости за одну секунду
+                yield return null;
+            }
+            currentSpeed = endSpeed;
+            isBackTrack = false;
+        }
+
+        #region Ball operation in Chain
 
         // добавляет шар в конец всех цепей, в месте спауна
         void AddBallToEndOfChain()
@@ -111,7 +167,7 @@ namespace Core
             float distance = ballsCount > 0 ? tail.balls[ballsCount - 1].Distance : 0;
             distance -= offsetBeetweenBalls;
 
-            PathFollower ball = poolKeeper.RealeseObject(spawnPosition).GetComponent<PathFollower>();
+            PathFollower ball = poolKeeper.RealeseObject(ballSpawner.transform.position).GetComponent<PathFollower>();
             ball.GetComponent<Ball>().Initialize(ballTypeToSpawn);
             ball.Initialize(pathCreator, distance);
             ball.ConnectWithChain += OnConnectionBalls;
@@ -166,6 +222,9 @@ namespace Core
             BallSequence sequence = sequencesRecords.GetSequence(newBall);
             int index = sequence.GetBallIndex(newBall.id);
 
+            if (sequence.isTail) {
+                isMove = false;
+            }
             isShifting = true;
             float speed = sequence.speed;
 
@@ -174,7 +233,7 @@ namespace Core
             }
             newBall.MoveDistance(0, timeForInsertingAnimation, delegate () {
                 isShifting = false;
-                sequencesRecords.GetSequence(newBall).SetSpeed(speed);          // такое присвоение скорости слегка опасно, могут быть ошибки
+                isMove = true;
 
                 while(actions.Count > 0) {
                     actions.Dequeue()();
@@ -233,28 +292,23 @@ namespace Core
 
             int length = backIndex - forwardIndex + 1;
             if (length > 2) {
-                for(int i = forwardIndex; i <= backIndex; i++) {
-                    sequence.balls[i].GetComponent<PoolingObject>().ReturnToPool();
-                    // destroy effect
+                for (int i = forwardIndex; i <= backIndex; i++) {
+                    sequence.balls[i].DestroyBall();
                 }
                 CutSequenceByRemoving(sequence.id, forwardIndex, length);
                 countRecords.RemoveBall(typeBall, length);
-
-                // проверка на соответствие шаров по краям разрыва
-                // в случае соответствия - взаимное притяжение
-                // скорость притяжения зависит от количества шаров в последовательности: чем меньше шаров, тем больше скорость
-                VerifyChainsOnEdge();
+                
             }
         }
 
         void VerifyChainsOnEdge()
         {
+            //Debug.Log("Test: verify attraction");
             for(int i = 0; i < sequencesRecords.sequences.Count - 1; i++) {
                 BallSequence fronSequence = sequencesRecords.sequences[i];
                 BallSequence backSequence = sequencesRecords.sequences[i + 1];
 
                 if(fronSequence.balls[fronSequence.balls.Count - 1].GetTypeBall() == backSequence.balls[0].GetTypeBall()) {
-                    Debug.Log("Attraction");
                     SetAttractionChainToChain(fronSequence, backSequence);
                 }
             }
@@ -263,9 +317,22 @@ namespace Core
         void SetAttractionChainToChain(BallSequence frontChain, BallSequence backChain)
         {
             if (!backChain.isTail) {
-                backChain.SetSpeed(attractiveSpeed);
+                backChain.SetSpeed(CalculateAttractiveSpeed(backChain));
             }
-            frontChain.SetSpeed(-attractiveSpeed);
+            frontChain.SetSpeed(-CalculateAttractiveSpeed(frontChain));
+        }
+
+        float CalculateAttractiveSpeed(BallSequence chain)
+        {
+            int count = chain.balls.Count;
+            float rate = 1;
+            int i = 2;
+            while (Mathf.Pow(i, 2) <= count) {
+                i++;
+                rate *= decreaseRate;
+            }
+            //Debug.Log(maxAttractiveSpeed * rate);
+            return maxAttractiveSpeed * rate;
         }
         #endregion
 
@@ -287,10 +354,10 @@ namespace Core
                 List<PathFollower> forwardBalls = sequence.balls.GetRange(0, startRemove);
                 List<PathFollower> backBalls = sequence.balls.GetRange(restStart, restLength);
 
-                float speed = sequence.speed;       // выбирать исходя из того, куда двигалась последовательность(исключая основание последовательностей)
+                float speed = sequence.isTail ? currentSpeed : 0;
                 sequencesRecords.sequences.RemoveAt(index);
-                sequencesRecords.sequences.Insert(index, new BallSequence(0, forwardBalls));             // шары, что впереди от разрыва по направлению движения
-                sequencesRecords.sequences.Insert(index + 1, new BallSequence(speed, backBalls, isTail));        // шары, что сзади от разрыва
+                sequencesRecords.sequences.Insert(index, new BallSequence(0, forwardBalls));                    // шары, что впереди от разрыва по направлению движения
+                sequencesRecords.sequences.Insert(index + 1, new BallSequence(speed, backBalls, isTail));       // шары, что сзади от разрыва
             }
             else {
                 sequence.balls.RemoveRange(startRemove, lengthRemove);
@@ -354,7 +421,7 @@ namespace Core
 
             // непосредственно добавляем шары одной цепи в шары другой
             bool isTail = sequencesRecords.sequences[backIndex].isTail;
-            float speed = isTail ? sequencesRecords.sequences[backIndex].speed : 0f;
+            float speed = isTail ? currentSpeed : 0f;
             sequencesRecords.sequences[frontIndex].balls.AddRange(sequencesRecords.sequences[backIndex].balls);
             sequencesRecords.sequences[frontIndex].SetSpeed(speed);
             sequencesRecords.sequences[frontIndex].isTail = isTail;
@@ -366,18 +433,45 @@ namespace Core
 
         void FixedUpdate()
         {
-            if(isMove)
+            if (isMove) {
                 MoveAllBalls(Time.fixedDeltaTime);
+            }
+
+            if (isStart) {
+                if (sequencesRecords.GetCoveredDistance() >= startLength) {
+                    OnPostStarting();
+                }
+            }
+            else if(!isBackTrack) {
+                // лучше так, чем через коллайдеры. с коллайдерами будет намного больше проблем и багов
+                float coveredDistance = sequencesRecords.GetCoveredDistance();
+                if (currentSpeed != middleSpeed && coveredDistance < preEndLength) {
+                    currentSpeed = middleSpeed;
+                    sequencesRecords.SetTailSpeed(currentSpeed);
+                }
+                if(currentSpeed != endSpeed && coveredDistance >= preEndLength) {
+                    currentSpeed = endSpeed;
+                    sequencesRecords.SetTailSpeed(currentSpeed);
+                }
+            }
         }
 
         void MoveAllBalls(float delta)
         {
-            for (int i = 0; i < sequencesRecords.sequences.Count; i++) {
+            float rateDelta;
+            for (int i = 0; i < sequencesRecords.sequences.Count - 1; i++) {
                 BallSequence sequence = sequencesRecords.sequences[i];
-                float rateDelta = delta * sequence.speed;
+                rateDelta = delta * sequence.speed;
                 for (int j = 0; j < sequence.balls.Count; j++) {
                     sequence.balls[j].MoveUpdate(rateDelta);
                 }
+            }
+
+            // двигаем хвост отдельно
+            BallSequence tailSecuence = sequencesRecords.GetTail();
+            rateDelta = delta * currentSpeed;
+            for (int j = 0; j < tailSecuence.balls.Count; j++) {
+                tailSecuence.balls[j].MoveUpdate(rateDelta);
             }
         }
         #endregion
@@ -480,10 +574,10 @@ namespace Core
     {
         public List<BallSequence> sequences;
 
-        public BallSequenceRecords(float _speed)
+        public BallSequenceRecords()
         {
             sequences = new List<BallSequence>();
-            sequences.Add(new BallSequence(_speed, true));
+            sequences.Add(new BallSequence(0f, true));
         }
 
         public BallSequence GetSequence(PathFollower ball)
@@ -501,29 +595,39 @@ namespace Core
             return sequences.FindIndex(x => x.balls.Find(y => y.id == ball.id) != null);
         }
 
-        //excess?
-        public void AddToSequence(PathFollower ball, int idSequence)
+        public float GetCoveredDistance()
         {
-            int index = sequences.FindIndex(x => x.id == idSequence);
-            sequences[index].balls.Add(ball);
-        }
-
-        // maybe change to PathFollower?            excess?
-        public void SetSequenceSpeed(float speed, int idSequence)
-        {
-            int index = sequences.FindIndex(x => x.id == idSequence);
-            sequences[index].SetSpeed(speed);
+            if(sequences.Count > 0) {
+                if(sequences[sequences.Count - 1].balls.Count > 0) {
+                    return sequences[sequences.Count - 1].balls[0].Distance;
+                }
+            }
+            return 0;
         }
 
         #region Tail
         public BallSequence GetTail()
         {
+            if(sequences.Count == 0) {
+                sequences.Add(new BallSequence(0f, true));
+            }
             return sequences[sequences.Count - 1];
         }
 
         public void AddToChainTail(PathFollower ball)
         {
             sequences[sequences.Count - 1].AddBall(ball);
+        }
+
+        public void SetTailSpeed(float speed)
+        {
+            GetTail().SetSpeed(speed);
+        }
+
+        public bool CheckTail(PathFollower ball)
+        {
+            BallSequence chain = GetSequence(ball);
+            return chain != null ? chain.isTail : false;
         }
         #endregion
     }
@@ -540,19 +644,19 @@ namespace Core
         public BallSequence(float _speed, bool _isTail = false)
         {
             id = nextId++;
-            speed = _speed;
             isTail = _isTail;
             balls = new List<PathFollower>();
+            SetSpeed(_speed);
         }
 
         public BallSequence(float _speed, List<PathFollower> _balls, bool _isTail = false)
         {
             id = nextId++;
-            speed = _speed;
             isTail = _isTail;
             balls = _balls;
             balls[0].ActivateEdgeTag(true);
             balls[balls.Count - 1].ActivateEdgeTag(true);
+            SetSpeed(_speed);
         }
 
         public int GetBallIndex(int id)
@@ -584,15 +688,12 @@ namespace Core
             balls.Add(ball);
         }
 
-        /*public void SubsribeConnectingMethodToFirstBall(BallCollisionHandler handler)
-        {
-            //Debug.Log("Subsribe " + balls[0].name);
-            balls[0].ConnectWithChain += handler;
-        }*/
-
         public void SetSpeed(float _speed)
         {
             speed = _speed;
+            for(int i = 0; i < balls.Count; i++) {
+                balls[i].SetAnimateSpeed(_speed);
+            }
         }
     }
     #endregion

@@ -14,7 +14,6 @@ namespace Core
     public struct BallInfo
     {
         public BallType type;
-        //public Sprite sprite;
-        public Color color;     //test
+        public Color color;
     }
 }
