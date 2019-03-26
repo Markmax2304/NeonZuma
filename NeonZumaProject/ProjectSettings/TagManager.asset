@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Chain
   - Edge
+  - Projectile
   layers:
   - Default
   - TransparentFX

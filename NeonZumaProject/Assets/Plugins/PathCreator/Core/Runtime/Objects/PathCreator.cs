@@ -60,7 +60,9 @@ namespace PathCreation {
             get {
                 return editorData;
             }
-
+            set {
+                editorData = value;
+            }
         }
 
         void OnPathUpdated () {
