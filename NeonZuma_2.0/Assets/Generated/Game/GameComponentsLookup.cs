@@ -15,13 +15,15 @@ public static class GameComponentsLookup {
     public const int LevelConfig = 4;
     public const int PathCreator = 5;
     public const int Player = 6;
-    public const int TimeToSpawn = 7;
-    public const int Track = 8;
-    public const int TrackId = 9;
-    public const int Transform = 10;
-    public const int UpdateDistance = 11;
+    public const int Recharge = 7;
+    public const int Shoot = 8;
+    public const int TimeToSpawn = 9;
+    public const int Track = 10;
+    public const int TrackId = 11;
+    public const int Transform = 12;
+    public const int UpdateDistance = 13;
 
-    public const int TotalComponents = 12;
+    public const int TotalComponents = 14;
 
     public static readonly string[] componentNames = {
         "DeltaTime",
@@ -31,6 +33,8 @@ public static class GameComponentsLookup {
         "LevelConfig",
         "PathCreator",
         "Player",
+        "Recharge",
+        "Shoot",
         "TimeToSpawn",
         "Track",
         "TrackId",
@@ -46,6 +50,8 @@ public static class GameComponentsLookup {
         typeof(LevelConfigComponent),
         typeof(PathCreatorComponent),
         typeof(PlayerComponent),
+        typeof(RechargeComponent),
+        typeof(ShootComponent),
         typeof(TimeToSpawnComponent),
         typeof(TrackComponent),
         typeof(TrackIdComponent),
