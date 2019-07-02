@@ -17,6 +17,7 @@ public class PoolingObject : MonoBehaviour
 
     public void ReturnToPool()
     {
+        _gameObject.transform.parent = PoolManager.instance.transform;
         _gameObject.SetActive(false);
     }
 }

@@ -8,7 +8,12 @@ public class TouchHandleSystem : IExecuteSystem
 {
     private Contexts _contexts;
 
-    bool isPressed = false;
+    private bool isPressed = false;
+
+    private Vector2 GetMousePosition
+    {
+        get { return Camera.main.ScreenToWorldPoint(Input.mousePosition); }
+    }
 
     public TouchHandleSystem(Contexts contexts)
     {
@@ -30,12 +35,12 @@ public class TouchHandleSystem : IExecuteSystem
 
             if (data.pointerEnter != null && data.pointerEnter.layer == 5) {
                 touchEntity.AddTouchType(TypeTouch.Interact);
-                Debug.Log("Interact");
+                //Debug.Log("Interact");
                 touchEntity.isDestroyed = true;
             }
             else {
                 touchEntity.AddTouchType(TypeTouch.Rotate);
-                touchEntity.AddTouchPosition(GetMousePosition());
+                touchEntity.AddTouchPosition(GetMousePosition);
             }
         }
 
@@ -43,22 +48,22 @@ public class TouchHandleSystem : IExecuteSystem
             InputEntity[] inputs = _contexts.input.GetEntities(InputMatcher.TouchPosition);
 
             for(int i = 0; i < inputs.Length; i++) {
-                inputs[i].ReplaceTouchPosition(GetMousePosition());
+                inputs[i].ReplaceTouchPosition(GetMousePosition);
             }
         }
         else if (Input.GetMouseButtonUp(0)) {
             InputEntity[] inputs = _contexts.input.GetEntities(InputMatcher.TouchPosition);
 
             for (int i = 0; i < inputs.Length; i++) {
-                inputs[i].ReplaceTouchPosition(GetMousePosition());
+                inputs[i].ReplaceTouchPosition(GetMousePosition);
                 inputs[i].ReplaceTouchType(TypeTouch.Shoot);
-                Debug.Log("Shoot");
+                //Debug.Log("Shoot");
                 inputs[i].isDestroyed = true;
             }
         }
     }
 
-    PointerEventData GetPointerData(int id)
+    private PointerEventData GetPointerData(int id)
     {
         StandaloneModule currentInput = EventSystem.current.currentInputModule as StandaloneModule;
         if (currentInput == null) {
@@ -69,8 +74,5 @@ public class TouchHandleSystem : IExecuteSystem
 
     }
 
-    Vector2 GetMousePosition()
-    {
-        return Camera.main.ScreenToWorldPoint(Input.mousePosition);
-    }
+    
 }

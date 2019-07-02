@@ -6,10 +6,10 @@ public class PoolManager : MonoBehaviour
 {
     public static PoolManager instance;         //протестить на переходе между сценами
 
-    Dictionary<TypeObjectPool, PoolObjectKeeper> pools;
-    [SerializeField] PoolInfo[] poolInfo;
+    private Dictionary<TypeObjectPool, PoolObjectKeeper> pools;
+    [SerializeField] private PoolInfo[] poolInfo;
 
-    void Awake()
+    private void Awake()
     {
         if (instance == null) {
             instance = this;
@@ -23,19 +23,7 @@ public class PoolManager : MonoBehaviour
         InitializePools();
     }
 
-    void InitializePools()
-    {
-        pools = new Dictionary<TypeObjectPool, PoolObjectKeeper>();
-        for (int i = 0; i < poolInfo.Length; i++) {
-            Transform parent = poolInfo[i].parent == null ? transform : poolInfo[i].parent;
-            pools.Add(poolInfo[i].type, new PoolObjectKeeper(poolInfo[i].prefab, parent, poolInfo[i].count));
-        }
-
-        foreach (PoolObjectKeeper pool in pools.Values) {
-            pool.InitializePool();
-        }
-    }
-
+    #region Public Methods
     public PoolObjectKeeper GetObjectPoolKeeper(TypeObjectPool type)
     {
         return pools[type];
@@ -47,7 +35,26 @@ public class PoolManager : MonoBehaviour
             pool.Value.ResetPool();
         }
     }
+    #endregion
 
+    #region Private Methods
+    private void InitializePools()
+    {
+        pools = new Dictionary<TypeObjectPool, PoolObjectKeeper>();
+        for (int i = 0; i < poolInfo.Length; i++)
+        {
+            Transform parent = poolInfo[i].parent == null ? transform : poolInfo[i].parent;
+            pools.Add(poolInfo[i].type, new PoolObjectKeeper(poolInfo[i].prefab, parent, poolInfo[i].count));
+        }
+
+        foreach (PoolObjectKeeper pool in pools.Values)
+        {
+            pool.InitializePool();
+        }
+    }
+    #endregion
+
+    #region Nested Types
     [System.Serializable]
     public struct PoolInfo
     {
@@ -56,4 +63,5 @@ public class PoolManager : MonoBehaviour
         public GameObject prefab;
         public Transform parent;
     }
+    #endregion
 }

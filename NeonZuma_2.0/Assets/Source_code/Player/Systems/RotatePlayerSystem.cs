@@ -1,7 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using Entitas;
+using System.Linq;
 
 public class RotatePlayerSystem : ReactiveSystem<InputEntity>
 {
@@ -14,24 +14,26 @@ public class RotatePlayerSystem : ReactiveSystem<InputEntity>
 
     protected override void Execute(List<InputEntity> entities)
     {
-        for(int i = 0; i < entities.Count; i++) {
-            var players = _contexts.game.GetEntities(GameMatcher.Player);
+        var player = _contexts.game.playerEntity;
+        // TODO: maybe change to multiple touch
+        InputEntity touch = entities.First();
 
-            foreach(var player in players) {
-                if (player.hasTransform) {
+        if (player.hasTransform)
+        {
+            Transform playerTransform = player.transform.value;
+            Vector2 direction = touch.touchPosition.value - (Vector2)playerTransform.position;
+            direction.Normalize();
 
-                    Transform playerTransform = player.transform.value;
-                    Vector2 direction = entities[i].touchPosition.value - (Vector2)playerTransform.position;
-                    direction.Normalize();
-
-                    if(entities[i].touchType.value == TypeTouch.Rotate) {
-                        playerTransform.up = Vector2.Lerp(playerTransform.up, direction, Time.deltaTime * _contexts.game.levelConfig.value.rotateSpeed);
-                    }
-                    else if(entities[i].touchType.value == TypeTouch.Shoot) {
-                        playerTransform.up = direction;
-                    }
-                }
+            if (touch.touchType.value == TypeTouch.Rotate)
+            {
+                float rotateSpeed = _contexts.game.levelConfig.value.rotateSpeed;
+                playerTransform.up = Vector2.Lerp(playerTransform.up, direction, _contexts.game.deltaTime.value * rotateSpeed);
             }
+            else if (touch.touchType.value == TypeTouch.Shoot)
+            {
+                playerTransform.up = direction;
+            }
+
         }
     }
 

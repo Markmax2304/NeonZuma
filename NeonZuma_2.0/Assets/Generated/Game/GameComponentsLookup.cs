@@ -11,28 +11,32 @@ public static class GameComponentsLookup {
     public const int DeltaTime = 0;
     public const int Destroyed = 1;
     public const int DistanceBall = 2;
-    public const int LastBall = 3;
-    public const int LevelConfig = 4;
-    public const int PathCreator = 5;
-    public const int Player = 6;
-    public const int Recharge = 7;
-    public const int Shoot = 8;
-    public const int TimeToSpawn = 9;
-    public const int Track = 10;
-    public const int TrackId = 11;
-    public const int Transform = 12;
-    public const int UpdateDistance = 13;
+    public const int Force = 3;
+    public const int LastBall = 4;
+    public const int LevelConfig = 5;
+    public const int PathCreator = 6;
+    public const int Player = 7;
+    public const int Projectile = 8;
+    public const int Recharge = 9;
+    public const int Shoot = 10;
+    public const int TimeToSpawn = 11;
+    public const int Track = 12;
+    public const int TrackId = 13;
+    public const int Transform = 14;
+    public const int UpdateDistance = 15;
 
-    public const int TotalComponents = 14;
+    public const int TotalComponents = 16;
 
     public static readonly string[] componentNames = {
         "DeltaTime",
         "Destroyed",
         "DistanceBall",
+        "Force",
         "LastBall",
         "LevelConfig",
         "PathCreator",
         "Player",
+        "Projectile",
         "Recharge",
         "Shoot",
         "TimeToSpawn",
@@ -46,10 +50,12 @@ public static class GameComponentsLookup {
         typeof(DeltaTimeComponent),
         typeof(DestroyedComponent),
         typeof(DistanceBallComponent),
+        typeof(ForceComponent),
         typeof(LastBallComponent),
         typeof(LevelConfigComponent),
         typeof(PathCreatorComponent),
         typeof(PlayerComponent),
+        typeof(ProjectileComponent),
         typeof(RechargeComponent),
         typeof(ShootComponent),
         typeof(TimeToSpawnComponent),

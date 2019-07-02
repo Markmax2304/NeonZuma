@@ -20,3 +20,5 @@ MonoBehaviour:
   followSpeed: 0.5
   offsetBetweenBalls: 0.36
   rotateSpeed: 20
+  rechargeTime: 0.5
+  forceSpeed: 5

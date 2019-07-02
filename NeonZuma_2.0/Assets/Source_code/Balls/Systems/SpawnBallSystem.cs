@@ -29,11 +29,11 @@ public class SpawnBallSystem : ReactiveSystem<GameEntity>
             }
 
             PathCreator pathCreator = entities[i].pathCreator.value;
-            GameObject ball = pool.RealeseObject().gameObject;
+            Transform ball = pool.RealeseObject().transform;
 
             GameEntity entityBall = _contexts.game.CreateEntity();
             entityBall.AddDistanceBall(distance);
-            entityBall.AddTransform(ball.transform);
+            entityBall.AddTransform(ball);
             entityBall.AddPathCreator(pathCreator);
             entityBall.AddTrackId(entities[i].trackId.value);
             entityBall.isLastBall = true;

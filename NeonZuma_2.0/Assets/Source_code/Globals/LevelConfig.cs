@@ -17,4 +17,8 @@ public class LevelConfig : ScriptableObject
 
     [Header("Player fields"), Space]
     public float rotateSpeed = 1f;
+    public float rechargeTime = 1f;
+
+    [Header("Projectile fields"), Space]
+    public float forceSpeed = 5f;
 }

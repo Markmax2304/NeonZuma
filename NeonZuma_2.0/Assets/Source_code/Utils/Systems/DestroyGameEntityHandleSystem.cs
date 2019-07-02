@@ -11,7 +11,14 @@ public class DestroyGameEntityHandleSystem : ReactiveSystem<GameEntity>
 
     protected override void Execute(List<GameEntity> entities)
     {
-        for(int i = 0; i < entities.Count; i++) {
+        for(int i = 0; i < entities.Count; i++)
+        {
+            // Clean up for components
+            if (entities[i].hasTransform)
+            {
+                entities[i].transform.value.GetComponent<PoolingObject>()?.ReturnToPool();
+            }
+
             entities[i].Destroy();
         }
     }

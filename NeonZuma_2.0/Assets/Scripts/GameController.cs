@@ -38,6 +38,7 @@ public class GameController : MonoBehaviour
 
             //Player
             .Add(new RotatePlayerSystem(contexts))
+            .Add(new ShootPlayerSystem(contexts))
 
             //Spawn
             .Add(new CheckSpawnBallSystem(contexts))
@@ -46,6 +47,7 @@ public class GameController : MonoBehaviour
             //Movement
             .Add(new UpdateBallDistanceBySpeedSystem(contexts))
             .Add(new ChangeBallPositionOnPathSystem(contexts))
+            .Add(new ShootingForceSystem(contexts))
 
             //CleanUp
             .Add(new DestroyInputEntityHandleSystem(contexts))

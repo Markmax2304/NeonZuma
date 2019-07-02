@@ -5,11 +5,11 @@ using UnityEngine;
 
 public class PoolObjectKeeper
 {
-    static int id = 0;
-    int maxCount;
-    Transform parent;
-    GameObject prefab;
-    List<PoolingObject> pool;
+    private static int id = 0;
+    private int maxCount;
+    private Transform parent;
+    private GameObject prefab;
+    private List<PoolingObject> pool;
 
     public PoolObjectKeeper(GameObject prefab, Transform parent, int count)
     {
@@ -55,25 +55,46 @@ public class PoolObjectKeeper
         return obj;
     }
 
+    public PoolingObject RealeseObject(Vector2 position, Quaternion rotation)
+    {
+        PoolingObject obj = GetFreeObject();
+
+        obj.transform.position = position;
+        obj.transform.rotation = rotation;
+        obj.gameObject.SetActive(true);
+        return obj;
+    }
+
+    public PoolingObject RealeseObject(Vector2 position, Quaternion rotation, Vector3 scale)
+    {
+        PoolingObject obj = GetFreeObject();
+
+        obj.transform.position = position;
+        obj.transform.rotation = rotation;
+        obj.transform.localScale = scale;
+        obj.gameObject.SetActive(true);
+        return obj;
+    }
+
     #region Private
 
-    void AddNewObject()
+    private void AddNewObject()
     {
         GameObject obj = GameObject.Instantiate(prefab, Vector3.zero, Quaternion.identity, parent);
-        StringBuilder name = new StringBuilder("Ball_");
-        obj.name = name.Append(id++).ToString();                                              // just test, will delete
+        StringBuilder name = new StringBuilder("Ball_").Append(id++);
+        obj.name = name.ToString();                                              // just test, will delete
         obj.SetActive(false);
         pool.Add(obj.GetComponent<PoolingObject>());
     }
 
-    void AddNewObject(int amount)
+    private void AddNewObject(int amount)
     {
         for (int i = 0; i < amount; i++) {
             AddNewObject();
         }
     }
 
-    PoolingObject GetFreeObject()
+    private PoolingObject GetFreeObject()
     {
         for (int i = 0; i < pool.Count; i++) {
             if (pool[i].IsAccess) {

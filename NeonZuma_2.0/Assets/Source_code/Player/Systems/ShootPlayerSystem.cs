@@ -1,26 +1,59 @@
 ﻿using System.Collections.Generic;
-using Entitas;
+using System.Linq;
 
-public class ShootPlayerSystem : ReactiveSystem<InputEntity>
+using Entitas;
+using DG.Tweening;
+using UnityEngine;
+
+public class ShootPlayerSystem : ReactiveSystem<InputEntity>, IInitializeSystem
 {
     private Contexts _contexts;
+    private PoolObjectKeeper pool;
+
+    private Transform player;
+    private Transform shootPlace;
+    private Transform rechargePlace;
+
+    private bool fireAccess = true;
+    private Vector3 rechargeDistance;
+    private readonly Vector3 initScale = new Vector3(.01f, .01f, 1f);
+    private readonly Vector3 normalScale = new Vector3(.4f, .4f, 1f);
 
     public ShootPlayerSystem(Contexts contexts) : base(contexts.input)
     {
         _contexts = contexts;
+        pool = PoolManager.instance.GetObjectPoolKeeper(TypeObjectPool.Ball);
+    }
+
+    public void Initialize()
+    {
+        player = _contexts.game.playerEntity.transform.value;
+        shootPlace = GameObject.Find("Shoot").transform;
+        rechargePlace = GameObject.Find("Recharge").transform;
+
+        rechargeDistance = shootPlace.position - rechargePlace.position;
+
+        CreateRechargeEntity();
+        Recharge();
     }
 
     protected override void Execute(List<InputEntity> entities)
     {
-        for (int i = 0; i < entities.Count; i++)
-        {
-            var players = _contexts.game.GetEntities(GameMatcher.Player);
+        if (!fireAccess)
+            return;
 
-            foreach (var player in players)
-            {
-                //calculate direction
-                //shoot!
-            }
+        GameEntity player = _contexts.game.playerEntity;
+        // TODO: maybe change to multiple touch
+        InputEntity touch = entities.First();
+
+        if (player.hasTransform)
+        {
+            Vector2 playerPosition = player.transform.value.position;
+            Vector2 touchPosition = touch.touchPosition.value;
+
+            Shoot((touchPosition - playerPosition).normalized);
+            fireAccess = false;
+            Recharge();
         }
     }
 
@@ -33,5 +66,44 @@ public class ShootPlayerSystem : ReactiveSystem<InputEntity>
     {
         return context.CreateCollector(InputMatcher.AllOf(InputMatcher.TouchPosition, InputMatcher.TouchType));
     }
+
+    #region Private Methods
+    private void Shoot(Vector2 direction)
+    {
+        GameEntity projectile = _contexts.game.shootEntity;
+        projectile.transform.value.parent = null;
+        projectile.isShoot = false;
+        projectile.isProjectile = true;
+        projectile.AddForce(direction);
+    }
+
+    private void Recharge()
+    {
+        GameEntity projectile = _contexts.game.rechargeEntity;
+        projectile.isRecharge = false;
+        projectile.isShoot = true;
+
+        Transform ball = projectile.transform.value;
+        float duration = _contexts.game.levelConfig.value.rechargeTime;
+        // TODO: change animate envelope to more usefull or interesting
+        ball.DOLocalMove(rechargeDistance, duration).onComplete += delegate () { ball.parent = shootPlace; fireAccess = true; };
+
+        CreateRechargeEntity();
+    }
+
+    private void CreateRechargeEntity()
+    {
+        Transform ball = pool.RealeseObject(rechargePlace.position, rechargePlace.rotation, initScale).transform;
+        ball.parent = rechargePlace;
+
+        GameEntity projectile = _contexts.game.CreateEntity();
+        projectile.isRecharge = true;
+        projectile.AddTransform(ball);
+
+        float duration = _contexts.game.levelConfig.value.rechargeTime;
+        // TODO: change duration less than recharge duration
+        ball.DOScale(normalScale, duration);
+    }
+    #endregion
 }
 
