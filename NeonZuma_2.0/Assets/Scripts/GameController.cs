@@ -39,6 +39,7 @@ public class GameController : MonoBehaviour
             //Player
             .Add(new RotatePlayerSystem(contexts))
             .Add(new ShootPlayerSystem(contexts))
+            .Add(new BallExchangePlayerSystem(contexts))
 
             //Spawn
             .Add(new CheckSpawnBallSystem(contexts))

@@ -11,26 +11,29 @@ public static class GameComponentsLookup {
     public const int DeltaTime = 0;
     public const int Destroyed = 1;
     public const int DistanceBall = 2;
-    public const int Force = 3;
-    public const int LastBall = 4;
-    public const int LevelConfig = 5;
-    public const int PathCreator = 6;
-    public const int Player = 7;
-    public const int Projectile = 8;
-    public const int Recharge = 9;
-    public const int Shoot = 10;
-    public const int TimeToSpawn = 11;
-    public const int Track = 12;
-    public const int TrackId = 13;
-    public const int Transform = 14;
-    public const int UpdateDistance = 15;
+    public const int FireAccess = 3;
+    public const int Force = 4;
+    public const int LastBall = 5;
+    public const int LevelConfig = 6;
+    public const int PathCreator = 7;
+    public const int Player = 8;
+    public const int Projectile = 9;
+    public const int Recharge = 10;
+    public const int RechargeDistance = 11;
+    public const int Shoot = 12;
+    public const int TimeToSpawn = 13;
+    public const int Track = 14;
+    public const int TrackId = 15;
+    public const int Transform = 16;
+    public const int UpdateDistance = 17;
 
-    public const int TotalComponents = 16;
+    public const int TotalComponents = 18;
 
     public static readonly string[] componentNames = {
         "DeltaTime",
         "Destroyed",
         "DistanceBall",
+        "FireAccess",
         "Force",
         "LastBall",
         "LevelConfig",
@@ -38,6 +41,7 @@ public static class GameComponentsLookup {
         "Player",
         "Projectile",
         "Recharge",
+        "RechargeDistance",
         "Shoot",
         "TimeToSpawn",
         "Track",
@@ -50,6 +54,7 @@ public static class GameComponentsLookup {
         typeof(DeltaTimeComponent),
         typeof(DestroyedComponent),
         typeof(DistanceBallComponent),
+        typeof(FireAccessComponent),
         typeof(ForceComponent),
         typeof(LastBallComponent),
         typeof(LevelConfigComponent),
@@ -57,6 +62,7 @@ public static class GameComponentsLookup {
         typeof(PlayerComponent),
         typeof(ProjectileComponent),
         typeof(RechargeComponent),
+        typeof(RechargeDistanceComponent),
         typeof(ShootComponent),
         typeof(TimeToSpawnComponent),
         typeof(TrackComponent),

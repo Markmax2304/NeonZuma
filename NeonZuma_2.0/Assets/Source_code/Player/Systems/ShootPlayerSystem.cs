@@ -14,8 +14,6 @@ public class ShootPlayerSystem : ReactiveSystem<InputEntity>, IInitializeSystem
     private Transform shootPlace;
     private Transform rechargePlace;
 
-    private bool fireAccess = true;
-    private Vector3 rechargeDistance;
     private readonly Vector3 initScale = new Vector3(.01f, .01f, 1f);
     private readonly Vector3 normalScale = new Vector3(.4f, .4f, 1f);
 
@@ -31,7 +29,8 @@ public class ShootPlayerSystem : ReactiveSystem<InputEntity>, IInitializeSystem
         shootPlace = GameObject.Find("Shoot").transform;
         rechargePlace = GameObject.Find("Recharge").transform;
 
-        rechargeDistance = shootPlace.position - rechargePlace.position;
+        _contexts.game.isFireAccess = true;
+        _contexts.game.ReplaceRechargeDistance(shootPlace.position - rechargePlace.position);
 
         CreateRechargeEntity();
         Recharge();
@@ -39,7 +38,7 @@ public class ShootPlayerSystem : ReactiveSystem<InputEntity>, IInitializeSystem
 
     protected override void Execute(List<InputEntity> entities)
     {
-        if (!fireAccess)
+        if (!_contexts.game.isFireAccess)
             return;
 
         GameEntity player = _contexts.game.playerEntity;
@@ -52,7 +51,7 @@ public class ShootPlayerSystem : ReactiveSystem<InputEntity>, IInitializeSystem
             Vector2 touchPosition = touch.touchPosition.value;
 
             Shoot((touchPosition - playerPosition).normalized);
-            fireAccess = false;
+            _contexts.game.isFireAccess = false;
             Recharge();
         }
     }
@@ -86,7 +85,8 @@ public class ShootPlayerSystem : ReactiveSystem<InputEntity>, IInitializeSystem
         Transform ball = projectile.transform.value;
         float duration = _contexts.game.levelConfig.value.rechargeTime;
         // TODO: change animate envelope to more usefull or interesting
-        ball.DOLocalMove(rechargeDistance, duration).onComplete += delegate () { ball.parent = shootPlace; fireAccess = true; };
+        ball.DOLocalMove(_contexts.game.rechargeDistance.value, duration).onComplete += delegate () {
+            ball.parent = shootPlace; _contexts.game.isFireAccess = true; };
 
         CreateRechargeEntity();
     }

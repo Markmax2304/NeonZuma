@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.EventSystems;
 using Entitas;
 
@@ -34,8 +32,8 @@ public class TouchHandleSystem : IExecuteSystem
             InputEntity touchEntity = _contexts.input.CreateEntity();
 
             if (data.pointerEnter != null && data.pointerEnter.layer == 5) {
-                touchEntity.AddTouchType(TypeTouch.Interact);
-                //Debug.Log("Interact");
+                touchEntity.AddTouchType(TypeTouch.Exchange);
+                //Debug.Log("Exchange");
                 touchEntity.isDestroyed = true;
             }
             else {
