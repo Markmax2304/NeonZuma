@@ -29,7 +29,6 @@ public class ShootPlayerSystem : ReactiveSystem<InputEntity>, IInitializeSystem
         shootPlace = GameObject.Find("Shoot").transform;
         rechargePlace = GameObject.Find("Recharge").transform;
 
-        _contexts.game.isFireAccess = true;
         _contexts.game.ReplaceRechargeDistance(shootPlace.position - rechargePlace.position);
 
         CreateRechargeEntity();
@@ -99,6 +98,8 @@ public class ShootPlayerSystem : ReactiveSystem<InputEntity>, IInitializeSystem
         GameEntity projectile = _contexts.game.CreateEntity();
         projectile.isRecharge = true;
         projectile.AddTransform(ball);
+        projectile.AddSprite(ball.GetComponent<SpriteRenderer>());
+        projectile.AddColor(Randomizer.GetSingleColor());
 
         float duration = _contexts.game.levelConfig.value.rechargeTime;
         // TODO: change duration less than recharge duration

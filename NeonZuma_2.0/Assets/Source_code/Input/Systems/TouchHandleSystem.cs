@@ -6,8 +6,6 @@ public class TouchHandleSystem : IExecuteSystem
 {
     private Contexts _contexts;
 
-    private bool isPressed = false;
-
     private Vector2 GetMousePosition
     {
         get { return Camera.main.ScreenToWorldPoint(Input.mousePosition); }

@@ -19,6 +19,11 @@ public class InitializePathSystem : IInitializeSystem
 
             GameEntity entity = _contexts.game.CreateEntity();
             entity.AddPathCreator(path.GetComponent<PathCreator>());
+
+            ColorInfo[] colors = _contexts.game.levelConfig.value.colors;
+            int minLength = _contexts.game.levelConfig.value.minLengthSeries;
+            int maxLength = _contexts.game.levelConfig.value.maxLengthSeries;
+            entity.AddRandomizer(new Randomizer(minLength, maxLength));
             entity.AddTrackId(i);
             entity.isTrack = true;
             entity.isTimeToSpawn = true;

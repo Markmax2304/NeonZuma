@@ -1,7 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using PathCreation;
 using Entitas;
 
 public class GameController : MonoBehaviour
@@ -15,6 +13,7 @@ public class GameController : MonoBehaviour
         Contexts contexts = Contexts.sharedInstance;
 
         contexts.game.SetLevelConfig(config);
+        contexts.game.SetBallColors(new Dictionary<ColorBall, int>());
 
         _systems = CreateSystems(contexts);
 
@@ -32,6 +31,17 @@ public class GameController : MonoBehaviour
             .Add(new InitializePathSystem(contexts))
             .Add(new InitializePlayerSystem(contexts))
             .Add(new UpdateDeltaTimeSystem(contexts))
+            
+            //Spawn
+            .Add(new CheckSpawnBallSystem(contexts))
+            .Add(new SpawnBallSystem(contexts))
+            .Add(new UpdateColorBallSystem(contexts))
+            .Add(new CountBallColorsSystem(contexts))
+
+            //Movement
+            .Add(new UpdateBallDistanceBySpeedSystem(contexts))
+            .Add(new ChangeBallPositionOnPathSystem(contexts))
+            .Add(new ShootingForceSystem(contexts))
 
             //Input
             .Add(new TouchHandleSystem(contexts))
@@ -40,15 +50,6 @@ public class GameController : MonoBehaviour
             .Add(new RotatePlayerSystem(contexts))
             .Add(new ShootPlayerSystem(contexts))
             .Add(new BallExchangePlayerSystem(contexts))
-
-            //Spawn
-            .Add(new CheckSpawnBallSystem(contexts))
-            .Add(new SpawnBallSystem(contexts))
-
-            //Movement
-            .Add(new UpdateBallDistanceBySpeedSystem(contexts))
-            .Add(new ChangeBallPositionOnPathSystem(contexts))
-            .Add(new ShootingForceSystem(contexts))
 
             //CleanUp
             .Add(new DestroyInputEntityHandleSystem(contexts))

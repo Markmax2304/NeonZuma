@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using Entitas;
 using PathCreation;
@@ -30,10 +29,14 @@ public class SpawnBallSystem : ReactiveSystem<GameEntity>
 
             PathCreator pathCreator = entities[i].pathCreator.value;
             Transform ball = pool.RealeseObject().transform;
+            ColorBall colorType = entities[i].randomizer.value.GetRandomColorType();
 
             GameEntity entityBall = _contexts.game.CreateEntity();
             entityBall.AddDistanceBall(distance);
             entityBall.AddTransform(ball);
+            entityBall.AddSprite(ball.GetComponent<SpriteRenderer>());
+            entityBall.AddColor(colorType);
+            entityBall.isAddedBall = true;
             entityBall.AddPathCreator(pathCreator);
             entityBall.AddTrackId(entities[i].trackId.value);
             entityBall.isLastBall = true;

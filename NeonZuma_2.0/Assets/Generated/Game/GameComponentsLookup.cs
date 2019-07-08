@@ -8,28 +8,37 @@
 //------------------------------------------------------------------------------
 public static class GameComponentsLookup {
 
-    public const int DeltaTime = 0;
-    public const int Destroyed = 1;
-    public const int DistanceBall = 2;
-    public const int FireAccess = 3;
-    public const int Force = 4;
-    public const int LastBall = 5;
-    public const int LevelConfig = 6;
-    public const int PathCreator = 7;
-    public const int Player = 8;
-    public const int Projectile = 9;
-    public const int Recharge = 10;
-    public const int RechargeDistance = 11;
-    public const int Shoot = 12;
-    public const int TimeToSpawn = 13;
-    public const int Track = 14;
-    public const int TrackId = 15;
-    public const int Transform = 16;
-    public const int UpdateDistance = 17;
+    public const int AddedBall = 0;
+    public const int BallColors = 1;
+    public const int Color = 2;
+    public const int DeltaTime = 3;
+    public const int Destroyed = 4;
+    public const int DistanceBall = 5;
+    public const int FireAccess = 6;
+    public const int Force = 7;
+    public const int LastBall = 8;
+    public const int LevelConfig = 9;
+    public const int PathCreator = 10;
+    public const int Player = 11;
+    public const int Projectile = 12;
+    public const int Randomizer = 13;
+    public const int Recharge = 14;
+    public const int RechargeDistance = 15;
+    public const int RemovedBall = 16;
+    public const int Shoot = 17;
+    public const int Sprite = 18;
+    public const int TimeToSpawn = 19;
+    public const int Track = 20;
+    public const int TrackId = 21;
+    public const int Transform = 22;
+    public const int UpdateDistance = 23;
 
-    public const int TotalComponents = 18;
+    public const int TotalComponents = 24;
 
     public static readonly string[] componentNames = {
+        "AddedBall",
+        "BallColors",
+        "Color",
         "DeltaTime",
         "Destroyed",
         "DistanceBall",
@@ -40,9 +49,12 @@ public static class GameComponentsLookup {
         "PathCreator",
         "Player",
         "Projectile",
+        "Randomizer",
         "Recharge",
         "RechargeDistance",
+        "RemovedBall",
         "Shoot",
+        "Sprite",
         "TimeToSpawn",
         "Track",
         "TrackId",
@@ -51,6 +63,9 @@ public static class GameComponentsLookup {
     };
 
     public static readonly System.Type[] componentTypes = {
+        typeof(AddedBallComponent),
+        typeof(BallColorsComponent),
+        typeof(ColorComponent),
         typeof(DeltaTimeComponent),
         typeof(DestroyedComponent),
         typeof(DistanceBallComponent),
@@ -61,9 +76,12 @@ public static class GameComponentsLookup {
         typeof(PathCreatorComponent),
         typeof(PlayerComponent),
         typeof(ProjectileComponent),
+        typeof(RandomizerComponent),
         typeof(RechargeComponent),
         typeof(RechargeDistanceComponent),
+        typeof(RemovedBallComponent),
         typeof(ShootComponent),
+        typeof(SpriteComponent),
         typeof(TimeToSpawnComponent),
         typeof(TrackComponent),
         typeof(TrackIdComponent),
