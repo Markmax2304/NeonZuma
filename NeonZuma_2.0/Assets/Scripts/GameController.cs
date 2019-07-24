@@ -31,7 +31,12 @@ public class GameController : MonoBehaviour
             .Add(new InitializePathSystem(contexts))
             .Add(new InitializePlayerSystem(contexts))
             .Add(new UpdateDeltaTimeSystem(contexts))
-            
+
+            //Collision
+            .Add(new EnteringBallsToScreenSystem(contexts))
+            .Add(new ProjectileCollidingWithBallSystem(contexts))
+            .Add(new CollisionObjectDestroySystem(contexts))
+
             //Spawn
             .Add(new CheckSpawnBallSystem(contexts))
             .Add(new SpawnBallSystem(contexts))

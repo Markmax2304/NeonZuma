@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using Entitas;
 
@@ -11,7 +10,8 @@ public class DestroyInputEntityHandleSystem : ReactiveSystem<InputEntity>
 
     protected override void Execute(List<InputEntity> entities)
     {
-        for(int i = 0; i < entities.Count; i++) {
+        for(int i = 0; i < entities.Count; i++)
+        {
             entities[i].Destroy();
         }
     }

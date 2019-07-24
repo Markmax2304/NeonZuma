@@ -4,7 +4,8 @@ using UnityEngine;
 using Entitas;
 
 [Game]
-public class UpdateDistanceComponent : IComponent
+public class InsertedProjectileComponent : IComponent
 {
-    
+    public int trackId;
+    public int? frontBallId;
 }

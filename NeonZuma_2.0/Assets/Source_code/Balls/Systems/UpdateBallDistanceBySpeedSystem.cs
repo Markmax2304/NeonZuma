@@ -3,34 +3,40 @@ using System.Collections.Generic;
 using UnityEngine;
 using Entitas;
 
-public class UpdateBallDistanceBySpeedSystem : ReactiveSystem<GameEntity>
+public class UpdateBallDistanceBySpeedSystem : IExecuteSystem
 {
     private Contexts _contexts;
 
-    public UpdateBallDistanceBySpeedSystem(Contexts contexts) : base(contexts.game)
+    public UpdateBallDistanceBySpeedSystem(Contexts contexts)
     {
         _contexts = contexts;
     }
 
-    protected override void Execute(List<GameEntity> entities)
+    public void Execute()
     {
         float delta = _contexts.game.deltaTime.value;
-        float speed = _contexts.game.levelConfig.value.followSpeed;
 
-        for(int i = 0; i < entities.Count; i++) {
-            float distance = entities[i].distanceBall.value;
-            entities[i].ReplaceDistanceBall(distance + delta * speed);
-            entities[i].isUpdateDistance = true;
+        var paths = _contexts.game.GetEntities(GameMatcher.TrackId);
+
+        foreach(var path in paths)
+        {
+            if (!path.isSpawnAccess)
+                continue;
+
+            var chains = path.GetChains();
+
+            foreach(var chain in chains)
+            {
+                float speed = chain.chainSpeed.value;
+                var balls = chain.GetChainedBalls();
+                int count = balls.Count;
+
+                for (int i = 0; i < count; i++)
+                {
+                    float distance = balls[i].distanceBall.value;
+                    balls[i].ReplaceDistanceBall(distance + delta * speed);
+                }
+            }
         }
-    }
-
-    protected override bool Filter(GameEntity entity)
-    {
-        return entity.hasDistanceBall && entity.hasTransform;
-    }
-
-    protected override ICollector<GameEntity> GetTrigger(IContext<GameEntity> context)
-    {
-        return context.CreateCollector(GameMatcher.AllOf(GameMatcher.DistanceBall, GameMatcher.Transform));
     }
 }

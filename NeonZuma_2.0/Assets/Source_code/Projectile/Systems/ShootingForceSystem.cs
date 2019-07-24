@@ -9,7 +9,7 @@ public class ShootingForceSystem : IExecuteSystem
     {
         _contexts = contexts;
     }
-
+    
     public void Execute()
     {
         GameEntity[] entities = _contexts.game.GetEntities(GameMatcher.Projectile);

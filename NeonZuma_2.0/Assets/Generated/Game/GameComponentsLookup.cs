@@ -10,42 +10,53 @@ public static class GameComponentsLookup {
 
     public const int AddedBall = 0;
     public const int BallColors = 1;
-    public const int Color = 2;
-    public const int DeltaTime = 3;
-    public const int Destroyed = 4;
-    public const int DistanceBall = 5;
-    public const int FireAccess = 6;
-    public const int Force = 7;
-    public const int LastBall = 8;
-    public const int LevelConfig = 9;
-    public const int PathCreator = 10;
-    public const int Player = 11;
-    public const int Projectile = 12;
-    public const int Randomizer = 13;
-    public const int Recharge = 14;
-    public const int RechargeDistance = 15;
-    public const int RemovedBall = 16;
-    public const int Shoot = 17;
-    public const int Sprite = 18;
-    public const int TimeToSpawn = 19;
-    public const int Track = 20;
-    public const int TrackId = 21;
-    public const int Transform = 22;
-    public const int UpdateDistance = 23;
+    public const int BallId = 2;
+    public const int ChainId = 3;
+    public const int ChainSpeed = 4;
+    public const int Color = 5;
+    public const int DeltaTime = 6;
+    public const int Destroyed = 7;
+    public const int DistanceBall = 8;
+    public const int FireAccess = 9;
+    public const int Force = 10;
+    public const int InsertedProjectile = 11;
+    public const int LastBall = 12;
+    public const int LevelConfig = 13;
+    public const int ParentChainId = 14;
+    public const int ParentTrackId = 15;
+    public const int PathCreator = 16;
+    public const int Player = 17;
+    public const int Projectile = 18;
+    public const int Randomizer = 19;
+    public const int Recharge = 20;
+    public const int RechargeDistance = 21;
+    public const int RemovedBall = 22;
+    public const int Shoot = 23;
+    public const int SpawnAccess = 24;
+    public const int Sprite = 25;
+    public const int TimeToSpawn = 26;
+    public const int TrackId = 27;
+    public const int Transform = 28;
 
-    public const int TotalComponents = 24;
+    public const int TotalComponents = 29;
 
     public static readonly string[] componentNames = {
         "AddedBall",
         "BallColors",
+        "BallId",
+        "ChainId",
+        "ChainSpeed",
         "Color",
         "DeltaTime",
         "Destroyed",
         "DistanceBall",
         "FireAccess",
         "Force",
+        "InsertedProjectile",
         "LastBall",
         "LevelConfig",
+        "ParentChainId",
+        "ParentTrackId",
         "PathCreator",
         "Player",
         "Projectile",
@@ -54,25 +65,30 @@ public static class GameComponentsLookup {
         "RechargeDistance",
         "RemovedBall",
         "Shoot",
+        "SpawnAccess",
         "Sprite",
         "TimeToSpawn",
-        "Track",
         "TrackId",
-        "Transform",
-        "UpdateDistance"
+        "Transform"
     };
 
     public static readonly System.Type[] componentTypes = {
         typeof(AddedBallComponent),
         typeof(BallColorsComponent),
+        typeof(BallId),
+        typeof(ChainIdComponent),
+        typeof(ChainSpeedComponent),
         typeof(ColorComponent),
         typeof(DeltaTimeComponent),
         typeof(DestroyedComponent),
         typeof(DistanceBallComponent),
         typeof(FireAccessComponent),
         typeof(ForceComponent),
+        typeof(InsertedProjectileComponent),
         typeof(LastBallComponent),
         typeof(LevelConfigComponent),
+        typeof(ParentChainId),
+        typeof(ParentTrackIdComponent),
         typeof(PathCreatorComponent),
         typeof(PlayerComponent),
         typeof(ProjectileComponent),
@@ -81,11 +97,10 @@ public static class GameComponentsLookup {
         typeof(RechargeDistanceComponent),
         typeof(RemovedBallComponent),
         typeof(ShootComponent),
+        typeof(SpawnAccessComponent),
         typeof(SpriteComponent),
         typeof(TimeToSpawnComponent),
-        typeof(TrackComponent),
         typeof(TrackIdComponent),
-        typeof(TransformComponent),
-        typeof(UpdateDistanceComponent)
+        typeof(TransformComponent)
     };
 }

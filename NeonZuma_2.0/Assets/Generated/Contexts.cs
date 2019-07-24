@@ -58,10 +58,28 @@ public partial class Contexts : Entitas.IContexts {
 //------------------------------------------------------------------------------
 public partial class Contexts {
 
+    public const string ChainId = "ChainId";
+    public const string ParentChainId = "ParentChainId";
+    public const string ParentTrackId = "ParentTrackId";
     public const string TrackId = "TrackId";
 
     [Entitas.CodeGeneration.Attributes.PostConstructor]
     public void InitializeEntityIndices() {
+        game.AddEntityIndex(new Entitas.EntityIndex<GameEntity, int>(
+            ChainId,
+            game.GetGroup(GameMatcher.ChainId),
+            (e, c) => ((ChainIdComponent)c).value));
+
+        game.AddEntityIndex(new Entitas.EntityIndex<GameEntity, int>(
+            ParentChainId,
+            game.GetGroup(GameMatcher.ParentChainId),
+            (e, c) => ((ParentChainId)c).value));
+
+        game.AddEntityIndex(new Entitas.EntityIndex<GameEntity, int>(
+            ParentTrackId,
+            game.GetGroup(GameMatcher.ParentTrackId),
+            (e, c) => ((ParentTrackIdComponent)c).value));
+
         game.AddEntityIndex(new Entitas.EntityIndex<GameEntity, int>(
             TrackId,
             game.GetGroup(GameMatcher.TrackId),
@@ -70,6 +88,18 @@ public partial class Contexts {
 }
 
 public static class ContextsExtensions {
+
+    public static System.Collections.Generic.HashSet<GameEntity> GetEntitiesWithChainId(this GameContext context, int value) {
+        return ((Entitas.EntityIndex<GameEntity, int>)context.GetEntityIndex(Contexts.ChainId)).GetEntities(value);
+    }
+
+    public static System.Collections.Generic.HashSet<GameEntity> GetEntitiesWithParentChainId(this GameContext context, int value) {
+        return ((Entitas.EntityIndex<GameEntity, int>)context.GetEntityIndex(Contexts.ParentChainId)).GetEntities(value);
+    }
+
+    public static System.Collections.Generic.HashSet<GameEntity> GetEntitiesWithParentTrackId(this GameContext context, int value) {
+        return ((Entitas.EntityIndex<GameEntity, int>)context.GetEntityIndex(Contexts.ParentTrackId)).GetEntities(value);
+    }
 
     public static System.Collections.Generic.HashSet<GameEntity> GetEntitiesWithTrackId(this GameContext context, int value) {
         return ((Entitas.EntityIndex<GameEntity, int>)context.GetEntityIndex(Contexts.TrackId)).GetEntities(value);

@@ -16,7 +16,9 @@ public class DestroyGameEntityHandleSystem : ReactiveSystem<GameEntity>
             // Clean up for components
             if (entities[i].hasTransform)
             {
-                entities[i].transform.value.GetComponent<PoolingObject>()?.ReturnToPool();
+                GameObject obj = entities[i].transform.value.gameObject;
+                obj.Unlink();
+                obj.GetComponent<PoolingObject>()?.ReturnToPool();
             }
 
             entities[i].Destroy();

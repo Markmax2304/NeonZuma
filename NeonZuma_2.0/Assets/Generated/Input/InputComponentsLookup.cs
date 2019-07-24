@@ -8,19 +8,22 @@
 //------------------------------------------------------------------------------
 public static class InputComponentsLookup {
 
-    public const int Destroyed = 0;
-    public const int TouchPosition = 1;
-    public const int TouchType = 2;
+    public const int Collision = 0;
+    public const int Destroyed = 1;
+    public const int TouchPosition = 2;
+    public const int TouchType = 3;
 
-    public const int TotalComponents = 3;
+    public const int TotalComponents = 4;
 
     public static readonly string[] componentNames = {
+        "Collision",
         "Destroyed",
         "TouchPosition",
         "TouchType"
     };
 
     public static readonly System.Type[] componentTypes = {
+        typeof(CollisionComponent),
         typeof(DestroyedComponent),
         typeof(TouchPositionComponent),
         typeof(TouchTypeComponent)

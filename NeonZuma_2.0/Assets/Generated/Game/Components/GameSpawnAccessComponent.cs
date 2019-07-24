@@ -8,18 +8,18 @@
 //------------------------------------------------------------------------------
 public partial class GameEntity {
 
-    static readonly UpdateDistanceComponent updateDistanceComponent = new UpdateDistanceComponent();
+    static readonly SpawnAccessComponent spawnAccessComponent = new SpawnAccessComponent();
 
-    public bool isUpdateDistance {
-        get { return HasComponent(GameComponentsLookup.UpdateDistance); }
+    public bool isSpawnAccess {
+        get { return HasComponent(GameComponentsLookup.SpawnAccess); }
         set {
-            if (value != isUpdateDistance) {
-                var index = GameComponentsLookup.UpdateDistance;
+            if (value != isSpawnAccess) {
+                var index = GameComponentsLookup.SpawnAccess;
                 if (value) {
                     var componentPool = GetComponentPool(index);
                     var component = componentPool.Count > 0
                             ? componentPool.Pop()
-                            : updateDistanceComponent;
+                            : spawnAccessComponent;
 
                     AddComponent(index, component);
                 } else {
@@ -40,17 +40,17 @@ public partial class GameEntity {
 //------------------------------------------------------------------------------
 public sealed partial class GameMatcher {
 
-    static Entitas.IMatcher<GameEntity> _matcherUpdateDistance;
+    static Entitas.IMatcher<GameEntity> _matcherSpawnAccess;
 
-    public static Entitas.IMatcher<GameEntity> UpdateDistance {
+    public static Entitas.IMatcher<GameEntity> SpawnAccess {
         get {
-            if (_matcherUpdateDistance == null) {
-                var matcher = (Entitas.Matcher<GameEntity>)Entitas.Matcher<GameEntity>.AllOf(GameComponentsLookup.UpdateDistance);
+            if (_matcherSpawnAccess == null) {
+                var matcher = (Entitas.Matcher<GameEntity>)Entitas.Matcher<GameEntity>.AllOf(GameComponentsLookup.SpawnAccess);
                 matcher.componentNames = GameComponentsLookup.componentNames;
-                _matcherUpdateDistance = matcher;
+                _matcherSpawnAccess = matcher;
             }
 
-            return _matcherUpdateDistance;
+            return _matcherSpawnAccess;
         }
     }
 }

@@ -101,6 +101,9 @@ public class ShootPlayerSystem : ReactiveSystem<InputEntity>, IInitializeSystem
         projectile.AddSprite(ball.GetComponent<SpriteRenderer>());
         projectile.AddColor(Randomizer.GetSingleColor());
 
+        ball.tag = Constants.PROJECTILE_TAG;
+        ball.gameObject.Link(projectile, _contexts.game);
+
         float duration = _contexts.game.levelConfig.value.rechargeTime;
         // TODO: change duration less than recharge duration
         ball.DOScale(normalScale, duration);

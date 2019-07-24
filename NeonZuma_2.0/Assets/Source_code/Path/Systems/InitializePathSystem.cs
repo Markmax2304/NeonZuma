@@ -14,19 +14,25 @@ public class InitializePathSystem : IInitializeSystem
     public void Initialize()
     {
         var paths = _contexts.game.levelConfig.value.pathCreatorPrefabs;
-        for(int i = 0; i < paths.Length; i++) {
+
+        for(int i = 0; i < paths.Length; i++)
+        {
             GameObject path = GameObject.Instantiate(paths[i], Vector3.zero, Quaternion.identity);
 
-            GameEntity entity = _contexts.game.CreateEntity();
-            entity.AddPathCreator(path.GetComponent<PathCreator>());
+            GameEntity trackEntity = _contexts.game.CreateEntity();
+            trackEntity.AddPathCreator(path.GetComponent<PathCreator>());
 
-            ColorInfo[] colors = _contexts.game.levelConfig.value.colors;
             int minLength = _contexts.game.levelConfig.value.minLengthSeries;
             int maxLength = _contexts.game.levelConfig.value.maxLengthSeries;
-            entity.AddRandomizer(new Randomizer(minLength, maxLength));
-            entity.AddTrackId(i);
-            entity.isTrack = true;
-            entity.isTimeToSpawn = true;
+            trackEntity.AddRandomizer(new Randomizer(minLength, maxLength));
+            trackEntity.AddTrackId(i);
+            trackEntity.isSpawnAccess = true;
+            trackEntity.isTimeToSpawn = true;
+
+            var chainEntity = _contexts.game.CreateEntity();
+            chainEntity.AddChainId(Extensions.ChainId);
+            chainEntity.AddParentTrackId(i);
+            chainEntity.AddChainSpeed(_contexts.game.levelConfig.value.followSpeed);
         }
     }
 }
