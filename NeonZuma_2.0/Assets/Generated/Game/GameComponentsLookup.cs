@@ -14,31 +14,32 @@ public static class GameComponentsLookup {
     public const int ChainId = 3;
     public const int ChainSpeed = 4;
     public const int Color = 5;
-    public const int DeltaTime = 6;
-    public const int Destroyed = 7;
-    public const int DistanceBall = 8;
-    public const int FireAccess = 9;
-    public const int Force = 10;
-    public const int InsertedProjectile = 11;
-    public const int LastBall = 12;
-    public const int LevelConfig = 13;
-    public const int ParentChainId = 14;
-    public const int ParentTrackId = 15;
-    public const int PathCreator = 16;
-    public const int Player = 17;
-    public const int Projectile = 18;
-    public const int Randomizer = 19;
-    public const int Recharge = 20;
-    public const int RechargeDistance = 21;
-    public const int RemovedBall = 22;
-    public const int Shoot = 23;
-    public const int SpawnAccess = 24;
-    public const int Sprite = 25;
-    public const int TimeToSpawn = 26;
-    public const int TrackId = 27;
-    public const int Transform = 28;
+    public const int CreatingNewChain = 6;
+    public const int DeltaTime = 7;
+    public const int Destroyed = 8;
+    public const int DistanceBall = 9;
+    public const int FireAccess = 10;
+    public const int Force = 11;
+    public const int InsertedProjectile = 12;
+    public const int LastBall = 13;
+    public const int LevelConfig = 14;
+    public const int ParentChainId = 15;
+    public const int ParentTrackId = 16;
+    public const int PathCreator = 17;
+    public const int Player = 18;
+    public const int Projectile = 19;
+    public const int Randomizer = 20;
+    public const int Recharge = 21;
+    public const int RechargeDistance = 22;
+    public const int RemovedBall = 23;
+    public const int Shoot = 24;
+    public const int SpawnAccess = 25;
+    public const int Sprite = 26;
+    public const int TimeToSpawn = 27;
+    public const int TrackId = 28;
+    public const int Transform = 29;
 
-    public const int TotalComponents = 29;
+    public const int TotalComponents = 30;
 
     public static readonly string[] componentNames = {
         "AddedBall",
@@ -47,6 +48,7 @@ public static class GameComponentsLookup {
         "ChainId",
         "ChainSpeed",
         "Color",
+        "CreatingNewChain",
         "DeltaTime",
         "Destroyed",
         "DistanceBall",
@@ -79,6 +81,7 @@ public static class GameComponentsLookup {
         typeof(ChainIdComponent),
         typeof(ChainSpeedComponent),
         typeof(ColorComponent),
+        typeof(CreatingNewChainComponent),
         typeof(DeltaTimeComponent),
         typeof(DestroyedComponent),
         typeof(DistanceBallComponent),

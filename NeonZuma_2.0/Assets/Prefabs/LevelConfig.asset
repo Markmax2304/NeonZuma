@@ -27,6 +27,7 @@ MonoBehaviour:
   - type: 3
     color: {r: 0.9811321, g: 0.97623724, b: 0, a: 1}
   followSpeed: 0.5
+  insertDuration: 0.25
   offsetBetweenBalls: 0.36
   minLengthSeries: 1
   maxLengthSeries: 6

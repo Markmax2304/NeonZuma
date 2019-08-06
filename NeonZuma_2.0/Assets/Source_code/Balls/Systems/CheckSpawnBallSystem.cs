@@ -1,11 +1,13 @@
 ﻿using System.Linq;
-using UnityEngine;
+
 using Entitas;
 
 public class CheckSpawnBallSystem : IExecuteSystem
 {
     private Contexts _contexts;
     private float offsetBetweenBalls;
+    private int countToNewChain = 72;       // 2*0,36*100 // weakness by fps and chain speed
+    private int counter = 0;
 
     public CheckSpawnBallSystem(Contexts contexts)
     {
@@ -24,7 +26,18 @@ public class CheckSpawnBallSystem : IExecuteSystem
                 var chain = _contexts.game.GetEntitiesWithChainId(balls[i].parentChainId.value).First();
                 var track = _contexts.game.GetEntitiesWithTrackId(chain.parentTrackId.value).First();
 
-                track.isTimeToSpawn = true;
+                if (track.isCreatingNewChain)
+                    continue;
+
+                if (track.isTimeToSpawn && ++counter == countToNewChain)
+                {
+                    track.isCreatingNewChain = true;
+                    counter = 0;
+                }
+                else
+                {
+                    track.isTimeToSpawn = true;
+                }
             }
         }
     }

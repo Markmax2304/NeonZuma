@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+
 using UnityEngine;
 using Entitas;
-using PathCreation;
 
 public class SpawnBallSystem : ReactiveSystem<GameEntity>
 {
@@ -23,8 +23,7 @@ public class SpawnBallSystem : ReactiveSystem<GameEntity>
 
         for (int i = 0; i < entities.Count; i++)
         {
-            var lastChain = entities[i].GetChains(true).Last();
-
+            GameEntity lastChain = entities[i].GetChains(true).Last();
             float distance = 0;
 
             for (int j = 0; j < lastBalls.Length; j++)
@@ -36,22 +35,19 @@ public class SpawnBallSystem : ReactiveSystem<GameEntity>
                 }
             }
 
-            Transform ball = pool.RealeseObject().transform;
-            ColorBall colorType = entities[i].randomizer.value.GetRandomColorType();
+            if (entities[i].isCreatingNewChain)
+            {
+                distance = 0;
+                lastChain = _contexts.game.CreateEntity();
+                lastChain.AddChainId(Extensions.ChainId);
+                lastChain.AddParentTrackId(entities[i].trackId.value);
+                lastChain.AddChainSpeed(_contexts.game.levelConfig.value.followSpeed);
+            }
 
-            GameEntity entityBall = _contexts.game.CreateEntity();
-            entityBall.AddBallId(Extensions.BallId);
-            entityBall.AddDistanceBall(distance);
-            entityBall.AddTransform(ball);
-            entityBall.AddSprite(ball.GetComponent<SpriteRenderer>());
-            entityBall.AddColor(colorType);
-            entityBall.AddParentChainId(lastChain.chainId.value);
-            entityBall.isLastBall = true;
-
-            ball.tag = Constants.BALL_TAG;
-            ball.gameObject.Link(entityBall, _contexts.game);
+            CreateBall(entities[i], lastChain, distance);
 
             entities[i].isTimeToSpawn = false;
+            entities[i].isCreatingNewChain = false;
         }
     }
 
@@ -64,4 +60,24 @@ public class SpawnBallSystem : ReactiveSystem<GameEntity>
     {
         return context.CreateCollector(GameMatcher.AllOf(GameMatcher.TimeToSpawn, GameMatcher.SpawnAccess));
     }
+
+    #region Private Methods
+    private void CreateBall(GameEntity track, GameEntity chain, float distance)
+    {
+        Transform ball = pool.RealeseObject().transform;
+        ColorBall colorType = track.randomizer.value.GetRandomColorType();
+
+        GameEntity entityBall = _contexts.game.CreateEntity();
+        entityBall.AddBallId(Extensions.BallId);
+        entityBall.AddDistanceBall(distance);
+        entityBall.AddTransform(ball);
+        entityBall.AddSprite(ball.GetComponent<SpriteRenderer>());
+        entityBall.AddColor(colorType);
+        entityBall.AddParentChainId(chain.chainId.value);
+        entityBall.isLastBall = true;
+
+        ball.tag = Constants.BALL_TAG;
+        ball.gameObject.Link(entityBall, _contexts.game);
+    }
+    #endregion
 }

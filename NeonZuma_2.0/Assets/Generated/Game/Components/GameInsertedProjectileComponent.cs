@@ -11,19 +11,19 @@ public partial class GameEntity {
     public InsertedProjectileComponent insertedProjectile { get { return (InsertedProjectileComponent)GetComponent(GameComponentsLookup.InsertedProjectile); } }
     public bool hasInsertedProjectile { get { return HasComponent(GameComponentsLookup.InsertedProjectile); } }
 
-    public void AddInsertedProjectile(GameEntity newChain, GameEntity newFrontBallId) {
+    public void AddInsertedProjectile(GameEntity newChain, GameEntity newFrontBall) {
         var index = GameComponentsLookup.InsertedProjectile;
         var component = (InsertedProjectileComponent)CreateComponent(index, typeof(InsertedProjectileComponent));
         component.chain = newChain;
-        component.frontBall = newFrontBallId;
+        component.frontBall = newFrontBall;
         AddComponent(index, component);
     }
 
-    public void ReplaceInsertedProjectile(GameEntity newChain, GameEntity newFrontBallId) {
+    public void ReplaceInsertedProjectile(GameEntity newChain, GameEntity newFrontBall) {
         var index = GameComponentsLookup.InsertedProjectile;
         var component = (InsertedProjectileComponent)CreateComponent(index, typeof(InsertedProjectileComponent));
         component.chain = newChain;
-        component.frontBall = newFrontBallId;
+        component.frontBall = newFrontBall;
         ReplaceComponent(index, component);
     }
 
