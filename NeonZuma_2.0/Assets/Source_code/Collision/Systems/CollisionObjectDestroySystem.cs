@@ -17,7 +17,7 @@ public class CollisionObjectDestroySystem : ReactiveSystem<InputEntity>
         {
             var gameEntity = entity.collision.collider;
 
-            // if projectrile - destroy it
+            // if projectile - destroy it
             if (gameEntity.isProjectile)
             {
                 gameEntity.isDestroyed = true;

@@ -33,7 +33,6 @@ public class RotatePlayerSystem : ReactiveSystem<InputEntity>
             {
                 playerTransform.up = direction;
             }
-
         }
     }
 

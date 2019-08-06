@@ -4,21 +4,20 @@ public class BorderCollider : CollisionEmitter
 {
     public void OnTriggerExit2D(Collider2D collision)
     {
-        if (CompareWithTags(collision.gameObject))
+        if (CompareWithTags(collision.gameObject, out string tag))
         {
-            CreateCollisionInputEntity(CollisionType.OutBorder, gameObject, collision.gameObject);
+            if (string.Compare(tag, Constants.PROJECTILE_TAG) == 0 || string.Compare(tag, Constants.BALL_TAG) == 0)
+            {
+                CreateCollisionInputEntity(CollisionType.OutBorder, gameObject, collision.gameObject);
+            }
         }
     }
 
     public void OnTriggerEnter2D(Collider2D collision)
     {
-        if (CompareWithTags(collision.gameObject))
+        if (CompareWithTags(collision.gameObject, out string tag) && string.Compare(tag, Constants.BALL_TAG) == 0)
         {
-            var entityLink = collision.gameObject.GetEntityLink();
-            if (entityLink.entity.hasDistanceBall)
-            {
-                CreateCollisionInputEntity(CollisionType.InBorder, gameObject, collision.gameObject);
-            }
+            CreateCollisionInputEntity(CollisionType.InBorder, gameObject, collision.gameObject);
         }
     }
 }

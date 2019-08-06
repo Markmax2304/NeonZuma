@@ -10,6 +10,7 @@ public class LevelConfig : ScriptableObject
     [Header("Ball fields"), Space]
     public ColorInfo[] colors;
     public float followSpeed = .5f;
+    public float insertDuration = .25f;
 
     public float offsetBetweenBalls = .36f;
 

@@ -35,7 +35,10 @@ public class GameController : MonoBehaviour
             //Collision
             .Add(new EnteringBallsToScreenSystem(contexts))
             .Add(new ProjectileCollidingWithBallSystem(contexts))
-            .Add(new CollisionObjectDestroySystem(contexts))
+            .Add(new CollisionObjectDestroySystem(contexts))        //разобраться с этими коллизиями
+
+            //Inserting
+            .Add(new BallInsertedToChainSystem(contexts))
 
             //Spawn
             .Add(new CheckSpawnBallSystem(contexts))

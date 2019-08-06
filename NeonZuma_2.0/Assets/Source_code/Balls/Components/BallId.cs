@@ -1,7 +1,9 @@
 ﻿using Entitas;
+using Entitas.CodeGeneration.Attributes;
 
 [Game]
 public class BallId : IComponent
 {
-    public int value;
+    [EntityIndex]
+    public int value;               // TODO: excess?
 }

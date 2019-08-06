@@ -20,14 +20,14 @@ public class UpdateBallDistanceBySpeedSystem : IExecuteSystem
 
         foreach(var path in paths)
         {
-            if (!path.isSpawnAccess)
-                continue;
-
             var chains = path.GetChains();
 
             foreach(var chain in chains)
             {
                 float speed = chain.chainSpeed.value;
+                if (speed == 0)
+                    continue;
+
                 var balls = chain.GetChainedBalls();
                 int count = balls.Count;
 

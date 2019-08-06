@@ -41,14 +41,18 @@ public class CollisionEmitter : MonoBehaviour
             .AddCollision(type, handlerLink.entity, colliderLink.entity);
     }
 
-    protected bool CompareWithTags(GameObject go)
+    protected bool CompareWithTags(GameObject go, out string tag)
     {
         for(int i = 0; i < targetTags.Length; i++)
         {
             if (go.CompareTag(targetTags[i]))
+            {
+                tag = targetTags[i];
                 return true;
+            }
         }
 
+        tag = string.Empty;
         return false;
     }
 }

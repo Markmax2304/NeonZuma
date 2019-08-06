@@ -57,11 +57,11 @@ public class SpawnBallSystem : ReactiveSystem<GameEntity>
 
     protected override bool Filter(GameEntity entity)
     {
-        return entity.isTimeToSpawn && entity.hasPathCreator && entity.hasTrackId;
+        return entity.isTimeToSpawn && entity.hasPathCreator && entity.hasTrackId && entity.isSpawnAccess;
     }
 
     protected override ICollector<GameEntity> GetTrigger(IContext<GameEntity> context)
     {
-        return context.CreateCollector(GameMatcher.AllOf(GameMatcher.TrackId, GameMatcher.PathCreator, GameMatcher.TimeToSpawn));
+        return context.CreateCollector(GameMatcher.AllOf(GameMatcher.TimeToSpawn, GameMatcher.SpawnAccess));
     }
 }

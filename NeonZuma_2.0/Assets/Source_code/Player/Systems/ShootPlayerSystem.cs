@@ -105,8 +105,7 @@ public class ShootPlayerSystem : ReactiveSystem<InputEntity>, IInitializeSystem
         ball.gameObject.Link(projectile, _contexts.game);
 
         float duration = _contexts.game.levelConfig.value.rechargeTime;
-        // TODO: change duration less than recharge duration
-        ball.DOScale(normalScale, duration);
+        ball.DOScale(normalScale, duration * 0.9f);
     }
     #endregion
 }

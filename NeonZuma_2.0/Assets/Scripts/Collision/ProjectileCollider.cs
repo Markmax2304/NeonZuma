@@ -4,10 +4,9 @@ public class ProjectileCollider : CollisionEmitter
 {
     public void OnTriggerEnter2D(Collider2D collision)
     {
-        if (gameObject.CompareTag(Constants.PROJECTILE_TAG) && CompareWithTags(collision.gameObject))
+        if (gameObject.CompareTag(Constants.PROJECTILE_TAG) && CompareWithTags(collision.gameObject, out string tag))
         {
-            var entityLink = collision.gameObject.GetEntityLink();
-            if (entityLink.entity.hasDistanceBall)
+            if (string.Compare(tag, Constants.BALL_TAG) == 0)
             {
                 CreateCollisionInputEntity(CollisionType.Projectile, gameObject, collision.gameObject);
             }

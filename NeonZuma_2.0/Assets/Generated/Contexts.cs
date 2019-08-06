@@ -58,6 +58,7 @@ public partial class Contexts : Entitas.IContexts {
 //------------------------------------------------------------------------------
 public partial class Contexts {
 
+    public const string BallId = "BallId";
     public const string ChainId = "ChainId";
     public const string ParentChainId = "ParentChainId";
     public const string ParentTrackId = "ParentTrackId";
@@ -65,6 +66,11 @@ public partial class Contexts {
 
     [Entitas.CodeGeneration.Attributes.PostConstructor]
     public void InitializeEntityIndices() {
+        game.AddEntityIndex(new Entitas.EntityIndex<GameEntity, int>(
+            BallId,
+            game.GetGroup(GameMatcher.BallId),
+            (e, c) => ((BallId)c).value));
+
         game.AddEntityIndex(new Entitas.EntityIndex<GameEntity, int>(
             ChainId,
             game.GetGroup(GameMatcher.ChainId),
@@ -88,6 +94,10 @@ public partial class Contexts {
 }
 
 public static class ContextsExtensions {
+
+    public static System.Collections.Generic.HashSet<GameEntity> GetEntitiesWithBallId(this GameContext context, int value) {
+        return ((Entitas.EntityIndex<GameEntity, int>)context.GetEntityIndex(Contexts.BallId)).GetEntities(value);
+    }
 
     public static System.Collections.Generic.HashSet<GameEntity> GetEntitiesWithChainId(this GameContext context, int value) {
         return ((Entitas.EntityIndex<GameEntity, int>)context.GetEntityIndex(Contexts.ChainId)).GetEntities(value);

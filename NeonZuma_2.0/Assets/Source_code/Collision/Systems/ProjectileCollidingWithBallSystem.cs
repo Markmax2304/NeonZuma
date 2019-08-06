@@ -1,6 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using System.Collections.Generic;
+using System.Linq;
+
 using Entitas;
 
 public class ProjectileCollidingWithBallSystem : ReactiveSystem<InputEntity>
@@ -14,25 +14,24 @@ public class ProjectileCollidingWithBallSystem : ReactiveSystem<InputEntity>
 
     protected override void Execute(List<InputEntity> entities)
     {
-        foreach (var entity in entities)
+        foreach (var collideEntity in entities)
         {
-            var ball = entity.collision.collider;
-            var projectile = entity.collision.handler;
+            var ball = collideEntity.collision.collider;
+            var projectile = collideEntity.collision.handler;
 
-            var path = _contexts.game.GetEntitiesWithTrackId(ball.parentChainId.value).SingleEntity();
-            path.isSpawnAccess = false;
-            int ballId;
-            if (CalculateFrontBallForProjectile(projectile, ball, out ballId))
-            {
-                projectile.AddInsertedProjectile(ball.parentChainId.value, ballId);
-                projectile.ReplaceForce(Vector2.zero); // just test
-            }
-            else
-            {
-                projectile.AddInsertedProjectile(ball.parentChainId.value, null);
-            }
+            // some crutch to stop double adding component
+            if (projectile.hasInsertedProjectile)
+                continue;
 
-            entity.isDestroyed = true;
+            var chain = _contexts.game.GetEntitiesWithChainId(ball.parentChainId.value).SingleEntity();
+
+            GameEntity frontBall;
+            // ballId - projectile must be inserted behind this ball, 
+            // if projectile must be inserted at first position, ballId is null
+            CalculateFrontBallForProjectile(projectile, ball, out frontBall);
+            projectile.AddInsertedProjectile(chain, frontBall);
+
+            collideEntity.isDestroyed = true;
         }
     }
 
@@ -47,36 +46,38 @@ public class ProjectileCollidingWithBallSystem : ReactiveSystem<InputEntity>
     }
 
     #region Private Methods
-    private bool CalculateFrontBallForProjectile(GameEntity projectile, GameEntity collideBall, out int ballId)
+    private void CalculateFrontBallForProjectile(GameEntity projectile, GameEntity collideBall, out GameEntity frontBall)
     {
-        Transform collideTrans = collideBall.transform.value;
-        Transform projectileTrans = projectile.transform.value;
+        frontBall = null;
 
         var chain = _contexts.game.GetEntitiesWithChainId(collideBall.parentChainId.value).SingleEntity();
+        var track = _contexts.game.GetEntitiesWithTrackId(chain.parentTrackId.value).SingleEntity();
+        var pathCreator = track.pathCreator.value;
+
+        float dist = pathCreator.path.GetClosestDistanceAlongPath(projectile.transform.value.position);
         var chainBalls = chain.GetChainedBalls(true);
 
-        ballId = 0;
-        return true;
-    }
+        // MAYBE TODO: sort chain is shown better perfomance, but less easy to use
+        //chainBalls.Sort((b1, b2) => GetDistance(projectile, b1).CompareTo(GetDistance(projectile, b2)));
 
-    private GameEntity GetNearestBall(GameEntity entity, bool front)
-    {
-        var trackBalls = _contexts.game.GetEntitiesWithParentTrackId(entity.parentTrackId.value);
-        trackBalls.Remove(entity);
-        GameEntity nearBall = trackBalls.SingleEntity();
+        if(chainBalls[0].distanceBall.value < dist)
+            return;
 
-        foreach(var ball in trackBalls)
+        for(int i = 1; i < chainBalls.Count; i++)
         {
-            /*float currentDist = (nearBall.transform.value.position - ball.transform.value.position).sqrMagnitude;
-            float dist = (entity.transform.value.position - ball.transform.value.position).sqrMagnitude;
-            if(currentDist > dist)
+            if(chainBalls[i - 1].distanceBall.value > dist && chainBalls[i].distanceBall.value < dist)
             {
-
-                nearBall = ball;
-            }*/
+                frontBall = chainBalls[i - 1];
+                return;
+            }
         }
 
-        return null;
+        frontBall = chainBalls.Last();
     }
+
+    //private float GetDistance(GameEntity ball1, GameEntity ball2)
+    //{
+    //    return Vector3.Distance(ball1.transform.value.position, ball2.transform.value.position);
+    //}
     #endregion
 }

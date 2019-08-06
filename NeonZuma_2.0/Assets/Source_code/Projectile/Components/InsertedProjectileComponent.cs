@@ -6,6 +6,6 @@ using Entitas;
 [Game]
 public class InsertedProjectileComponent : IComponent
 {
-    public int trackId;
-    public int? frontBallId;
+    public GameEntity chain;
+    public GameEntity frontBall;
 }

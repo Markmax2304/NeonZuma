@@ -40,7 +40,8 @@ public class ChangeBallPositionOnPathSystem : ReactiveSystem<GameEntity>, ITearD
             entities[i].transform.value.position = position;
 
             // Rotate
-            // increase CPU perfomance by 150 %     // try to optimize
+            // increase CPU perfomance by 150 %     
+            // TODO: try to optimize
             Vector3 direction = pathCreator.path.GetDirectionAtDistance(distance, EndOfPathInstruction.Stop);
             Quaternion rotation = Quaternion.FromToRotation(Vector3.down, direction);
             entities[i].transform.value.rotation = rotation;
