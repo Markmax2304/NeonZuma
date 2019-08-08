@@ -15,31 +15,34 @@ public static class GameComponentsLookup {
     public const int ChainSpeed = 4;
     public const int Color = 5;
     public const int CreatingNewChain = 6;
-    public const int DeltaTime = 7;
-    public const int Destroyed = 8;
-    public const int DistanceBall = 9;
-    public const int FireAccess = 10;
-    public const int Force = 11;
-    public const int InsertedProjectile = 12;
-    public const int LastBall = 13;
-    public const int LevelConfig = 14;
-    public const int ParentChainId = 15;
-    public const int ParentTrackId = 16;
-    public const int PathCreator = 17;
-    public const int Player = 18;
-    public const int Projectile = 19;
-    public const int Randomizer = 20;
-    public const int Recharge = 21;
-    public const int RechargeDistance = 22;
-    public const int RemovedBall = 23;
-    public const int Shoot = 24;
-    public const int SpawnAccess = 25;
-    public const int Sprite = 26;
-    public const int TimeToSpawn = 27;
-    public const int TrackId = 28;
-    public const int Transform = 29;
+    public const int Cut = 7;
+    public const int DeltaTime = 8;
+    public const int Destroyed = 9;
+    public const int DistanceBall = 10;
+    public const int FireAccess = 11;
+    public const int Force = 12;
+    public const int GroupDestroy = 13;
+    public const int InsertedBall = 14;
+    public const int InsertedProjectile = 15;
+    public const int LastBall = 16;
+    public const int LevelConfig = 17;
+    public const int ParentChainId = 18;
+    public const int ParentTrackId = 19;
+    public const int PathCreator = 20;
+    public const int Player = 21;
+    public const int Projectile = 22;
+    public const int Randomizer = 23;
+    public const int Recharge = 24;
+    public const int RechargeDistance = 25;
+    public const int RemovedBall = 26;
+    public const int Shoot = 27;
+    public const int SpawnAccess = 28;
+    public const int Sprite = 29;
+    public const int TimeToSpawn = 30;
+    public const int TrackId = 31;
+    public const int Transform = 32;
 
-    public const int TotalComponents = 30;
+    public const int TotalComponents = 33;
 
     public static readonly string[] componentNames = {
         "AddedBall",
@@ -49,11 +52,14 @@ public static class GameComponentsLookup {
         "ChainSpeed",
         "Color",
         "CreatingNewChain",
+        "Cut",
         "DeltaTime",
         "Destroyed",
         "DistanceBall",
         "FireAccess",
         "Force",
+        "GroupDestroy",
+        "InsertedBall",
         "InsertedProjectile",
         "LastBall",
         "LevelConfig",
@@ -82,11 +88,14 @@ public static class GameComponentsLookup {
         typeof(ChainSpeedComponent),
         typeof(ColorComponent),
         typeof(CreatingNewChainComponent),
+        typeof(CutComponent),
         typeof(DeltaTimeComponent),
         typeof(DestroyedComponent),
         typeof(DistanceBallComponent),
         typeof(FireAccessComponent),
         typeof(ForceComponent),
+        typeof(GroupDestroyComponent),
+        typeof(InsertedBallComponent),
         typeof(InsertedProjectileComponent),
         typeof(LastBallComponent),
         typeof(LevelConfigComponent),

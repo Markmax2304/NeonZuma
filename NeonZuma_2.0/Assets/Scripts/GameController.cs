@@ -23,6 +23,12 @@ public class GameController : MonoBehaviour
     void Update()
     {
         _systems.Execute();
+        _systems.Cleanup();
+    }
+
+    private void OnDestroy()
+    {
+        _systems.TearDown();
     }
 
     Systems CreateSystems(Contexts contexts)
@@ -39,6 +45,11 @@ public class GameController : MonoBehaviour
 
             //Inserting
             .Add(new BallInsertedToChainSystem(contexts))
+            .Add(new MatchInsertedBallInChainSystem(contexts))
+
+            // Cutting chain
+            .Add(new VisualDestroyingBallsSystem(contexts))
+            .Add(new CutChainSystem(contexts))
 
             //Spawn
             .Add(new CheckSpawnBallSystem(contexts))

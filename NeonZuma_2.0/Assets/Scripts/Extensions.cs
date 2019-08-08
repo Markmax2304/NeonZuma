@@ -6,6 +6,7 @@ public static class Extensions
     // TODO: move this Ids to separeted class or something
     private static int nextChainId = 0;
     private static int nextBallId = 0;
+    private static int nextGroupId = 0;
 
     public static int ChainId
     {
@@ -15,6 +16,11 @@ public static class Extensions
     public static int BallId
     {
         get { return nextBallId++; }
+    }
+
+    public static int DestroyGroupId
+    {
+        get { return nextGroupId++; }
     }
 
     #region Extension Methods

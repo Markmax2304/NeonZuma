@@ -29,10 +29,9 @@ public class BallInsertedToChainSystem : ReactiveSystem<GameEntity>
             float chainSpeed = chain.chainSpeed.value;
             chain.ReplaceChainSpeed(0f);
 
-            bool postChainAction()
+            void postChainAction()
             {
                 chain.ReplaceChainSpeed(chainSpeed);
-                return true;
             }
 
             // first ball
@@ -80,7 +79,7 @@ public class BallInsertedToChainSystem : ReactiveSystem<GameEntity>
         return context.CreateCollector(GameMatcher.InsertedProjectile);
     }
 
-    private void ConvertProjectileToBall(GameEntity entity, int chainId, float distanceBall, PathCreator pathCreator, Func<bool> postChainAction)
+    private void ConvertProjectileToBall(GameEntity entity, int chainId, float distanceBall, PathCreator pathCreator, Action postChainAction)
     {
         entity.isProjectile = false;
         entity.RemoveForce();
@@ -93,6 +92,7 @@ public class BallInsertedToChainSystem : ReactiveSystem<GameEntity>
             entity.AddDistanceBall(distanceBall);
             entity.AddBallId(Extensions.BallId);
             entity.AddParentChainId(chainId);
+            entity.isInsertedBall = true;
             postChainAction();
         };
     }

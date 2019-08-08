@@ -9,12 +9,14 @@ public class SpawnBallSystem : ReactiveSystem<GameEntity>
     private Contexts _contexts;
     private PoolObjectKeeper pool;
     private float offsetBetweenBalls;
+    private Vector3 normalScale;
 
     public SpawnBallSystem(Contexts contexts) : base(contexts.game)
     {
         _contexts = contexts;
         pool = PoolManager.instance.GetObjectPoolKeeper(TypeObjectPool.Ball);
         offsetBetweenBalls = _contexts.game.levelConfig.value.offsetBetweenBalls;
+        normalScale = _contexts.game.levelConfig.value.normalScale;
     }
 
     protected override void Execute(List<GameEntity> entities)
@@ -64,7 +66,8 @@ public class SpawnBallSystem : ReactiveSystem<GameEntity>
     #region Private Methods
     private void CreateBall(GameEntity track, GameEntity chain, float distance)
     {
-        Transform ball = pool.RealeseObject().transform;
+        // TODO: if will error - replace zero to some more useful
+        Transform ball = pool.RealeseObject(Vector3.zero, Quaternion.identity, normalScale).transform;
         ColorBall colorType = track.randomizer.value.GetRandomColorType();
 
         GameEntity entityBall = _contexts.game.CreateEntity();

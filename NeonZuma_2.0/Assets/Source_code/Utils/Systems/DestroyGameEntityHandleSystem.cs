@@ -14,9 +14,11 @@ public class DestroyGameEntityHandleSystem : ReactiveSystem<GameEntity>
         for(int i = 0; i < entities.Count; i++)
         {
             // Clean up for components
+
             if (entities[i].hasTransform)
             {
                 GameObject obj = entities[i].transform.value.gameObject;
+                obj.tag = Constants.UNTAGGED_TAG;
                 obj.Unlink();
                 obj.GetComponent<PoolingObject>()?.ReturnToPool();
             }
