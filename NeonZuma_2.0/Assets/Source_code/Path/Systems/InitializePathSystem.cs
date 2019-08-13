@@ -28,11 +28,6 @@ public class InitializePathSystem : IInitializeSystem
             trackEntity.AddTrackId(i);
             trackEntity.isSpawnAccess = true;
             trackEntity.isTimeToSpawn = true;
-
-            var chainEntity = _contexts.game.CreateEntity();
-            chainEntity.AddChainId(Extensions.ChainId);
-            chainEntity.AddParentTrackId(i);
-            chainEntity.AddChainSpeed(_contexts.game.levelConfig.value.followSpeed);
         }
     }
 }

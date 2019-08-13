@@ -9,21 +9,19 @@ public class DestroyGameEntityHandleSystem : ReactiveSystem<GameEntity>
     {
     }
 
+    // a little excessive system, maybe should remove it
     protected override void Execute(List<GameEntity> entities)
     {
-        for(int i = 0; i < entities.Count; i++)
+        for (int i = 0; i < entities.Count; i++)
         {
-            // Clean up for components
-
-            if (entities[i].hasTransform)
+            if (entities[i].hasDistanceBall)
             {
-                GameObject obj = entities[i].transform.value.gameObject;
-                obj.tag = Constants.UNTAGGED_TAG;
-                obj.Unlink();
-                obj.GetComponent<PoolingObject>()?.ReturnToPool();
+                entities[i].DestroyBall();
             }
-
-            entities[i].Destroy();
+            else
+            {
+                entities[i].Destroy();
+            }
         }
     }
 

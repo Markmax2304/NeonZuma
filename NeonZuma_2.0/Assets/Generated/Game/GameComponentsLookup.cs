@@ -24,17 +24,17 @@ public static class GameComponentsLookup {
     public const int GroupDestroy = 13;
     public const int InsertedBall = 14;
     public const int InsertedProjectile = 15;
-    public const int LastBall = 16;
-    public const int LevelConfig = 17;
-    public const int ParentChainId = 18;
-    public const int ParentTrackId = 19;
-    public const int PathCreator = 20;
-    public const int Player = 21;
-    public const int Projectile = 22;
-    public const int Randomizer = 23;
-    public const int Recharge = 24;
-    public const int RechargeDistance = 25;
-    public const int RemovedBall = 26;
+    public const int LevelConfig = 16;
+    public const int ParentChainId = 17;
+    public const int ParentTrackId = 18;
+    public const int PathCreator = 19;
+    public const int Player = 20;
+    public const int Projectile = 21;
+    public const int Randomizer = 22;
+    public const int Recharge = 23;
+    public const int RechargeDistance = 24;
+    public const int RemovedBall = 25;
+    public const int ResetChainEdges = 26;
     public const int Shoot = 27;
     public const int SpawnAccess = 28;
     public const int Sprite = 29;
@@ -61,7 +61,6 @@ public static class GameComponentsLookup {
         "GroupDestroy",
         "InsertedBall",
         "InsertedProjectile",
-        "LastBall",
         "LevelConfig",
         "ParentChainId",
         "ParentTrackId",
@@ -72,6 +71,7 @@ public static class GameComponentsLookup {
         "Recharge",
         "RechargeDistance",
         "RemovedBall",
+        "ResetChainEdges",
         "Shoot",
         "SpawnAccess",
         "Sprite",
@@ -97,7 +97,6 @@ public static class GameComponentsLookup {
         typeof(GroupDestroyComponent),
         typeof(InsertedBallComponent),
         typeof(InsertedProjectileComponent),
-        typeof(LastBallComponent),
         typeof(LevelConfigComponent),
         typeof(ParentChainId),
         typeof(ParentTrackIdComponent),
@@ -108,6 +107,7 @@ public static class GameComponentsLookup {
         typeof(RechargeComponent),
         typeof(RechargeDistanceComponent),
         typeof(RemovedBallComponent),
+        typeof(ResetChainEdges),
         typeof(ShootComponent),
         typeof(SpawnAccessComponent),
         typeof(SpriteComponent),

@@ -14,7 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pathCreatorPrefabs:
   - {fileID: 4124922719851949013, guid: 504b4be4d06d09d4b82aafb8187b0779, type: 3}
-  - {fileID: 9181893933421612166, guid: fec8e99d04b80e74a9e348b858815bd3, type: 3}
   playerPrefab: {fileID: 2866933259869512605, guid: 27e23631b0c349a4b9c8bdf478544676,
     type: 3}
   colors:
@@ -28,7 +27,10 @@ MonoBehaviour:
     color: {r: 0.9811321, g: 0.97623724, b: 0, a: 1}
   followSpeed: 0.5
   insertDuration: 0.25
+  destroyAnimationDuration: 0.25
   offsetBetweenBalls: 0.36
+  minScaleSize: 0.05
+  normalScale: {x: 0.4, y: 0.4, z: 0.4}
   minLengthSeries: 1
   maxLengthSeries: 6
   rotateSpeed: 20

@@ -8,18 +8,18 @@
 //------------------------------------------------------------------------------
 public partial class GameEntity {
 
-    static readonly LastBallComponent lastBallComponent = new LastBallComponent();
+    static readonly ResetChainEdges resetChainEdgesComponent = new ResetChainEdges();
 
-    public bool isLastBall {
-        get { return HasComponent(GameComponentsLookup.LastBall); }
+    public bool isResetChainEdges {
+        get { return HasComponent(GameComponentsLookup.ResetChainEdges); }
         set {
-            if (value != isLastBall) {
-                var index = GameComponentsLookup.LastBall;
+            if (value != isResetChainEdges) {
+                var index = GameComponentsLookup.ResetChainEdges;
                 if (value) {
                     var componentPool = GetComponentPool(index);
                     var component = componentPool.Count > 0
                             ? componentPool.Pop()
-                            : lastBallComponent;
+                            : resetChainEdgesComponent;
 
                     AddComponent(index, component);
                 } else {
@@ -40,17 +40,17 @@ public partial class GameEntity {
 //------------------------------------------------------------------------------
 public sealed partial class GameMatcher {
 
-    static Entitas.IMatcher<GameEntity> _matcherLastBall;
+    static Entitas.IMatcher<GameEntity> _matcherResetChainEdges;
 
-    public static Entitas.IMatcher<GameEntity> LastBall {
+    public static Entitas.IMatcher<GameEntity> ResetChainEdges {
         get {
-            if (_matcherLastBall == null) {
-                var matcher = (Entitas.Matcher<GameEntity>)Entitas.Matcher<GameEntity>.AllOf(GameComponentsLookup.LastBall);
+            if (_matcherResetChainEdges == null) {
+                var matcher = (Entitas.Matcher<GameEntity>)Entitas.Matcher<GameEntity>.AllOf(GameComponentsLookup.ResetChainEdges);
                 matcher.componentNames = GameComponentsLookup.componentNames;
-                _matcherLastBall = matcher;
+                _matcherResetChainEdges = matcher;
             }
 
-            return _matcherLastBall;
+            return _matcherResetChainEdges;
         }
     }
 }

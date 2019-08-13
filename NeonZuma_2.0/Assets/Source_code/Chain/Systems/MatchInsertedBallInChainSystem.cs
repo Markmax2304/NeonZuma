@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 
 using UnityEngine;
@@ -18,13 +19,24 @@ public class MatchInsertedBallInChainSystem : ReactiveSystem<GameEntity>
         foreach(var insertedBall in entities)
         {
             insertedBall.isInsertedBall = false;
-            var chain = _contexts.game.GetEntitiesWithChainId(insertedBall.parentChainId.value).SingleEntity();
+            var chain = _contexts.game.GetEntitiesWithChainId(insertedBall.parentChainId.value).FirstOrDefault();
+            if(chain == null)
+            {
+                Debug.Log("Failed to match inserted ball. Chain is null");
+                continue;
+            }
+
             var balls = chain.GetChainedBalls(true);
+            if(balls == null)
+            {
+                Debug.Log("Failed to match inserted ball. Balls is null");
+                continue;
+            }
 
             int insertedBallIndex;
             if(!GetBallIndex(balls, insertedBall, out insertedBallIndex))
             {
-                Debug.LogError("Inserted ball isn't found in ball chain");
+                Debug.LogError("Failed to match inserted ball. Inserted ball isn't found in ball chain");
                 continue;
             }
 

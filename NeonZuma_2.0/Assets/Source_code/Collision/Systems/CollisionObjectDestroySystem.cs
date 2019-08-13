@@ -13,14 +13,20 @@ public class CollisionObjectDestroySystem : ReactiveSystem<InputEntity>
 
     protected override void Execute(List<InputEntity> entities)
     {
-        foreach(var entity in entities)
+        foreach(var coll in entities)
         {
-            var gameEntity = entity.collision.collider;
+            if (coll.collision.handler == null || coll.collision.collider == null)
+            {
+                Debug.Log("Failed to proccess with moving out screen. Collision's entities is null");
+                continue;
+            }
+
+            var gameEntity = coll.collision.collider;
 
             // if projectile - destroy it
             if (gameEntity.isProjectile)
             {
-                gameEntity.isDestroyed = true;
+                gameEntity.DestroyBall();
             }
             // if chain ball - decrement it in color records
             else if (gameEntity.hasDistanceBall)
@@ -28,7 +34,7 @@ public class CollisionObjectDestroySystem : ReactiveSystem<InputEntity>
                 gameEntity.isRemovedBall = true;
             }
 
-            entity.isDestroyed = true;
+            coll.isDestroyed = true;
         }
     }
 

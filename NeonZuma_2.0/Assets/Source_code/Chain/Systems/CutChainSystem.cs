@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
-using UnityEngine;
 using Entitas;
+using UnityEngine;
 
 public class CutChainSystem : ReactiveSystem<GameEntity>
 {
@@ -18,28 +19,40 @@ public class CutChainSystem : ReactiveSystem<GameEntity>
     {
         foreach(var chain in entities)
         {
-            var chainBalls = chain.GetChainedBalls(true);
+            var balls = chain.GetChainedBalls(true);
+            if(balls == null)
+            {
+                Debug.Log("Failed to cut chain. Chain balls is null");
+                continue;
+            }
+
             int firstIndex = 0;
 
-            for(int i = 1; i < chainBalls.Count; i++)
+            for(int i = 1; i < balls.Count; i++)
             {
-                // place to continue
-                // шары ещё не удалены, поэтому разрыва либо не будет, либо он будет в непредсказуемом месте
-                if(chainBalls[i-1].distanceBall.value - chainBalls[i].distanceBall.value > minOffsetBetweenBalls)
+                if(balls[i-1].distanceBall.value - balls[i].distanceBall.value > minOffsetBetweenBalls * 1.1f)
                 {
-                    var newChain = _contexts.game.CreateEntity();
-                    newChain.AddChainId(Extensions.ChainId);
-                    newChain.AddParentTrackId(chain.parentTrackId.value);
-                    newChain.AddChainSpeed(0f);
+                    var newChain = CreateEmptyChain(chain.parentTrackId.value);
 
                     for(int x = firstIndex; x < i; x++)
                     {
-                        chainBalls[x].ReplaceParentChainId(newChain.chainId.value);
+                        balls[x].ReplaceParentChainId(newChain.chainId.value);
                     }
 
                     firstIndex = i;
                 }
             }
+
+            chain.isCut = false;
+
+            var track = _contexts.game.GetEntitiesWithTrackId(chain.parentTrackId.value).FirstOrDefault();
+            if(track == null)
+            {
+                Debug.Log("Failed to cut chain. Track is null");
+                continue;
+            }
+
+            track.isResetChainEdges = true;
         }
     }
 
@@ -52,4 +65,15 @@ public class CutChainSystem : ReactiveSystem<GameEntity>
     {
         return context.CreateCollector(GameMatcher.Cut);
     }
+
+    #region Private Methods
+    private GameEntity CreateEmptyChain(int trackId)
+    {
+        var newChain = _contexts.game.CreateEntity();
+        newChain.AddChainId(Extensions.ChainId);
+        newChain.AddParentTrackId(trackId);
+        newChain.AddChainSpeed(0f);
+        return newChain;
+    }
+    #endregion
 }

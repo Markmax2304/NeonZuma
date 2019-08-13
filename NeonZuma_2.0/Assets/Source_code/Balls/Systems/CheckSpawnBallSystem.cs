@@ -17,27 +17,35 @@ public class CheckSpawnBallSystem : IExecuteSystem
 
     public void Execute()
     {
-        GameEntity[] balls = _contexts.game.GetEntities(GameMatcher.LastBall);
+        var tracks = _contexts.game.GetEntities(GameMatcher.TrackId);
 
-        for (int i = 0; i < balls.Length; i++)
+        for(int i = 0; i < tracks.Length; i++)
         {
-            if (balls[i].distanceBall.value >= offsetBetweenBalls)
+            var lastChain = tracks[i].GetChains(true)?.LastOrDefault();
+            var lastBall = lastChain?.GetChainedBalls(true)?.LastOrDefault();
+
+            if (lastBall != null)
             {
-                var chain = _contexts.game.GetEntitiesWithChainId(balls[i].parentChainId.value).First();
-                var track = _contexts.game.GetEntitiesWithTrackId(chain.parentTrackId.value).First();
-
-                if (track.isCreatingNewChain)
-                    continue;
-
-                if (track.isTimeToSpawn && ++counter == countToNewChain)
+                if (lastBall.distanceBall.value >= offsetBetweenBalls)
                 {
-                    track.isCreatingNewChain = true;
-                    counter = 0;
+                    if (tracks[i].isCreatingNewChain)
+                        continue;
+
+                    if (tracks[i].isTimeToSpawn && ++counter == countToNewChain)
+                    {
+                        tracks[i].isCreatingNewChain = true;
+                        counter = 0;
+                    }
+                    else
+                    {
+                        tracks[i].isTimeToSpawn = true;
+                    }
                 }
-                else
-                {
-                    track.isTimeToSpawn = true;
-                }
+            }
+            else
+            {
+                tracks[i].isTimeToSpawn = true;
+                tracks[i].isCreatingNewChain = true;
             }
         }
     }

@@ -21,35 +21,31 @@ public class SpawnBallSystem : ReactiveSystem<GameEntity>
 
     protected override void Execute(List<GameEntity> entities)
     {
-        GameEntity[] lastBalls = _contexts.game.GetEntities(GameMatcher.LastBall);
-
-        for (int i = 0; i < entities.Count; i++)
+        foreach(var track in entities)
         {
-            GameEntity lastChain = entities[i].GetChains(true).Last();
             float distance = 0;
+            var lastChain = track.GetChains(true)?.LastOrDefault();
+            var lastBall = lastChain?.GetChainedBalls(true)?.LastOrDefault();
 
-            for (int j = 0; j < lastBalls.Length; j++)
+            if(lastBall != null)
             {
-                if (lastBalls[j].parentChainId.value == lastChain.chainId.value)
-                {
-                    distance = lastBalls[j].distanceBall.value - offsetBetweenBalls;
-                    lastBalls[j].isLastBall = false;
-                }
+                distance = lastBall.distanceBall.value - offsetBetweenBalls;
             }
 
-            if (entities[i].isCreatingNewChain)
+            if (track.isCreatingNewChain)
             {
                 distance = 0;
                 lastChain = _contexts.game.CreateEntity();
                 lastChain.AddChainId(Extensions.ChainId);
-                lastChain.AddParentTrackId(entities[i].trackId.value);
+                lastChain.AddParentTrackId(track.trackId.value);
                 lastChain.AddChainSpeed(_contexts.game.levelConfig.value.followSpeed);
             }
 
-            CreateBall(entities[i], lastChain, distance);
+            CreateBall(track, lastChain, distance);
 
-            entities[i].isTimeToSpawn = false;
-            entities[i].isCreatingNewChain = false;
+            track.isTimeToSpawn = false;
+            track.isCreatingNewChain = false;
+            track.isResetChainEdges = true;
         }
     }
 
@@ -77,7 +73,6 @@ public class SpawnBallSystem : ReactiveSystem<GameEntity>
         entityBall.AddSprite(ball.GetComponent<SpriteRenderer>());
         entityBall.AddColor(colorType);
         entityBall.AddParentChainId(chain.chainId.value);
-        entityBall.isLastBall = true;
 
         ball.tag = Constants.BALL_TAG;
         ball.gameObject.Link(entityBall, _contexts.game);

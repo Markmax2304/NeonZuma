@@ -22,7 +22,7 @@ public class VisualDestroyingBallsSystem : ReactiveSystem<GameEntity>, ICleanupS
 
     protected override void Execute(List<GameEntity> entities)
     {
-        for(int i = 0; i < entities.Count; i++)
+        for(int i = 0; i < entities.Count; i++) 
         {
             int destroyId = entities[i].groupDestroy.value;
             if (!destroyGroups.ContainsKey(destroyId))
@@ -32,28 +32,39 @@ public class VisualDestroyingBallsSystem : ReactiveSystem<GameEntity>, ICleanupS
             destroyGroups[destroyId].Add(entities[i]);
         }
 
-        foreach(var balls in destroyGroups.Values)
+        foreach (var balls in destroyGroups.Values)
         {
-            var chain = _contexts.game.GetEntitiesWithChainId(balls.First().parentChainId.value).SingleEntity();
+            var chain = _contexts.game.GetEntitiesWithChainId(balls.First().parentChainId.value).FirstOrDefault();
+            if(chain == null)
+            {
+                Debug.Log("Failed to destroying grouped balls. Chain is null");
+                continue;
+            }
+
             float oldChainSpeed = chain.chainSpeed.value;
             chain.ReplaceChainSpeed(0f);
 
-            for(int i = 0; i < balls.Count - 1; i++)
+            for (int i = 0; i < balls.Count; i++)
             {
                 var ball = balls[i];
-                ball.transform.value.DOScale(minScale, destroyDuration).onComplete += delegate ()
-                {
-                    ball.isDestroyed = true;
-                };
+                ball.ReplaceParentChainId(-1);
+                ball.transform.value.tag = Constants.UNTAGGED_TAG;
+                ball.DestroyBall();
+                //ball.transform.value.DOScale(minScale, destroyDuration).onComplete += delegate ()
+                //{
+                //    ball.isDestroyed = true;
+                //};
             }
 
-            var lastBall = balls.Last();
-            lastBall.transform.value.DOScale(minScale, destroyDuration).onComplete += delegate ()
+            if (chain.GetChainedBalls() == null)
             {
-                lastBall.isDestroyed = true;
+                chain.Destroy();
+            }
+            else
+            {
                 chain.isCut = true;
                 chain.ReplaceChainSpeed(oldChainSpeed);
-            };
+            }
         }
     }
 

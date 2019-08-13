@@ -166,3 +166,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetTags:
   - Ball
+  - FrontEdge
+  - BackEdge

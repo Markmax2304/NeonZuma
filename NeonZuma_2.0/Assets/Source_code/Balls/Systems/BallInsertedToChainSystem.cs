@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 using UnityEngine;
 using Entitas;
 using PathCreation;
 using DG.Tweening;
-using System;
 
 public class BallInsertedToChainSystem : ReactiveSystem<GameEntity>
 {
@@ -22,12 +22,31 @@ public class BallInsertedToChainSystem : ReactiveSystem<GameEntity>
     {
         foreach(var projectileEntity in entities)
         {
+            if(projectileEntity.insertedProjectile.chain == null)
+            {
+                Debug.Log("Failed to inserting ball in chain. Inserting info is invalid. Chain is null");
+                continue;
+            }
+
             var chain = projectileEntity.insertedProjectile.chain;
-            var track = _contexts.game.GetEntitiesWithTrackId(chain.parentTrackId.value).SingleEntity();
+            var track = _contexts.game.GetEntitiesWithTrackId(chain.parentTrackId.value).FirstOrDefault();
+            if(track == null)
+            {
+                Debug.Log("Failed to inserting ball in chain. Couldn't get track entity");
+                continue;
+            }
+
             var balls = chain.GetChainedBalls(true);
+            if (balls == null)
+            {
+                Debug.Log("Failed to inserting ball in chain. chain balls is null");
+                continue;
+            }
 
             float chainSpeed = chain.chainSpeed.value;
             chain.ReplaceChainSpeed(0f);
+
+            track.isResetChainEdges = true;
 
             void postChainAction()
             {
@@ -86,23 +105,29 @@ public class BallInsertedToChainSystem : ReactiveSystem<GameEntity>
         entity.RemoveInsertedProjectile();
         entity.transform.value.tag = Constants.BALL_TAG;
 
-        Vector3 pos = pathCreator.path.GetPointAtDistance(distanceBall, EndOfPathInstruction.Stop);
-        entity.transform.value.DOLocalMove(pos, insertDuration).onComplete += delegate ()
-        {
-            entity.AddDistanceBall(distanceBall);
-            entity.AddBallId(Extensions.BallId);
-            entity.AddParentChainId(chainId);
-            entity.isInsertedBall = true;
-            postChainAction();
-        };
+        entity.AddDistanceBall(distanceBall);
+        entity.AddBallId(Extensions.BallId);
+        entity.AddParentChainId(chainId);
+
+        entity.isInsertedBall = true;
+        postChainAction();
+
+        //Vector3 pos = pathCreator.path.GetPointAtDistance(distanceBall, EndOfPathInstruction.Stop);
+        //entity.transform.value.DOLocalMove(pos, insertDuration).onComplete += delegate ()
+        //{
+        //    entity.isInsertedBall = true;
+        //    postChainAction();
+        //};
     }
 
     private void AnimateShiftBall(GameEntity ball, float distance, PathCreator pathCreator)
     {
-        Vector3 pos = pathCreator.path.GetPointAtDistance(distance, EndOfPathInstruction.Stop);
-        ball.transform.value.DOLocalMove(pos, insertDuration * 0.9f).onComplete += delegate ()
-        {
-            ball.ReplaceDistanceBall(distance);
-        };
+        ball.ReplaceDistanceBall(distance);
+
+        //Vector3 pos = pathCreator.path.GetPointAtDistance(distance, EndOfPathInstruction.Stop);
+        //ball.transform.value.DOLocalMove(pos, insertDuration * 0.9f).onComplete += delegate ()
+        //{
+        //    ball.ReplaceDistanceBall(distance);
+        //};
     }
 }

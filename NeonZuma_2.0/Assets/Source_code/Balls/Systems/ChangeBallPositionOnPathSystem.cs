@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Entitas;
 using PathCreation;
+using System.Linq;
 
 public class ChangeBallPositionOnPathSystem : ReactiveSystem<GameEntity>, ITearDownSystem
 {
@@ -19,16 +20,21 @@ public class ChangeBallPositionOnPathSystem : ReactiveSystem<GameEntity>, ITearD
 
     protected override void Execute(List<GameEntity> entities)
     {
-        int count = entities.Count;
-
-        for(int i = 0; i < count; i++)
+        for(int i = 0; i < entities.Count; i++)
         {
             var chain = GetChain(entities[i].parentChainId.value);
-            var track = GetTrack(chain.parentTrackId.value);
+            if(chain == null)
+            {
+                Debug.Log($"Failed to change disntace ball. Chain is null");
+                Debug.Break();
+                continue;
+            }
 
+            var track = GetTrack(chain.parentTrackId.value);
             if (track == null)
             {
-                Debug.LogError($"Path with trackId - {chain.parentTrackId.value} doesn't exist.");
+                Debug.Log($"Failed to change disntace ball. Track is null");
+                continue;
             }
 
             float distance = entities[i].distanceBall.value;
@@ -69,7 +75,9 @@ public class ChangeBallPositionOnPathSystem : ReactiveSystem<GameEntity>, ITearD
     {
         if (!chains.ContainsKey(chainId))
         {
-            var newChain = _contexts.game.GetEntitiesWithChainId(chainId).SingleEntity();
+            var newChain = _contexts.game.GetEntitiesWithChainId(chainId).FirstOrDefault();
+            if (newChain == null)
+                return null;
             chains.Add(chainId, newChain);
         }
 
@@ -80,7 +88,9 @@ public class ChangeBallPositionOnPathSystem : ReactiveSystem<GameEntity>, ITearD
     {
         if (!tracks.ContainsKey(trackId))
         {
-            var newTrack = _contexts.game.GetEntitiesWithTrackId(trackId).SingleEntity();
+            var newTrack = _contexts.game.GetEntitiesWithTrackId(trackId).FirstOrDefault();
+            if (newTrack == null)
+                return null;
             tracks.Add(trackId, newTrack);
         }
 
