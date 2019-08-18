@@ -19,6 +19,7 @@ public class MatchInsertedBallInChainSystem : ReactiveSystem<GameEntity>
         foreach(var insertedBall in entities)
         {
             insertedBall.isInsertedBall = false;
+
             var chain = _contexts.game.GetEntitiesWithChainId(insertedBall.parentChainId.value).FirstOrDefault();
             if(chain == null)
             {

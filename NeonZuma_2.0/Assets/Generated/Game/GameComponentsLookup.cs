@@ -25,24 +25,29 @@ public static class GameComponentsLookup {
     public const int InsertedBall = 14;
     public const int InsertedProjectile = 15;
     public const int LevelConfig = 16;
-    public const int ParentChainId = 17;
-    public const int ParentTrackId = 18;
-    public const int PathCreator = 19;
-    public const int Player = 20;
-    public const int Projectile = 21;
-    public const int Randomizer = 22;
-    public const int Recharge = 23;
-    public const int RechargeDistance = 24;
-    public const int RemovedBall = 25;
-    public const int ResetChainEdges = 26;
-    public const int Shoot = 27;
-    public const int SpawnAccess = 28;
-    public const int Sprite = 29;
-    public const int TimeToSpawn = 30;
-    public const int TrackId = 31;
-    public const int Transform = 32;
+    public const int MoveAnimation = 17;
+    public const int MoveAnimationDone = 18;
+    public const int MoveAnimationInfo = 19;
+    public const int ParentChainId = 20;
+    public const int ParentTrackId = 21;
+    public const int PathCreator = 22;
+    public const int Player = 23;
+    public const int Projectile = 24;
+    public const int Randomizer = 25;
+    public const int RayCast = 26;
+    public const int Recharge = 27;
+    public const int RechargeDistance = 28;
+    public const int RemovedBall = 29;
+    public const int ResetChainEdges = 30;
+    public const int Shoot = 31;
+    public const int SpawnAccess = 32;
+    public const int Sprite = 33;
+    public const int TimeToSpawn = 34;
+    public const int TrackId = 35;
+    public const int Transform = 36;
+    public const int UpdateSpeed = 37;
 
-    public const int TotalComponents = 33;
+    public const int TotalComponents = 38;
 
     public static readonly string[] componentNames = {
         "AddedBall",
@@ -62,12 +67,16 @@ public static class GameComponentsLookup {
         "InsertedBall",
         "InsertedProjectile",
         "LevelConfig",
+        "MoveAnimation",
+        "MoveAnimationDone",
+        "MoveAnimationInfo",
         "ParentChainId",
         "ParentTrackId",
         "PathCreator",
         "Player",
         "Projectile",
         "Randomizer",
+        "RayCast",
         "Recharge",
         "RechargeDistance",
         "RemovedBall",
@@ -77,7 +86,8 @@ public static class GameComponentsLookup {
         "Sprite",
         "TimeToSpawn",
         "TrackId",
-        "Transform"
+        "Transform",
+        "UpdateSpeed"
     };
 
     public static readonly System.Type[] componentTypes = {
@@ -98,12 +108,16 @@ public static class GameComponentsLookup {
         typeof(InsertedBallComponent),
         typeof(InsertedProjectileComponent),
         typeof(LevelConfigComponent),
+        typeof(MoveAnimationComponent),
+        typeof(MoveAnimationDoneComponent),
+        typeof(MoveAnimationInfoComponent),
         typeof(ParentChainId),
         typeof(ParentTrackIdComponent),
         typeof(PathCreatorComponent),
         typeof(PlayerComponent),
         typeof(ProjectileComponent),
         typeof(RandomizerComponent),
+        typeof(RayCastComponent),
         typeof(RechargeComponent),
         typeof(RechargeDistanceComponent),
         typeof(RemovedBallComponent),
@@ -113,6 +127,7 @@ public static class GameComponentsLookup {
         typeof(SpriteComponent),
         typeof(TimeToSpawnComponent),
         typeof(TrackIdComponent),
-        typeof(TransformComponent)
+        typeof(TransformComponent),
+        typeof(UpdateSpeedComponent)
     };
 }

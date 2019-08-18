@@ -73,6 +73,7 @@ public class ShootPlayerSystem : ReactiveSystem<InputEntity>, IInitializeSystem
         projectile.isShoot = false;
         projectile.isProjectile = true;
         projectile.AddForce(direction);
+        projectile.AddRayCast(projectile.transform.value.position);
     }
 
     private void Recharge()

@@ -41,13 +41,20 @@ public class VisualDestroyingBallsSystem : ReactiveSystem<GameEntity>, ICleanupS
                 continue;
             }
 
+            var track = _contexts.game.GetEntitiesWithTrackId(chain.parentTrackId.value).FirstOrDefault();
+            if (track == null)
+            {
+                Debug.Log("Failed to mark for recover chain speed during destroying balls. Track request return null");
+                continue;
+            }
+
             float oldChainSpeed = chain.chainSpeed.value;
             chain.ReplaceChainSpeed(0f);
 
             for (int i = 0; i < balls.Count; i++)
             {
                 var ball = balls[i];
-                ball.ReplaceParentChainId(-1);
+                ball.RemoveParentChainId();
                 ball.transform.value.tag = Constants.UNTAGGED_TAG;
                 ball.DestroyBall();
                 //ball.transform.value.DOScale(minScale, destroyDuration).onComplete += delegate ()
@@ -57,14 +64,11 @@ public class VisualDestroyingBallsSystem : ReactiveSystem<GameEntity>, ICleanupS
             }
 
             if (chain.GetChainedBalls() == null)
-            {
                 chain.Destroy();
-            }
             else
-            {
                 chain.isCut = true;
-                chain.ReplaceChainSpeed(oldChainSpeed);
-            }
+
+            track.isUpdateSpeed = true;
         }
     }
 

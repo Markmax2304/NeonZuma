@@ -22,11 +22,13 @@ public class ChangeBallPositionOnPathSystem : ReactiveSystem<GameEntity>, ITearD
     {
         for(int i = 0; i < entities.Count; i++)
         {
+            //if (entities[i].hasMoveAnimationInfo || entities[i].hasMoveAnimation)
+            //    continue;
+
             var chain = GetChain(entities[i].parentChainId.value);
             if(chain == null)
             {
                 Debug.Log($"Failed to change disntace ball. Chain is null");
-                Debug.Break();
                 continue;
             }
 

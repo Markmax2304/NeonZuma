@@ -7,12 +7,12 @@ using UnityEngine;
 public class CutChainSystem : ReactiveSystem<GameEntity>
 {
     private Contexts _contexts;
-    private float minOffsetBetweenBalls;
+    private float ballDiametr;
 
     public CutChainSystem(Contexts contexts) : base(contexts.game)
     {
         _contexts = contexts;
-        minOffsetBetweenBalls = _contexts.game.levelConfig.value.offsetBetweenBalls;
+        ballDiametr = _contexts.game.levelConfig.value.ballDiametr;
     }
 
     protected override void Execute(List<GameEntity> entities)
@@ -30,7 +30,7 @@ public class CutChainSystem : ReactiveSystem<GameEntity>
 
             for(int i = 1; i < balls.Count; i++)
             {
-                if(balls[i-1].distanceBall.value - balls[i].distanceBall.value > minOffsetBetweenBalls * 1.1f)
+                if(balls[i-1].distanceBall.value - balls[i].distanceBall.value > ballDiametr * 1.1f)
                 {
                     var newChain = CreateEmptyChain(chain.parentTrackId.value);
 

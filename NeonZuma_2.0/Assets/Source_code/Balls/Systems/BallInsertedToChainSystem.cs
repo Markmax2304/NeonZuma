@@ -50,13 +50,13 @@ public class BallInsertedToChainSystem : ReactiveSystem<GameEntity>
 
             void postChainAction()
             {
-                chain.ReplaceChainSpeed(chainSpeed);
+                track.isUpdateSpeed = true;
             }
 
             // first ball
             if (projectileEntity.insertedProjectile.frontBall == null)
             {
-                float distance = balls.First().distanceBall.value + _contexts.game.levelConfig.value.offsetBetweenBalls;
+                float distance = balls.First().distanceBall.value + _contexts.game.levelConfig.value.ballDiametr;
                 ConvertProjectileToBall(projectileEntity, chain.chainId.value, distance, track.pathCreator.value, postChainAction);
             }
             else
@@ -66,7 +66,7 @@ public class BallInsertedToChainSystem : ReactiveSystem<GameEntity>
                 // last ball
                 if(frontBall == balls.Last())
                 {
-                    float distance = frontBall.distanceBall.value - _contexts.game.levelConfig.value.offsetBetweenBalls;
+                    float distance = frontBall.distanceBall.value - _contexts.game.levelConfig.value.ballDiametr;
                     ConvertProjectileToBall(projectileEntity, chain.chainId.value, distance, track.pathCreator.value, postChainAction);
                 }
                 // another way
@@ -77,7 +77,7 @@ public class BallInsertedToChainSystem : ReactiveSystem<GameEntity>
                     {
                         if (balls[i].distanceBall.value >= frontBall.distanceBall.value)
                         {
-                            float newDistance = balls[i].distanceBall.value + _contexts.game.levelConfig.value.offsetBetweenBalls;
+                            float newDistance = balls[i].distanceBall.value + _contexts.game.levelConfig.value.ballDiametr;
                             AnimateShiftBall(balls[i], newDistance, track.pathCreator.value);
                         }
 
@@ -103,17 +103,22 @@ public class BallInsertedToChainSystem : ReactiveSystem<GameEntity>
         entity.isProjectile = false;
         entity.RemoveForce();
         entity.RemoveInsertedProjectile();
+        entity.RemoveRayCast();
         entity.transform.value.tag = Constants.BALL_TAG;
 
-        entity.AddDistanceBall(distanceBall);
+        entity.AddDistanceBall(distanceBall);       // it breaks the animation, need to correct(applied)
         entity.AddBallId(Extensions.BallId);
         entity.AddParentChainId(chainId);
 
         entity.isInsertedBall = true;
         postChainAction();
 
-        //Vector3 pos = pathCreator.path.GetPointAtDistance(distanceBall, EndOfPathInstruction.Stop);
-        //entity.transform.value.DOLocalMove(pos, insertDuration).onComplete += delegate ()
+        //Vector3 target = pathCreator.path.GetPointAtDistance(distanceBall, EndOfPathInstruction.Stop);
+        //postChainAction += () => entity.isInsertedBall = true;
+        //entity.AddMoveAnimation(insertDuration, target, postChainAction);
+
+        //var tween = entity.transform.value.DOLocalMove(pos, insertDuration);
+        //tween.onComplete = delegate ()
         //{
         //    entity.isInsertedBall = true;
         //    postChainAction();

@@ -8,14 +8,14 @@ public class SpawnBallSystem : ReactiveSystem<GameEntity>
 {
     private Contexts _contexts;
     private PoolObjectKeeper pool;
-    private float offsetBetweenBalls;
+    private float ballDiametr;
     private Vector3 normalScale;
 
     public SpawnBallSystem(Contexts contexts) : base(contexts.game)
     {
         _contexts = contexts;
         pool = PoolManager.instance.GetObjectPoolKeeper(TypeObjectPool.Ball);
-        offsetBetweenBalls = _contexts.game.levelConfig.value.offsetBetweenBalls;
+        ballDiametr = _contexts.game.levelConfig.value.ballDiametr;
         normalScale = _contexts.game.levelConfig.value.normalScale;
     }
 
@@ -29,7 +29,7 @@ public class SpawnBallSystem : ReactiveSystem<GameEntity>
 
             if(lastBall != null)
             {
-                distance = lastBall.distanceBall.value - offsetBetweenBalls;
+                distance = lastBall.distanceBall.value - ballDiametr;
             }
 
             if (track.isCreatingNewChain)

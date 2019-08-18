@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+
 using UnityEngine;
 using Entitas;
 
@@ -40,38 +41,42 @@ public class GameController : MonoBehaviour
             .Add(new UpdateDeltaTimeSystem(contexts))
 
 
-            //***Collision***
-            //Moving In
+            //RayCasting
+            .Add(new BallRayCastSystem(contexts))
+
+            //Collision of screen
             .Add(new EnteringBallsToScreenSystem(contexts))
-            //Moving Out
             .Add(new CollisionObjectDestroySystem(contexts))        //разобраться с этими коллизиями
-            //Connection
+            //Collision of chains
             .Add(new ConnectChainsSystem(contexts))
             .Add(new ProjectileCollidingWithBallSystem(contexts))
 
-
             //Inserting
             .Add(new BallInsertedToChainSystem(contexts))
+            //Destroying balls in chain
             .Add(new MatchInsertedBallInChainSystem(contexts))
-            // Cutting chain
             .Add(new VisualDestroyingBallsSystem(contexts))
             .Add(new CutChainSystem(contexts))
-
 
             //Spawn
             .Add(new CheckSpawnBallSystem(contexts))
             .Add(new SpawnBallSystem(contexts))
-            //Colors
-            .Add(new UpdateColorBallSystem(contexts))
-            .Add(new CountBallColorsSystem(contexts))
+            
             //Movement
             .Add(new UpdateBallDistanceBySpeedSystem(contexts))
             .Add(new ChangeBallPositionOnPathSystem(contexts))
-            .Add(new ShootingForceSystem(contexts))
-
 
             //Updating
             .Add(new SetChainEdgesSystem(contexts))
+            .Add(new UpdateChainSpeedSystem(contexts))
+            //Animation
+            //.Add(new FinishMoveAnimationSystem(contexts))
+            //.Add(new MoveAnimationControlSystem(contexts))
+
+
+            //Colors
+            .Add(new UpdateColorBallSystem(contexts))
+            .Add(new CountBallColorsSystem(contexts))
 
 
             //Input
@@ -80,6 +85,8 @@ public class GameController : MonoBehaviour
             .Add(new RotatePlayerSystem(contexts))
             .Add(new ShootPlayerSystem(contexts))
             .Add(new BallExchangePlayerSystem(contexts))
+            //Shooting
+            .Add(new ShootingForceSystem(contexts))
 
 
             //CleanUp

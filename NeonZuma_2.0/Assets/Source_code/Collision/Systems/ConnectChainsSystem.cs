@@ -7,12 +7,12 @@ using Entitas;
 public class ConnectChainsSystem : ReactiveSystem<InputEntity>
 {
     private Contexts _contexts;
-    private float offsetBetweenBalls;
+    private float ballDiametr;
 
     public ConnectChainsSystem(Contexts contexts) : base(contexts.input)
     {
         _contexts = contexts;
-        offsetBetweenBalls = _contexts.game.levelConfig.value.offsetBetweenBalls;
+        ballDiametr = _contexts.game.levelConfig.value.ballDiametr;
     }
 
     protected override void Execute(List<InputEntity> entities)
@@ -36,6 +36,13 @@ public class ConnectChainsSystem : ReactiveSystem<InputEntity>
                 continue;
             }
 
+            var track = _contexts.game.GetEntitiesWithTrackId(backChain.parentTrackId.value).FirstOrDefault();
+            if(track == null)
+            {
+                Debug.Log("Failed to connect chain. track of chains is null");
+                continue;
+            }
+
             float startDistance = frontEdge.distanceBall.value;
             var frontBalls = frontChain.GetChainedBalls(true, true);
             if(frontBalls == null)
@@ -50,9 +57,10 @@ public class ConnectChainsSystem : ReactiveSystem<InputEntity>
             for(int i = 0; i < frontBalls.Count; i++)
             {
                 frontBalls[i].ReplaceParentChainId(backChain.chainId.value);
-                frontBalls[i].ReplaceDistanceBall(startDistance + offsetBetweenBalls * (i + 1));
+                frontBalls[i].ReplaceDistanceBall(startDistance + ballDiametr * (i + 1));
             }
 
+            track.isResetChainEdges = true;
             frontChain.Destroy();
             coll.isDestroyed = true;
         }

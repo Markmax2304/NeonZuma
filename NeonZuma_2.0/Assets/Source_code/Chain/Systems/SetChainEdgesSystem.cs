@@ -36,18 +36,32 @@ public class SetChainEdgesSystem : ReactiveSystem<GameEntity>
 
                 if (balls.Count == 1)
                 {
-                    balls[0].transform.value.tag = i == chains.Count - 1 ? 
-                        Constants.FRONT_EDGE_BALL_TAG : Constants.BACK_EDGE_BALL_TAG;
+                    if(i == chains.Count - 1)
+                    {
+                        balls[0].transform.value.tag = Constants.FRONT_EDGE_BALL_TAG;
+                        UpdateRayCasting(balls[0]);
+                    }
+                    else
+                    {
+                        balls[0].transform.value.tag = Constants.BACK_EDGE_BALL_TAG;
+                        RemoveRayCasting(balls[0]);
+                    }
                 }
                 else
                 {
                     for (int x = 1; x < balls.Count - 1; x++)
                     {
                         balls[x].transform.value.tag = Constants.BALL_TAG;
+                        RemoveRayCasting(balls[x]);
                     }
 
-                    balls.First().transform.value.tag = Constants.FRONT_EDGE_BALL_TAG;
-                    balls.Last().transform.value.tag = Constants.BACK_EDGE_BALL_TAG;
+                    var firstBall = balls.First();
+                    firstBall.transform.value.tag = Constants.FRONT_EDGE_BALL_TAG;
+                    UpdateRayCasting(firstBall);
+
+                    var lastBall = balls.Last();
+                    lastBall.transform.value.tag = Constants.BACK_EDGE_BALL_TAG;
+                    RemoveRayCasting(lastBall);
                 }
             }
 
@@ -64,4 +78,18 @@ public class SetChainEdgesSystem : ReactiveSystem<GameEntity>
     {
         return context.CreateCollector(GameMatcher.ResetChainEdges);
     }
+
+    #region Private Methods
+    private void UpdateRayCasting(GameEntity entity)
+    {
+        if (!entity.hasRayCast)
+            entity.AddRayCast(entity.transform.value.position);
+    }
+
+    private void RemoveRayCasting(GameEntity entity)
+    {
+        if (entity.hasRayCast)
+            entity.RemoveRayCast();
+    }
+    #endregion
 }

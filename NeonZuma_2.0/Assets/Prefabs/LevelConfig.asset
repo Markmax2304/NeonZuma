@@ -26,9 +26,9 @@ MonoBehaviour:
   - type: 3
     color: {r: 0.9811321, g: 0.97623724, b: 0, a: 1}
   followSpeed: 0.5
-  insertDuration: 0.25
+  insertDuration: 0.5
   destroyAnimationDuration: 0.25
-  offsetBetweenBalls: 0.36
+  ballDiametr: 0.36
   minScaleSize: 0.05
   normalScale: {x: 0.4, y: 0.4, z: 0.4}
   minLengthSeries: 1
@@ -36,3 +36,7 @@ MonoBehaviour:
   rotateSpeed: 20
   rechargeTime: 0.5
   forceSpeed: 5
+  projectileTags:
+  - Ball
+  - FrontEdge
+  - BackEdge

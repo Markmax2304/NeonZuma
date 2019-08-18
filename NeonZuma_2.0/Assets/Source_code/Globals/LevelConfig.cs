@@ -13,7 +13,7 @@ public class LevelConfig : ScriptableObject
     public float insertDuration = .25f;
     public float destroyAnimationDuration = .25f;
 
-    public float offsetBetweenBalls = .36f;
+    public float ballDiametr = .36f;
     public float minScaleSize = .05f;
     public Vector3 normalScale = new Vector3(.4f, .4f, .4f);
 
@@ -27,6 +27,7 @@ public class LevelConfig : ScriptableObject
 
     [Header("Projectile fields"), Space]
     public float forceSpeed = 5f;
+    public string[] projectileTags;
 }
 
 [System.Serializable]
