@@ -1,6 +1,9 @@
 ﻿using System.Linq;
 using System.Collections.Generic;
 
+using NLog;
+using Log = NLog.Logger;
+
 using UnityEngine;
 using Entitas;
 
@@ -8,6 +11,8 @@ public class ConnectChainsSystem : ReactiveSystem<InputEntity>
 {
     private Contexts _contexts;
     private float ballDiametr;
+
+    private static Log logger = LogManager.GetCurrentClassLogger();
 
     public ConnectChainsSystem(Contexts contexts) : base(contexts.input)
     {
@@ -19,20 +24,26 @@ public class ConnectChainsSystem : ReactiveSystem<InputEntity>
     {
         foreach(var coll in entities)
         {
-            if(coll.collision.handler == null || coll.collision.collider == null)
+            GameEntity frontEdge = coll.collision.handler;
+            GameEntity backEdge = coll.collision.collider;
+
+            if (frontEdge == null || backEdge == null)
             {
                 Debug.Log("Failed to connect chain. Collision's entities is null");
+                logger.Error("Failed to connect chain. Collision's entities is null");
+                GameController.HasRecordToLog = true;
                 continue;
             }
 
-            GameEntity frontEdge = coll.collision.handler;
-            GameEntity backEdge = coll.collision.collider;
+            logger.Trace($" ___ Connect two chains in one. Front and back edges: {frontEdge.ToString()} and {backEdge.ToString()}");
+            GameController.HasRecordToLog = true;
 
             var frontChain = _contexts.game.GetEntitiesWithChainId(backEdge.parentChainId.value).FirstOrDefault();
             var backChain = _contexts.game.GetEntitiesWithChainId(frontEdge.parentChainId.value).FirstOrDefault();
             if(frontChain == null || backChain == null)
             {
                 Debug.Log("Failed to conncet chain. front or back chain is null");
+                logger.Error("Failed to conncet chain. front or back chain is null");
                 continue;
             }
 
@@ -40,6 +51,7 @@ public class ConnectChainsSystem : ReactiveSystem<InputEntity>
             if(track == null)
             {
                 Debug.Log("Failed to connect chain. track of chains is null");
+                logger.Error("Failed to connect chain. track of chains is null");
                 continue;
             }
 
@@ -48,6 +60,7 @@ public class ConnectChainsSystem : ReactiveSystem<InputEntity>
             if(frontBalls == null)
             {
                 Debug.Log("Failed to conncet chain. front balls is null");
+                logger.Error("Failed to conncet chain. front balls is null");
                 continue;
             }
 
@@ -58,9 +71,11 @@ public class ConnectChainsSystem : ReactiveSystem<InputEntity>
             {
                 frontBalls[i].ReplaceParentChainId(backChain.chainId.value);
                 frontBalls[i].ReplaceDistanceBall(startDistance + ballDiametr * (i + 1));
+                logger.Trace($" ___ Transfer ball to other chain: {frontBalls[i].ToString()}");
             }
 
             track.isResetChainEdges = true;
+            logger.Trace($" ___ Update track: {track.ToString()}/nAnd destroy chain: {frontChain.ToString()}");
             frontChain.Destroy();
             coll.isDestroyed = true;
         }

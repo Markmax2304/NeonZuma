@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
+using NLog;
+using Log = NLog.Logger;
+
 using UnityEngine;
 using Entitas;
 using DG.Tweening;
@@ -11,6 +14,8 @@ public class VisualDestroyingBallsSystem : ReactiveSystem<GameEntity>, ICleanupS
     private Dictionary<int, List<GameEntity>> destroyGroups;
     private float destroyDuration;
     private float minScale;
+
+    private static Log logger = LogManager.GetCurrentClassLogger();
 
     public VisualDestroyingBallsSystem(Contexts contexts) : base(contexts.game)
     {
@@ -34,10 +39,14 @@ public class VisualDestroyingBallsSystem : ReactiveSystem<GameEntity>, ICleanupS
 
         foreach (var balls in destroyGroups.Values)
         {
+            logger.Trace($" ___ Destroy balls with goupId {balls[0].groupDestroy.value}");
+            GameController.HasRecordToLog = true;
+
             var chain = _contexts.game.GetEntitiesWithChainId(balls.First().parentChainId.value).FirstOrDefault();
             if(chain == null)
             {
                 Debug.Log("Failed to destroying grouped balls. Chain is null");
+                logger.Error("Failed to destroying grouped balls. Chain is null");
                 continue;
             }
 
@@ -45,10 +54,11 @@ public class VisualDestroyingBallsSystem : ReactiveSystem<GameEntity>, ICleanupS
             if (track == null)
             {
                 Debug.Log("Failed to mark for recover chain speed during destroying balls. Track request return null");
+                logger.Error("Failed to mark for recover chain speed during destroying balls. Track request return null");
                 continue;
             }
 
-            float oldChainSpeed = chain.chainSpeed.value;
+            logger.Trace($" ___ Reduce chain speed to zero. Chain: {chain.ToString()}");
             chain.ReplaceChainSpeed(0f);
 
             for (int i = 0; i < balls.Count; i++)
@@ -64,11 +74,19 @@ public class VisualDestroyingBallsSystem : ReactiveSystem<GameEntity>, ICleanupS
             }
 
             if (chain.GetChainedBalls() == null)
+            {
+                logger.Trace($" ___ All of chain balls is destroyed. Destroy the chain: {chain.ToString()}");
                 chain.Destroy();
+            }
             else
+            {
+                // TODO MAYBE: change cut mark to extacter definition, like place where it should be cutted
+                logger.Trace($" ___ Mark chain for cutting");
                 chain.isCut = true;
+            }
 
             track.isUpdateSpeed = true;
+            logger.Trace($" ___ Mark track for updating speed");
         }
     }
 

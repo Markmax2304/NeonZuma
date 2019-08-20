@@ -1,6 +1,9 @@
 ﻿using System.Linq;
 using System.Collections.Generic;
 
+using NLog;
+using Log = NLog.Logger;
+
 using UnityEngine;
 using Entitas;
 
@@ -8,6 +11,8 @@ public class UpdateChainSpeedSystem : ReactiveSystem<GameEntity>
 {
     private Contexts _contexts;
     private float normalChainSpeed;
+
+    private static Log logger = LogManager.GetCurrentClassLogger();
 
     public UpdateChainSpeedSystem(Contexts contexts) : base(contexts.game)
     {
@@ -19,12 +24,16 @@ public class UpdateChainSpeedSystem : ReactiveSystem<GameEntity>
     {
         foreach(var track in entities)
         {
+            logger.Trace($" ___ Update speed of track chains. Track - {track.ToString()}");
+            GameController.HasRecordToLog = true;
+
             track.isUpdateSpeed = false;
 
             var chains = track.GetChains(true);
             if(chains == null)
             {
                 Debug.Log("Failed to update chains speed. Chain collection is null");
+                logger.Error("Failed to update chains speed. Chain collection is null");
                 continue;
             }
 

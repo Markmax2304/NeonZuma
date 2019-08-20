@@ -14,40 +14,37 @@ public static class GameComponentsLookup {
     public const int ChainId = 3;
     public const int ChainSpeed = 4;
     public const int Color = 5;
-    public const int CreatingNewChain = 6;
-    public const int Cut = 7;
-    public const int DeltaTime = 8;
-    public const int Destroyed = 9;
-    public const int DistanceBall = 10;
-    public const int FireAccess = 11;
-    public const int Force = 12;
-    public const int GroupDestroy = 13;
-    public const int InsertedBall = 14;
-    public const int InsertedProjectile = 15;
-    public const int LevelConfig = 16;
-    public const int MoveAnimation = 17;
-    public const int MoveAnimationDone = 18;
-    public const int MoveAnimationInfo = 19;
-    public const int ParentChainId = 20;
-    public const int ParentTrackId = 21;
-    public const int PathCreator = 22;
-    public const int Player = 23;
-    public const int Projectile = 24;
-    public const int Randomizer = 25;
-    public const int RayCast = 26;
-    public const int Recharge = 27;
-    public const int RechargeDistance = 28;
-    public const int RemovedBall = 29;
-    public const int ResetChainEdges = 30;
-    public const int Shoot = 31;
-    public const int SpawnAccess = 32;
-    public const int Sprite = 33;
-    public const int TimeToSpawn = 34;
-    public const int TrackId = 35;
-    public const int Transform = 36;
-    public const int UpdateSpeed = 37;
+    public const int Cut = 6;
+    public const int DeltaTime = 7;
+    public const int Destroyed = 8;
+    public const int DistanceBall = 9;
+    public const int FireAccess = 10;
+    public const int Force = 11;
+    public const int GroupDestroy = 12;
+    public const int InsertedBall = 13;
+    public const int LevelConfig = 14;
+    public const int MoveAnimation = 15;
+    public const int MoveAnimationDone = 16;
+    public const int MoveAnimationInfo = 17;
+    public const int ParentChainId = 18;
+    public const int ParentTrackId = 19;
+    public const int PathCreator = 20;
+    public const int Player = 21;
+    public const int Projectile = 22;
+    public const int Randomizer = 23;
+    public const int RayCast = 24;
+    public const int Recharge = 25;
+    public const int RechargeDistance = 26;
+    public const int RemovedBall = 27;
+    public const int ResetChainEdges = 28;
+    public const int Shoot = 29;
+    public const int SpawnAccess = 30;
+    public const int Sprite = 31;
+    public const int TrackId = 32;
+    public const int Transform = 33;
+    public const int UpdateSpeed = 34;
 
-    public const int TotalComponents = 38;
+    public const int TotalComponents = 35;
 
     public static readonly string[] componentNames = {
         "AddedBall",
@@ -56,7 +53,6 @@ public static class GameComponentsLookup {
         "ChainId",
         "ChainSpeed",
         "Color",
-        "CreatingNewChain",
         "Cut",
         "DeltaTime",
         "Destroyed",
@@ -65,7 +61,6 @@ public static class GameComponentsLookup {
         "Force",
         "GroupDestroy",
         "InsertedBall",
-        "InsertedProjectile",
         "LevelConfig",
         "MoveAnimation",
         "MoveAnimationDone",
@@ -84,7 +79,6 @@ public static class GameComponentsLookup {
         "Shoot",
         "SpawnAccess",
         "Sprite",
-        "TimeToSpawn",
         "TrackId",
         "Transform",
         "UpdateSpeed"
@@ -97,7 +91,6 @@ public static class GameComponentsLookup {
         typeof(ChainIdComponent),
         typeof(ChainSpeedComponent),
         typeof(ColorComponent),
-        typeof(CreatingNewChainComponent),
         typeof(CutComponent),
         typeof(DeltaTimeComponent),
         typeof(DestroyedComponent),
@@ -106,7 +99,6 @@ public static class GameComponentsLookup {
         typeof(ForceComponent),
         typeof(GroupDestroyComponent),
         typeof(InsertedBallComponent),
-        typeof(InsertedProjectileComponent),
         typeof(LevelConfigComponent),
         typeof(MoveAnimationComponent),
         typeof(MoveAnimationDoneComponent),
@@ -125,7 +117,6 @@ public static class GameComponentsLookup {
         typeof(ShootComponent),
         typeof(SpawnAccessComponent),
         typeof(SpriteComponent),
-        typeof(TimeToSpawnComponent),
         typeof(TrackIdComponent),
         typeof(TransformComponent),
         typeof(UpdateSpeedComponent)

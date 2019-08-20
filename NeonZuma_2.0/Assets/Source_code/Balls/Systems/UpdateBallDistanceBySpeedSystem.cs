@@ -1,11 +1,14 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using NLog;
+using Log = NLog.Logger;
+
 using UnityEngine;
 using Entitas;
 
 public class UpdateBallDistanceBySpeedSystem : IExecuteSystem
 {
     private Contexts _contexts;
+
+    private static Log logger = LogManager.GetCurrentClassLogger();
 
     public UpdateBallDistanceBySpeedSystem(Contexts contexts)
     {
@@ -24,6 +27,8 @@ public class UpdateBallDistanceBySpeedSystem : IExecuteSystem
             if(chains == null)
             {
                 Debug.Log("Failed to update distance ball. Chain collection is null");
+                logger.Error("Failed to update distance ball. Chain collection is null");
+                GameController.HasRecordToLog = true;
                 continue;
             }
 
