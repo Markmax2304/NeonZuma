@@ -5,5 +5,5 @@ using Entitas.CodeGeneration.Attributes;
 public class BallId : IComponent
 {
     [EntityIndex]
-    public int value;               // TODO: excess?
+    public int value;
 }

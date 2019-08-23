@@ -9,17 +9,19 @@ public class LevelConfig : ScriptableObject
 
     [Header("Ball fields"), Space]
     public ColorInfo[] colors;
+    [Range(0, 5)]
     public float followSpeed = .5f;
     public float insertDuration = .25f;
     public float destroyAnimationDuration = .25f;
 
-    public float offsetBetweenBalls = .36f;
+    public float ballDiametr = .36f;
     public float minScaleSize = .05f;
     public Vector3 normalScale = new Vector3(.4f, .4f, .4f);
 
     [Header("Chain fields"), Space]
     public int minLengthSeries = 1;
     public int maxLengthSeries = 6;
+    public float alignBallSpeed = 5f;
 
     [Header("Player fields"), Space]
     public float rotateSpeed = 1f;

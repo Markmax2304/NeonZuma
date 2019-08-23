@@ -27,7 +27,6 @@ public class InitializePathSystem : IInitializeSystem
             trackEntity.AddRandomizer(new Randomizer(minLength, maxLength));
             trackEntity.AddTrackId(i);
             trackEntity.isSpawnAccess = true;
-            trackEntity.isTimeToSpawn = true;
         }
     }
 }

@@ -1,12 +1,17 @@
 ﻿using System.Linq;
 using System.Collections.Generic;
 
+using NLog;
+using Log = NLog.Logger;
+
 using Entitas;
 using UnityEngine;
 
 public class SetChainEdgesSystem : ReactiveSystem<GameEntity>
 {
     private Contexts _contexts;
+
+    private static Log logger = LogManager.GetCurrentClassLogger();
 
     public SetChainEdgesSystem(Contexts contexts) : base(contexts.game)
     {
@@ -17,10 +22,14 @@ public class SetChainEdgesSystem : ReactiveSystem<GameEntity>
     {
         foreach(var track in entities)
         {
+            logger.Trace($" ___ Start setting chain edges and RayCast component. For track - {track.ToString()}");
+            GameController.HasRecordToLog = true;
+
             var chains = track.GetChains(true);
             if(chains == null)
             {
                 Debug.Log("Failed to update chain edges. Chain collection is null");
+                logger.Error("Failed to update chain edges. Chain collection is null");
                 continue;
             }
 
@@ -30,24 +39,24 @@ public class SetChainEdgesSystem : ReactiveSystem<GameEntity>
 
                 if (balls == null)
                 {
-                    Debug.Log("Failed tot update chain edges. Some chain is null");
+                    Debug.Log("Failed to update chain edges. Some chain is null");
+                    logger.Error("Failed to update chain edges. Some chain is null");
                     continue;
                 }
 
                 if (balls.Count == 1)
                 {
-                    balls[0].transform.value.tag = i == chains.Count - 1 ? 
-                        Constants.FRONT_EDGE_BALL_TAG : Constants.BACK_EDGE_BALL_TAG;
+                    SetEdgesProperty(balls[0], true, true, true);
                 }
                 else
                 {
                     for (int x = 1; x < balls.Count - 1; x++)
                     {
-                        balls[x].transform.value.tag = Constants.BALL_TAG;
+                        SetEdgesProperty(balls[x], false, false, false);
                     }
 
-                    balls.First().transform.value.tag = Constants.FRONT_EDGE_BALL_TAG;
-                    balls.Last().transform.value.tag = Constants.BACK_EDGE_BALL_TAG;
+                    SetEdgesProperty(balls.First(), true, false, true);
+                    SetEdgesProperty(balls.Last(), false, true, false);
                 }
             }
 
@@ -64,4 +73,23 @@ public class SetChainEdgesSystem : ReactiveSystem<GameEntity>
     {
         return context.CreateCollector(GameMatcher.ResetChainEdges);
     }
+
+    #region Private Methods
+    private void SetEdgesProperty(GameEntity ball, bool front, bool back, bool overlap)
+    {
+        bool isChange = ball.isOverlap != overlap;
+
+        ball.isFrontEdge = front;
+        ball.isBackEdge = back;
+        ball.isOverlap = overlap;
+
+        if (isChange)
+        {
+            if (overlap)
+                logger.Trace($" ___ Add Overlap component - {ball.ToString()}");
+            else
+                logger.Trace($" ___ Remove Overlap component - {ball.ToString()}");
+        }
+    }
+    #endregion
 }

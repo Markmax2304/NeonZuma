@@ -1,5 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+
+using NLog;
+using Log = NLog.Logger;
+
 using UnityEngine;
 using Entitas;
 using PathCreation;
@@ -10,6 +14,8 @@ public class ChangeBallPositionOnPathSystem : ReactiveSystem<GameEntity>, ITearD
     private Contexts _contexts;
     private Dictionary<int, GameEntity> chains;
     private Dictionary<int, GameEntity> tracks;
+
+    private static Log logger = LogManager.GetCurrentClassLogger();
 
     public ChangeBallPositionOnPathSystem(Contexts contexts) : base(contexts.game)
     {
@@ -22,11 +28,15 @@ public class ChangeBallPositionOnPathSystem : ReactiveSystem<GameEntity>, ITearD
     {
         for(int i = 0; i < entities.Count; i++)
         {
+            if (entities[i].hasAnimationInfo || entities[i].hasMoveAnimation || entities[i].hasScaleAnimation)
+                continue;
+
             var chain = GetChain(entities[i].parentChainId.value);
             if(chain == null)
             {
                 Debug.Log($"Failed to change disntace ball. Chain is null");
-                Debug.Break();
+                logger.Error($"Failed to change disntace ball. Chain is null");
+                GameController.HasRecordToLog = true;
                 continue;
             }
 
@@ -34,6 +44,8 @@ public class ChangeBallPositionOnPathSystem : ReactiveSystem<GameEntity>, ITearD
             if (track == null)
             {
                 Debug.Log($"Failed to change disntace ball. Track is null");
+                logger.Error($"Failed to change disntace ball. Track is null");
+                GameController.HasRecordToLog = true;
                 continue;
             }
 

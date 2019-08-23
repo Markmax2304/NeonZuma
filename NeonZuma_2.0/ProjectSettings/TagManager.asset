@@ -6,8 +6,6 @@ TagManager:
   tags:
   - Ball
   - Projectile
-  - FrontEdge
-  - BackEdge
   layers:
   - Default
   - TransparentFX
@@ -17,7 +15,7 @@ TagManager:
   - UI
   - 
   - 
-  - 
+  - Balls
   - 
   - 
   - 

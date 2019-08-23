@@ -9,110 +9,128 @@
 public static class GameComponentsLookup {
 
     public const int AddedBall = 0;
-    public const int BallColors = 1;
-    public const int BallId = 2;
-    public const int ChainId = 3;
-    public const int ChainSpeed = 4;
-    public const int Color = 5;
-    public const int CreatingNewChain = 6;
-    public const int Cut = 7;
-    public const int DeltaTime = 8;
-    public const int Destroyed = 9;
-    public const int DistanceBall = 10;
-    public const int FireAccess = 11;
-    public const int Force = 12;
-    public const int GroupDestroy = 13;
-    public const int InsertedBall = 14;
-    public const int InsertedProjectile = 15;
-    public const int LevelConfig = 16;
-    public const int ParentChainId = 17;
-    public const int ParentTrackId = 18;
-    public const int PathCreator = 19;
-    public const int Player = 20;
-    public const int Projectile = 21;
-    public const int Randomizer = 22;
-    public const int Recharge = 23;
-    public const int RechargeDistance = 24;
-    public const int RemovedBall = 25;
-    public const int ResetChainEdges = 26;
-    public const int Shoot = 27;
-    public const int SpawnAccess = 28;
-    public const int Sprite = 29;
-    public const int TimeToSpawn = 30;
-    public const int TrackId = 31;
-    public const int Transform = 32;
+    public const int AnimationDone = 1;
+    public const int AnimationInfo = 2;
+    public const int BackEdge = 3;
+    public const int BallColors = 4;
+    public const int BallId = 5;
+    public const int ChainId = 6;
+    public const int ChainSpeed = 7;
+    public const int Color = 8;
+    public const int Cut = 9;
+    public const int DeltaTime = 10;
+    public const int Destroyed = 11;
+    public const int DistanceBall = 12;
+    public const int FireAccess = 13;
+    public const int Force = 14;
+    public const int FrontEdge = 15;
+    public const int GroupDestroy = 16;
+    public const int InsertedBall = 17;
+    public const int LevelConfig = 18;
+    public const int MoveAnimation = 19;
+    public const int Overlap = 20;
+    public const int ParentChainId = 21;
+    public const int ParentTrackId = 22;
+    public const int PathCreator = 23;
+    public const int Player = 24;
+    public const int Projectile = 25;
+    public const int Randomizer = 26;
+    public const int RayCast = 27;
+    public const int Recharge = 28;
+    public const int RechargeDistance = 29;
+    public const int RemovedBall = 30;
+    public const int ResetChainEdges = 31;
+    public const int ScaleAnimation = 32;
+    public const int Shoot = 33;
+    public const int SpawnAccess = 34;
+    public const int Sprite = 35;
+    public const int TrackId = 36;
+    public const int Transform = 37;
+    public const int UpdateSpeed = 38;
 
-    public const int TotalComponents = 33;
+    public const int TotalComponents = 39;
 
     public static readonly string[] componentNames = {
         "AddedBall",
+        "AnimationDone",
+        "AnimationInfo",
+        "BackEdge",
         "BallColors",
         "BallId",
         "ChainId",
         "ChainSpeed",
         "Color",
-        "CreatingNewChain",
         "Cut",
         "DeltaTime",
         "Destroyed",
         "DistanceBall",
         "FireAccess",
         "Force",
+        "FrontEdge",
         "GroupDestroy",
         "InsertedBall",
-        "InsertedProjectile",
         "LevelConfig",
+        "MoveAnimation",
+        "Overlap",
         "ParentChainId",
         "ParentTrackId",
         "PathCreator",
         "Player",
         "Projectile",
         "Randomizer",
+        "RayCast",
         "Recharge",
         "RechargeDistance",
         "RemovedBall",
         "ResetChainEdges",
+        "ScaleAnimation",
         "Shoot",
         "SpawnAccess",
         "Sprite",
-        "TimeToSpawn",
         "TrackId",
-        "Transform"
+        "Transform",
+        "UpdateSpeed"
     };
 
     public static readonly System.Type[] componentTypes = {
         typeof(AddedBallComponent),
+        typeof(AnimationDoneComponent),
+        typeof(AnimationInfoComponent),
+        typeof(BackEdgeComponent),
         typeof(BallColorsComponent),
         typeof(BallId),
         typeof(ChainIdComponent),
         typeof(ChainSpeedComponent),
         typeof(ColorComponent),
-        typeof(CreatingNewChainComponent),
         typeof(CutComponent),
         typeof(DeltaTimeComponent),
         typeof(DestroyedComponent),
         typeof(DistanceBallComponent),
         typeof(FireAccessComponent),
         typeof(ForceComponent),
+        typeof(FrontEdgeComponent),
         typeof(GroupDestroyComponent),
         typeof(InsertedBallComponent),
-        typeof(InsertedProjectileComponent),
         typeof(LevelConfigComponent),
+        typeof(MoveAnimationComponent),
+        typeof(OverlapComponent),
         typeof(ParentChainId),
         typeof(ParentTrackIdComponent),
         typeof(PathCreatorComponent),
         typeof(PlayerComponent),
         typeof(ProjectileComponent),
         typeof(RandomizerComponent),
+        typeof(RayCastComponent),
         typeof(RechargeComponent),
         typeof(RechargeDistanceComponent),
         typeof(RemovedBallComponent),
         typeof(ResetChainEdges),
+        typeof(ScaleAnimationComponent),
         typeof(ShootComponent),
         typeof(SpawnAccessComponent),
         typeof(SpriteComponent),
-        typeof(TimeToSpawnComponent),
         typeof(TrackIdComponent),
-        typeof(TransformComponent)
+        typeof(TransformComponent),
+        typeof(UpdateSpeedComponent)
     };
 }

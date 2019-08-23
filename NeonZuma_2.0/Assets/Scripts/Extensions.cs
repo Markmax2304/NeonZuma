@@ -89,6 +89,7 @@ public static class Extensions
             obj.tag = Constants.UNTAGGED_TAG;
             obj.Unlink();
             var poolObj = obj.GetComponent<PoolingObject>();
+
             if (poolObj == null)
                 GameObject.Destroy(obj);
             else
