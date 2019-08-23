@@ -4,9 +4,9 @@ using UnityEngine;
 using Entitas;
 
 [Game]
-public class MoveAnimationComponent : IComponent
+public class ScaleAnimationComponent : IComponent
 {
     public float duration;
-    public Vector3 target;
+    public float targetScale;
     public Action postAction;
 }

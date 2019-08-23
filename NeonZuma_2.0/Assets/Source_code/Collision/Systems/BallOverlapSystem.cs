@@ -7,53 +7,44 @@ using Log = NLog.Logger;
 using UnityEngine;
 using Entitas;
 
-public class BallRayCastSystem : IExecuteSystem
+public class BallOverlapSystem : IExecuteSystem
 {
     private static Log logger = LogManager.GetCurrentClassLogger();
 
     private Contexts _contexts;
-    private float ballDiametr;
+    private float overlapRadius;
     private LayerMask mask;
-    private RaycastHit2D[] hits;
+    private Collider2D[] hits;
 
-    public BallRayCastSystem(Contexts contexts)
+    public BallOverlapSystem(Contexts contexts)
     {
         _contexts = contexts;
-        ballDiametr = _contexts.game.levelConfig.value.ballDiametr;
+        overlapRadius = _contexts.game.levelConfig.value.ballDiametr * .9f / 2f;
         mask = LayerMask.GetMask("Balls");
-        hits = new RaycastHit2D[4];
+        hits = new Collider2D[4];
     }
 
     public void Execute()
     {
-        var balls = _contexts.game.GetEntities(GameMatcher.RayCast);
+        var balls = _contexts.game.GetEntities(GameMatcher.Overlap);
 
         foreach(var ball in balls)
         {
             Vector3 position = ball.transform.value.position;
-            Vector3 lastPosition = ball.rayCast.lastPosition;
 
-            if(position == lastPosition)
-                continue;
-
-            Vector3 direction = (position - lastPosition).normalized;
-
-            int countHits = Physics2D.CircleCastNonAlloc(position, ballDiametr / 2f, direction, hits, ballDiametr / 4f, mask);
+            int countHits = Physics2D.OverlapCircleNonAlloc(position, overlapRadius, hits, mask);
             // first hit are always belong to own collider. We are not interested by it
             if (countHits > 1)
             {
-                ProcessRayCastCollision(hits, countHits, ball);
+                ProcessOverlapCollision(hits, countHits, ball);
             }
-
-            //Debug.DrawRay(position, direction * ballDiametr * 3f / 4f, Color.red);
-            ball.ReplaceRayCast(position);
         }
     }
 
     #region Private Methods
-    private void ProcessRayCastCollision(RaycastHit2D[] hits, int count, GameEntity ball)
+    private void ProcessOverlapCollision(Collider2D[] hits, int count, GameEntity ball)
     {
-        for(int i = 1; i < count; i++)
+        for (int i = 1; i < count; i++)
         {
             var hitGameObject = hits[i].transform.gameObject;
             var hitEntity = hitGameObject.GetEntityLink()?.entity;
@@ -65,22 +56,23 @@ public class BallRayCastSystem : IExecuteSystem
                 return;
             }
 
-            // projectile collistion stuff
-            if (IsProjectileCollision(ball, hitEntity))
+            // chain edges collision stuff
+            if (IsChainContactCollision(ball, hitEntity))
             {
                 logger.Trace(" ___ Creating collision with type - {0}, handler - {1}, collider - {2}",
-                    CollisionType.Projectile.ToString(), ball.ToString(), hitEntity.ToString());
+                    CollisionType.ChainContact.ToString(), ball.ToString(), hitEntity.ToString());
                 GameController.HasRecordToLog = true;
 
                 Contexts.sharedInstance.input.CreateEntity()
-                    .AddCollision(CollisionType.Projectile, ball, hitEntity);
+                    .AddCollision(CollisionType.ChainContact, ball, hitEntity);
             }
         }
     }
 
-    private bool IsProjectileCollision(GameEntity projectile, GameEntity collider)
+    private bool IsChainContactCollision(GameEntity frontEdge, GameEntity collider)
     {
-        return projectile.isProjectile && collider.hasBallId;
+        return frontEdge.isFrontEdge && collider.isBackEdge && frontEdge.parentChainId.value != collider.parentChainId.value
+            && frontEdge.hasBallId && collider.hasBallId;
     }
     #endregion
 }

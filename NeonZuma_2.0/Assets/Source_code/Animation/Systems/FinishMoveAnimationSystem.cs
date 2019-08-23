@@ -1,11 +1,16 @@
 ﻿using System.Collections.Generic;
 
+using NLog;
+using Log = NLog.Logger;
+
 using UnityEngine;
 using Entitas;
 
 public class FinishMoveAnimationSystem : ReactiveSystem<GameEntity>
 {
     private Contexts _contexts;
+
+    private static Log logger = LogManager.GetCurrentClassLogger();
 
     public FinishMoveAnimationSystem(Contexts contexts) : base(contexts.game)
     {
@@ -16,10 +21,12 @@ public class FinishMoveAnimationSystem : ReactiveSystem<GameEntity>
     {
         foreach(var animatedBall in entities)
         {
-            animatedBall.isMoveAnimationDone = false;
+            logger.Trace($" ___ Finished animation of object: {animatedBall.ToString()}");
 
-            var animationActions = animatedBall.moveAnimationInfo.completeActions;
-            animatedBall.RemoveMoveAnimationInfo();
+            animatedBall.isAnimationDone = false;
+
+            var animationActions = animatedBall.animationInfo.completeActions;
+            animatedBall.RemoveAnimationInfo();
 
             foreach(var action in animationActions)
             {
@@ -31,11 +38,11 @@ public class FinishMoveAnimationSystem : ReactiveSystem<GameEntity>
 
     protected override bool Filter(GameEntity entity)
     {
-        return entity.isMoveAnimationDone;
+        return entity.isAnimationDone && entity.hasAnimationInfo;
     }
 
     protected override ICollector<GameEntity> GetTrigger(IContext<GameEntity> context)
     {
-        return context.CreateCollector(GameMatcher.MoveAnimationDone);
+        return context.CreateCollector(GameMatcher.AnimationDone);
     }
 }

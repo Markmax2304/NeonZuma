@@ -47,8 +47,11 @@ public class UpdateBallDistanceBySpeedSystem : IExecuteSystem
 
                 for (int i = 0; i < balls.Count; i++)
                 {
-                    float distance = balls[i].distanceBall.value;
-                    balls[i].ReplaceDistanceBall(distance + delta * speed);
+                    if (balls[i].hasBallId)
+                    {
+                        float distance = balls[i].distanceBall.value;
+                        balls[i].ReplaceDistanceBall(distance + delta * speed);
+                    }
                 }
             }
         }

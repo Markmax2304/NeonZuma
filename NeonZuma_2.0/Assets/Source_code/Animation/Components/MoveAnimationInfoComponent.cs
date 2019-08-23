@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 using Entitas;
-using DG.Tweening;
 
 [Game]
-public class MoveAnimationInfoComponent : IComponent
+public class AnimationInfoComponent : IComponent
 {
-    public List<TweenCallback> completeActions;
+    public List<Action> completeActions;
 }

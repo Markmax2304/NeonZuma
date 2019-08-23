@@ -20,7 +20,7 @@ public class GameController : MonoBehaviour
     void Start()
     {
         InitializeLogger();
-        logger.Trace("Initializing Game Controller");
+        logger.Trace("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
 
         Contexts contexts = Contexts.sharedInstance;
 
@@ -66,6 +66,8 @@ public class GameController : MonoBehaviour
 
             //RayCasting
             .Add(new BallRayCastSystem(contexts))
+            //Overlaping
+            .Add(new BallOverlapSystem(contexts))
 
             //Collision of screen
             .Add(new EnteringBallsToScreenSystem(contexts))
@@ -75,8 +77,9 @@ public class GameController : MonoBehaviour
             //Inserting
             .Add(new CollidingAndInsertingProjectileSystem(contexts))
 
-            // TODO: implement Queue of collision event here
-            
+            //Animation finishing
+            .Add(new FinishMoveAnimationSystem(contexts))
+
             //Destroying balls in chain
             .Add(new MatchInsertedBallInChainSystem(contexts))
             .Add(new VisualDestroyingBallsSystem(contexts))
@@ -92,9 +95,10 @@ public class GameController : MonoBehaviour
             //Updating
             .Add(new SetChainEdgesSystem(contexts))
             .Add(new UpdateChainSpeedSystem(contexts))
-            //Animation
-            //.Add(new FinishMoveAnimationSystem(contexts))
-            //.Add(new MoveAnimationControlSystem(contexts))
+
+            //Animation beginning
+            .Add(new MoveAnimationControlSystem(contexts))
+            .Add(new ScaleAnimationControlSystem(contexts))
 
 
             //Colors

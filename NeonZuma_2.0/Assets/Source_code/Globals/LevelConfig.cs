@@ -21,6 +21,7 @@ public class LevelConfig : ScriptableObject
     [Header("Chain fields"), Space]
     public int minLengthSeries = 1;
     public int maxLengthSeries = 6;
+    public float alignBallSpeed = 5f;
 
     [Header("Player fields"), Space]
     public float rotateSpeed = 1f;
@@ -28,7 +29,6 @@ public class LevelConfig : ScriptableObject
 
     [Header("Projectile fields"), Space]
     public float forceSpeed = 5f;
-    public string[] projectileTags;
 }
 
 [System.Serializable]

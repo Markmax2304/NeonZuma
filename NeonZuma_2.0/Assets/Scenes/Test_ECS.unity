@@ -332,8 +332,6 @@ MonoBehaviour:
   targetTags:
   - Ball
   - Projectile
-  - FrontEdge
-  - BackEdge
 --- !u!61 &1838663027
 BoxCollider2D:
   m_ObjectHideFlags: 0

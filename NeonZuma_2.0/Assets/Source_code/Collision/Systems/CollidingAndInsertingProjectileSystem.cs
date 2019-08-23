@@ -13,6 +13,7 @@ public class CollidingAndInsertingProjectileSystem : ReactiveSystem<InputEntity>
 {
     private Contexts _contexts;
     private float ballDiametr;
+    private float insertDuration;
 
     private static Log logger = LogManager.GetCurrentClassLogger();
 
@@ -20,6 +21,7 @@ public class CollidingAndInsertingProjectileSystem : ReactiveSystem<InputEntity>
     {
         _contexts = contexts;
         ballDiametr = _contexts.game.levelConfig.value.ballDiametr;
+        insertDuration = _contexts.game.levelConfig.value.insertDuration;
     }
 
     protected override void Execute(List<InputEntity> entities)
@@ -114,6 +116,7 @@ public class CollidingAndInsertingProjectileSystem : ReactiveSystem<InputEntity>
         {
             track.isUpdateSpeed = true;
             logger.Trace(" ___ Ending animation inserting. Mark track for updating speed");
+            GameController.HasRecordToLog = true;
         }
 
         // first ball
@@ -181,30 +184,24 @@ public class CollidingAndInsertingProjectileSystem : ReactiveSystem<InputEntity>
         entity.AddBallId(Extensions.BallId);
         entity.AddParentChainId(chainId);
 
-        entity.isInsertedBall = true;
-        postChainAction();
+        //entity.isInsertedBall = true;
+        //postChainAction();
 
-        //Vector3 target = pathCreator.path.GetPointAtDistance(distanceBall, EndOfPathInstruction.Stop);
-        //postChainAction += () => entity.isInsertedBall = true;
-        //entity.AddMoveAnimation(insertDuration, target, postChainAction);
-
-        //var tween = entity.transform.value.DOLocalMove(pos, insertDuration);
-        //tween.onComplete = delegate ()
-        //{
-        //    entity.isInsertedBall = true;
-        //    postChainAction();
-        //};
+        Vector3 target = pathCreator.path.GetPointAtDistance(distanceBall, EndOfPathInstruction.Stop);
+        postChainAction += delegate ()
+        {
+            entity.isInsertedBall = true;
+            logger.Trace($" ___ Ending animation inserting. Mark ball as inserted ball: {entity.ToString()}");
+        };
+        entity.AddMoveAnimation(insertDuration, target, postChainAction);
     }
 
     private void AnimateShiftBall(GameEntity ball, float distance, PathCreator pathCreator)
     {
         ball.ReplaceDistanceBall(distance);
 
-        //Vector3 pos = pathCreator.path.GetPointAtDistance(distance, EndOfPathInstruction.Stop);
-        //ball.transform.value.DOLocalMove(pos, insertDuration * 0.9f).onComplete += delegate ()
-        //{
-        //    ball.ReplaceDistanceBall(distance);
-        //};
+        Vector3 pos = pathCreator.path.GetPointAtDistance(distance, EndOfPathInstruction.Stop);
+        ball.AddMoveAnimation(insertDuration, pos, delegate() { });
     }
     #endregion
 }

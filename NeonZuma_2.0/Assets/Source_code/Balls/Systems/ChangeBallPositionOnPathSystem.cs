@@ -28,8 +28,8 @@ public class ChangeBallPositionOnPathSystem : ReactiveSystem<GameEntity>, ITearD
     {
         for(int i = 0; i < entities.Count; i++)
         {
-            //if (entities[i].hasMoveAnimationInfo || entities[i].hasMoveAnimation)
-            //    continue;
+            if (entities[i].hasAnimationInfo || entities[i].hasMoveAnimation || entities[i].hasScaleAnimation)
+                continue;
 
             var chain = GetChain(entities[i].parentChainId.value);
             if(chain == null)

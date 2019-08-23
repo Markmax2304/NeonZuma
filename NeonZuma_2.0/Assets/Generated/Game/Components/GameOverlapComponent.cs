@@ -8,18 +8,18 @@
 //------------------------------------------------------------------------------
 public partial class GameEntity {
 
-    static readonly MoveAnimationDoneComponent moveAnimationDoneComponent = new MoveAnimationDoneComponent();
+    static readonly OverlapComponent overlapComponent = new OverlapComponent();
 
-    public bool isMoveAnimationDone {
-        get { return HasComponent(GameComponentsLookup.MoveAnimationDone); }
+    public bool isOverlap {
+        get { return HasComponent(GameComponentsLookup.Overlap); }
         set {
-            if (value != isMoveAnimationDone) {
-                var index = GameComponentsLookup.MoveAnimationDone;
+            if (value != isOverlap) {
+                var index = GameComponentsLookup.Overlap;
                 if (value) {
                     var componentPool = GetComponentPool(index);
                     var component = componentPool.Count > 0
                             ? componentPool.Pop()
-                            : moveAnimationDoneComponent;
+                            : overlapComponent;
 
                     AddComponent(index, component);
                 } else {
@@ -40,17 +40,17 @@ public partial class GameEntity {
 //------------------------------------------------------------------------------
 public sealed partial class GameMatcher {
 
-    static Entitas.IMatcher<GameEntity> _matcherMoveAnimationDone;
+    static Entitas.IMatcher<GameEntity> _matcherOverlap;
 
-    public static Entitas.IMatcher<GameEntity> MoveAnimationDone {
+    public static Entitas.IMatcher<GameEntity> Overlap {
         get {
-            if (_matcherMoveAnimationDone == null) {
-                var matcher = (Entitas.Matcher<GameEntity>)Entitas.Matcher<GameEntity>.AllOf(GameComponentsLookup.MoveAnimationDone);
+            if (_matcherOverlap == null) {
+                var matcher = (Entitas.Matcher<GameEntity>)Entitas.Matcher<GameEntity>.AllOf(GameComponentsLookup.Overlap);
                 matcher.componentNames = GameComponentsLookup.componentNames;
-                _matcherMoveAnimationDone = matcher;
+                _matcherOverlap = matcher;
             }
 
-            return _matcherMoveAnimationDone;
+            return _matcherOverlap;
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using Entitas;
 
 [Game]
-public class MoveAnimationDoneComponent : IComponent
+public class AnimationDoneComponent : IComponent
 {
 }

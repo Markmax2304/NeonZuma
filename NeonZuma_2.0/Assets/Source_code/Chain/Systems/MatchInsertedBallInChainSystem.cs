@@ -66,7 +66,7 @@ public class MatchInsertedBallInChainSystem : ReactiveSystem<GameEntity>
 
     protected override bool Filter(GameEntity entity)
     {
-        return entity.isInsertedBall && entity.hasParentChainId;
+        return entity.isInsertedBall && entity.hasBallId && entity.hasParentChainId;
     }
 
     protected override ICollector<GameEntity> GetTrigger(IContext<GameEntity> context)

@@ -1,14 +1,20 @@
 ﻿using System.Collections.Generic;
 
+using NLog;
+using Log = NLog.Logger;
+
 using UnityEngine;
 using Entitas;
 using DG.Tweening;
+using System;
 
 public class MoveAnimationControlSystem : ReactiveSystem<GameEntity>
 {
     private Contexts _contexts;
 
     private List<Tween> filledList;
+
+    private static Log logger = LogManager.GetCurrentClassLogger();
 
     public MoveAnimationControlSystem(Contexts contexts) : base(contexts.game)
     {
@@ -19,39 +25,43 @@ public class MoveAnimationControlSystem : ReactiveSystem<GameEntity>
 
     protected override void Execute(List<GameEntity> entities)
     {
-        foreach(var animatedBall in entities)
+        foreach(var animatedEntity in entities)
         {
-            Vector3 target = animatedBall.moveAnimation.target;
-            float duration = animatedBall.moveAnimation.duration;
-            var postAction = animatedBall.moveAnimation.postAction;
-            animatedBall.RemoveMoveAnimation();
+            logger.Trace($" ___ Apply moving animation to object: {animatedEntity.ToString()}");
 
-            var trans = animatedBall.transform.value;
-            var tweens = DOTween.TweensByTarget(trans, false, filledList);
+            Vector3 target = animatedEntity.moveAnimation.target;
+            float duration = animatedEntity.moveAnimation.duration;
+            var postAction = animatedEntity.moveAnimation.postAction;
+            animatedEntity.RemoveMoveAnimation();
 
-            if(tweens == null)
+            var transform = animatedEntity.transform.value;
+            var tweens = DOTween.TweensByTarget(transform, false, filledList);
+
+            if (tweens == null || tweens.Count == 0)
             {
-                animatedBall.AddMoveAnimationInfo(new List<TweenCallback>() { () => postAction() });
-                trans.DOMove(target, duration).onComplete += delegate ()
+                animatedEntity.AddAnimationInfo(new List<Action>() { postAction });
+                transform.DOMove(target, duration).onComplete += delegate ()
                 {
-                    animatedBall.isMoveAnimationDone = true;
-                };
-            }
-            else if(tweens.Count == 1)
-            {
-                Debug.Log("mix animation");
-                animatedBall.moveAnimationInfo.completeActions.Add(() => postAction());
-
-                DOTween.Kill(trans);
-                trans.DOMove(target, duration).onComplete += delegate ()
-                {
-                    animatedBall.isMoveAnimationDone = true;
+                    if (animatedEntity != null)
+                    {
+                        animatedEntity.isAnimationDone = true;
+                        logger.Trace($" ___ Added done animation component to: {animatedEntity.ToString()}");
+                    }
                 };
             }
             else
             {
-                Debug.Log("Failed to set or update animation. Object has more than one tween animations");
-                continue;
+                animatedEntity.animationInfo.completeActions.Add(postAction);
+                DOTween.Kill(transform);
+
+                transform.DOMove(target, duration).onComplete += delegate ()
+                {
+                    if (animatedEntity != null)
+                    {
+                        animatedEntity.isAnimationDone = true;
+                        logger.Trace($" ___ Added done animation component to: {animatedEntity.ToString()}");
+                    }
+                };
             }
         }
     }

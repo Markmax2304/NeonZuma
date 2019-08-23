@@ -46,32 +46,17 @@ public class SetChainEdgesSystem : ReactiveSystem<GameEntity>
 
                 if (balls.Count == 1)
                 {
-                    if(i == chains.Count - 1)
-                    {
-                        balls[0].transform.value.tag = Constants.FRONT_EDGE_BALL_TAG;
-                        UpdateRayCasting(balls[0]);
-                    }
-                    else
-                    {
-                        balls[0].transform.value.tag = Constants.BACK_EDGE_BALL_TAG;
-                        RemoveRayCasting(balls[0]);
-                    }
+                    SetEdgesProperty(balls[0], true, true, true);
                 }
                 else
                 {
                     for (int x = 1; x < balls.Count - 1; x++)
                     {
-                        balls[x].transform.value.tag = Constants.BALL_TAG;
-                        RemoveRayCasting(balls[x]);
+                        SetEdgesProperty(balls[x], false, false, false);
                     }
 
-                    var firstBall = balls.First();
-                    firstBall.transform.value.tag = Constants.FRONT_EDGE_BALL_TAG;
-                    UpdateRayCasting(firstBall);
-
-                    var lastBall = balls.Last();
-                    lastBall.transform.value.tag = Constants.BACK_EDGE_BALL_TAG;
-                    RemoveRayCasting(lastBall);
+                    SetEdgesProperty(balls.First(), true, false, true);
+                    SetEdgesProperty(balls.Last(), false, true, false);
                 }
             }
 
@@ -90,21 +75,20 @@ public class SetChainEdgesSystem : ReactiveSystem<GameEntity>
     }
 
     #region Private Methods
-    private void UpdateRayCasting(GameEntity entity)
+    private void SetEdgesProperty(GameEntity ball, bool front, bool back, bool overlap)
     {
-        if (!entity.hasRayCast)
-        {
-            entity.AddRayCast(entity.transform.value.position);
-            logger.Trace($" ___ Add RayCast component - {entity.ToString()}");
-        }
-    }
+        bool isChange = ball.isOverlap != overlap;
 
-    private void RemoveRayCasting(GameEntity entity)
-    {
-        if (entity.hasRayCast)
+        ball.isFrontEdge = front;
+        ball.isBackEdge = back;
+        ball.isOverlap = overlap;
+
+        if (isChange)
         {
-            entity.RemoveRayCast();
-            logger.Trace($" ___ Remove RayCast component - {entity.ToString()}");
+            if (overlap)
+                logger.Trace($" ___ Add Overlap component - {ball.ToString()}");
+            else
+                logger.Trace($" ___ Remove Overlap component - {ball.ToString()}");
         }
     }
     #endregion

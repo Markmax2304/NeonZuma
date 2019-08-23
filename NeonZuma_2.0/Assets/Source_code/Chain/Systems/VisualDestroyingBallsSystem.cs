@@ -64,9 +64,12 @@ public class VisualDestroyingBallsSystem : ReactiveSystem<GameEntity>, ICleanupS
             for (int i = 0; i < balls.Count; i++)
             {
                 var ball = balls[i];
+                ball.RemoveBallId();
                 ball.RemoveParentChainId();
                 ball.transform.value.tag = Constants.UNTAGGED_TAG;
-                ball.DestroyBall();
+                ball.AddScaleAnimation(destroyDuration, minScale, delegate () { ball.DestroyBall(); });
+
+                //ball.DestroyBall();
                 //ball.transform.value.DOScale(minScale, destroyDuration).onComplete += delegate ()
                 //{
                 //    ball.isDestroyed = true;
@@ -80,7 +83,7 @@ public class VisualDestroyingBallsSystem : ReactiveSystem<GameEntity>, ICleanupS
             }
             else
             {
-                // TODO MAYBE: change cut mark to extacter definition, like place where it should be cutted
+                // TODO MAYBE: change cut mark to exacter definition, like place where it should be cutted
                 logger.Trace($" ___ Mark chain for cutting");
                 chain.isCut = true;
             }
