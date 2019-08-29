@@ -26,14 +26,21 @@ MonoBehaviour:
   - type: 3
     color: {r: 0.9811321, g: 0.97623724, b: 0, a: 1}
   followSpeed: 0.5
-  insertDuration: 0.25
-  destroyAnimationDuration: 0.25
+  insertDuration: 0.15
+  destroyAnimationDuration: 0.2
   ballDiametr: 0.36
   minScaleSize: 0.05
   normalScale: {x: 0.4, y: 0.4, z: 0.4}
   minLengthSeries: 1
-  maxLengthSeries: 6
-  alignBallSpeed: 1
+  maxLengthSeries: 5
+  alignBallAnimationDuration: 0.1
+  moveBackSpeed: 5
+  moveBackDuration: 0.25
+  increaseMoveBackFactor: 0.25
+  gravitateSpeed: 4
+  startSpeed: 5
+  startDuration: 2.5
+  normalSpeedLengthPercent: 0.75
   rotateSpeed: 20
   rechargeTime: 0.5
   forceSpeed: 5

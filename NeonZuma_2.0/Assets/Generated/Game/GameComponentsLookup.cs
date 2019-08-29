@@ -16,39 +16,43 @@ public static class GameComponentsLookup {
     public const int BallId = 5;
     public const int ChainId = 6;
     public const int ChainSpeed = 7;
-    public const int Color = 8;
-    public const int Cut = 9;
-    public const int DeltaTime = 10;
-    public const int Destroyed = 11;
-    public const int DistanceBall = 12;
-    public const int FireAccess = 13;
-    public const int Force = 14;
-    public const int FrontEdge = 15;
-    public const int GroupDestroy = 16;
-    public const int InsertedBall = 17;
-    public const int LevelConfig = 18;
-    public const int MoveAnimation = 19;
-    public const int Overlap = 20;
-    public const int ParentChainId = 21;
-    public const int ParentTrackId = 22;
-    public const int PathCreator = 23;
-    public const int Player = 24;
-    public const int Projectile = 25;
-    public const int Randomizer = 26;
-    public const int RayCast = 27;
-    public const int Recharge = 28;
-    public const int RechargeDistance = 29;
-    public const int RemovedBall = 30;
-    public const int ResetChainEdges = 31;
-    public const int ScaleAnimation = 32;
-    public const int Shoot = 33;
-    public const int SpawnAccess = 34;
-    public const int Sprite = 35;
-    public const int TrackId = 36;
-    public const int Transform = 37;
-    public const int UpdateSpeed = 38;
+    public const int CheckTargetBall = 8;
+    public const int Color = 9;
+    public const int Counter = 10;
+    public const int Cut = 11;
+    public const int DeltaTime = 12;
+    public const int Destroyed = 13;
+    public const int DistanceBall = 14;
+    public const int FireAccess = 15;
+    public const int Force = 16;
+    public const int FrontEdge = 17;
+    public const int GravitateCombo = 18;
+    public const int GroupDestroy = 19;
+    public const int LevelConfig = 20;
+    public const int MoveAnimation = 21;
+    public const int MoveBackCombo = 22;
+    public const int NearToEnd = 23;
+    public const int Overlap = 24;
+    public const int ParentChainId = 25;
+    public const int ParentTrackId = 26;
+    public const int PathCreator = 27;
+    public const int Player = 28;
+    public const int Projectile = 29;
+    public const int Randomizer = 30;
+    public const int RayCast = 31;
+    public const int Recharge = 32;
+    public const int RechargeDistance = 33;
+    public const int RemovedBall = 34;
+    public const int ResetChainEdges = 35;
+    public const int ScaleAnimation = 36;
+    public const int Shoot = 37;
+    public const int SpawnAccess = 38;
+    public const int Sprite = 39;
+    public const int TrackId = 40;
+    public const int Transform = 41;
+    public const int UpdateSpeed = 42;
 
-    public const int TotalComponents = 39;
+    public const int TotalComponents = 43;
 
     public static readonly string[] componentNames = {
         "AddedBall",
@@ -59,7 +63,9 @@ public static class GameComponentsLookup {
         "BallId",
         "ChainId",
         "ChainSpeed",
+        "CheckTargetBall",
         "Color",
+        "Counter",
         "Cut",
         "DeltaTime",
         "Destroyed",
@@ -67,10 +73,12 @@ public static class GameComponentsLookup {
         "FireAccess",
         "Force",
         "FrontEdge",
+        "GravitateCombo",
         "GroupDestroy",
-        "InsertedBall",
         "LevelConfig",
         "MoveAnimation",
+        "MoveBackCombo",
+        "NearToEnd",
         "Overlap",
         "ParentChainId",
         "ParentTrackId",
@@ -101,7 +109,9 @@ public static class GameComponentsLookup {
         typeof(BallId),
         typeof(ChainIdComponent),
         typeof(ChainSpeedComponent),
+        typeof(CheckTargetBallComponent),
         typeof(ColorComponent),
+        typeof(CounterComponent),
         typeof(CutComponent),
         typeof(DeltaTimeComponent),
         typeof(DestroyedComponent),
@@ -109,10 +119,12 @@ public static class GameComponentsLookup {
         typeof(FireAccessComponent),
         typeof(ForceComponent),
         typeof(FrontEdgeComponent),
+        typeof(GravitateComboComponent),
         typeof(GroupDestroyComponent),
-        typeof(InsertedBallComponent),
         typeof(LevelConfigComponent),
         typeof(MoveAnimationComponent),
+        typeof(MoveBackComboComponent),
+        typeof(NearToEndComponent),
         typeof(OverlapComponent),
         typeof(ParentChainId),
         typeof(ParentTrackIdComponent),

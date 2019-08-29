@@ -1,11 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
+using NLog;
+using Log = NLog.Logger;
+
 using Entitas;
 using DG.Tweening;
 using UnityEngine;
 
-public class ShootPlayerSystem : ReactiveSystem<InputEntity>, IInitializeSystem
+public class ShootPlayerSystem : ReactiveSystem<InputEntity>, ITearDownSystem
 {
     private Contexts _contexts;
     private PoolObjectKeeper pool;
@@ -17,19 +20,25 @@ public class ShootPlayerSystem : ReactiveSystem<InputEntity>, IInitializeSystem
     private readonly Vector3 initScale = new Vector3(.01f, .01f, 1f);
     private readonly Vector3 normalScale = new Vector3(.4f, .4f, 1f);
 
+    private static Log logger = LogManager.GetCurrentClassLogger();
+
     public ShootPlayerSystem(Contexts contexts) : base(contexts.input)
     {
         _contexts = contexts;
         pool = PoolManager.instance.GetObjectPoolKeeper(TypeObjectPool.Ball);
+
+        // subscribe to start game event
+        _contexts.manage.startPlayEvent.value.Add(InitializeShootPlayer);
     }
 
-    public void Initialize()
+    public void InitializeShootPlayer()
     {
+        logger.Trace($" ___ Initialize Shoot player system");
         player = _contexts.game.playerEntity.transform.value;
         shootPlace = GameObject.Find("Shoot").transform;
         rechargePlace = GameObject.Find("Recharge").transform;
 
-        _contexts.game.ReplaceRechargeDistance(shootPlace.position - rechargePlace.position);
+        _contexts.game.ReplaceRechargeDistance(shootPlace.localPosition - rechargePlace.localPosition);
 
         CreateRechargeEntity();
         Recharge();
@@ -63,6 +72,12 @@ public class ShootPlayerSystem : ReactiveSystem<InputEntity>, IInitializeSystem
     protected override ICollector<InputEntity> GetTrigger(IContext<InputEntity> context)
     {
         return context.CreateCollector(InputMatcher.AllOf(InputMatcher.TouchPosition, InputMatcher.TouchType));
+    }
+
+    public void TearDown()
+    {
+        if (_contexts.manage.hasStartPlayEvent)
+            _contexts.manage.startPlayEvent.value.Remove(InitializeShootPlayer);
     }
 
     #region Private Methods

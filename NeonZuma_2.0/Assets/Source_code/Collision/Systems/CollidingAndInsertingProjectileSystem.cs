@@ -81,8 +81,12 @@ public class CollidingAndInsertingProjectileSystem : ReactiveSystem<InputEntity>
             {
                 logger.Trace($" ___ Insert projectile behind ball index: {frontBallIndex.ToString()}");
                 GameController.HasRecordToLog = true;
+
                 InsertBall(projectile, frontBallIndex, chain, balls, track);
                 logger.Trace($" ___ Inserted projectile to chain: projectile {projectile.ToString()} in chain {chain.ToString()}");
+
+                // combo
+                _contexts.game.ReplaceMoveBackCombo(0);
             }
             else
             {
@@ -180,17 +184,15 @@ public class CollidingAndInsertingProjectileSystem : ReactiveSystem<InputEntity>
         entity.RemoveRayCast();
         entity.transform.value.tag = Constants.BALL_TAG;
 
-        entity.AddDistanceBall(distanceBall);       // it breaks the animation, need to correct(applied)
+        entity.AddDistanceBall(distanceBall);
         entity.AddBallId(Extensions.BallId);
         entity.AddParentChainId(chainId);
-
-        //entity.isInsertedBall = true;
-        //postChainAction();
+        entity.isAddedBall = true;
 
         Vector3 target = pathCreator.path.GetPointAtDistance(distanceBall, EndOfPathInstruction.Stop);
         postChainAction += delegate ()
         {
-            entity.isInsertedBall = true;
+            entity.isCheckTargetBall = true;
             logger.Trace($" ___ Ending animation inserting. Mark ball as inserted ball: {entity.ToString()}");
         };
         entity.AddMoveAnimation(insertDuration, target, postChainAction);

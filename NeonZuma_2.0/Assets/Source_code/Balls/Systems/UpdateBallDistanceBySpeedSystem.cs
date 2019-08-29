@@ -1,4 +1,6 @@
-﻿using NLog;
+﻿using System.Collections.Generic;
+
+using NLog;
 using Log = NLog.Logger;
 
 using UnityEngine;
@@ -7,12 +9,17 @@ using Entitas;
 public class UpdateBallDistanceBySpeedSystem : IExecuteSystem
 {
     private Contexts _contexts;
+    private Dictionary<int, float> trackLengths;
+    private float trackPercent;
+
+    private bool isUpdated = false;
 
     private static Log logger = LogManager.GetCurrentClassLogger();
 
     public UpdateBallDistanceBySpeedSystem(Contexts contexts)
     {
         _contexts = contexts;
+        trackPercent = _contexts.game.levelConfig.value.normalSpeedLengthPercent;
     }
 
     public void Execute()
@@ -21,9 +28,11 @@ public class UpdateBallDistanceBySpeedSystem : IExecuteSystem
 
         var paths = _contexts.game.GetEntities(GameMatcher.TrackId);
 
+        InitTrackLengths(paths);
+
         foreach(var path in paths)
         {
-            var chains = path.GetChains();
+            var chains = path.GetChains(true);
             if(chains == null)
             {
                 Debug.Log("Failed to update distance ball. Chain collection is null");
@@ -32,28 +41,64 @@ public class UpdateBallDistanceBySpeedSystem : IExecuteSystem
                 continue;
             }
 
-            foreach(var chain in chains)
+            for (int i = 0; i < chains.Count; i++)
             {
-                if (chain == null)
+                if (chains[i] == null)
                     continue;
 
-                float speed = chain.chainSpeed.value;
+                float speed = chains[i].chainSpeed.value;
                 if (speed == 0)
                     continue;
 
-                var balls = chain.GetChainedBalls();
+                var balls = chains[i].GetChainedBalls(true);
                 if (balls == null)
                     continue;
 
-                for (int i = 0; i < balls.Count; i++)
+                for (int j = 0; j < balls.Count; j++)
                 {
-                    if (balls[i].hasBallId)
+                    if (balls[j].hasBallId)
                     {
-                        float distance = balls[i].distanceBall.value;
-                        balls[i].ReplaceDistanceBall(distance + delta * speed);
+                        float distance = balls[j].distanceBall.value;
+                        balls[j].ReplaceDistanceBall(distance + delta * speed);
                     }
                 }
+
+                CheckDistanceToEnd(path, balls[0], speed);
+            }
+
+            isUpdated = false;
+        }
+    }
+
+    #region Private Methods
+    private void InitTrackLengths(GameEntity[] paths)
+    {
+        if (trackLengths == null)
+        {
+            trackLengths = new Dictionary<int, float>();
+            foreach (var track in paths)
+            {
+                trackLengths.Add(track.trackId.value, track.pathCreator.value.path.length);
             }
         }
     }
+
+    private void CheckDistanceToEnd(GameEntity path, GameEntity ball, float speed)
+    {
+        if (!isUpdated && speed > 0)
+        {
+            bool oldNearValue = path.isNearToEnd;
+
+            if (ball.distanceBall.value >= trackLengths[path.trackId.value] * trackPercent)
+                path.isNearToEnd = true;
+            else
+                path.isNearToEnd = false;
+
+            if (oldNearValue != path.isNearToEnd)
+                path.isUpdateSpeed = true;
+
+            isUpdated = true;
+        }
+    }
+    #endregion
 }

@@ -13,7 +13,11 @@ public class ConnectChainsSystem : ReactiveSystem<InputEntity>
 {
     private Contexts _contexts;
     private float ballDiametr;
-    private float animSpeed;       // maybe should use less value
+    private float animDuration;
+
+    private float moveBackSpeed;
+    private float moveBackDuration;
+    private float increaseMoveBack;
 
     private static Log logger = LogManager.GetCurrentClassLogger();
 
@@ -21,7 +25,10 @@ public class ConnectChainsSystem : ReactiveSystem<InputEntity>
     {
         _contexts = contexts;
         ballDiametr = _contexts.game.levelConfig.value.ballDiametr;
-        animSpeed = _contexts.game.levelConfig.value.alignBallSpeed;
+        animDuration = _contexts.game.levelConfig.value.alignBallAnimationDuration;
+        moveBackSpeed = _contexts.game.levelConfig.value.moveBackSpeed;
+        moveBackDuration = _contexts.game.levelConfig.value.moveBackDuration;
+        increaseMoveBack = _contexts.game.levelConfig.value.increaseMoveBackFactor;
     }
 
     protected override void Execute(List<InputEntity> entities)
@@ -68,10 +75,9 @@ public class ConnectChainsSystem : ReactiveSystem<InputEntity>
             }
 
             // start to process connecting
-            frontChain.ReplaceChainSpeed(0);
-            backChain.ReplaceChainSpeed(0);
             var pathCreator = track.pathCreator.value;
             float startDistance = frontEdge.distanceBall.value;
+            bool isCheckMatch = frontEdge.color.value == backEdge.color.value;
 
             for (int i = 0; i < frontBalls.Count; i++)
             {
@@ -79,13 +85,9 @@ public class ConnectChainsSystem : ReactiveSystem<InputEntity>
                 float newDistance = startDistance + ballDiametr * (i + 1);
 
                 if (i == 0)
-                {
                     AnimateShiftBall(frontBalls[i], newDistance, postConnectAction, pathCreator);
-                }
                 else
-                {
                     AnimateShiftBall(frontBalls[i], newDistance, delegate () { }, pathCreator);
-                }
 
                 logger.Trace($" ___ Transfer ball to other chain: {frontBalls[i].ToString()}");
             }
@@ -98,9 +100,36 @@ public class ConnectChainsSystem : ReactiveSystem<InputEntity>
 
             void postConnectAction()
             {
-                track.isUpdateSpeed = true;
-                // TODO: add mark for checking balls matching
-                logger.Trace($" ___ Mark for updating speed after connecting chains");
+                if (isCheckMatch)
+                {
+                    if (frontEdge != null)
+                        frontEdge.isCheckTargetBall = true;
+                    // maybe it's excess
+                    if (backEdge != null)
+                        backEdge.isCheckTargetBall = true;
+
+                    logger.Trace($" ___ Mark both ball as ready to check: {frontEdge.ToString()} and {backEdge.ToString()}");
+
+                    // combo
+                    int combo = _contexts.game.moveBackCombo.value;
+                    _contexts.game.ReplaceMoveBackCombo(combo + 1);
+
+                    // move back
+                    backChain.ReplaceChainSpeed(-moveBackSpeed * (1 + increaseMoveBack * combo));
+                    backChain.AddCounter(moveBackDuration, delegate ()
+                    {
+                        track.isUpdateSpeed = true;
+                        logger.Trace($" ___ Mark for updating speed after connecting chains");
+                    });
+
+                    logger.Trace($" ___ Set move back parameters for chain: {backChain.ToString()}");
+                }
+                else
+                {
+                    _contexts.game.ReplaceMoveBackCombo(0);
+                    track.isUpdateSpeed = true;
+                    logger.Trace($" ___ Mark for updating speed after connecting chains");
+                }
             }
         }
     }
@@ -121,8 +150,7 @@ public class ConnectChainsSystem : ReactiveSystem<InputEntity>
         ball.ReplaceDistanceBall(newDistance);
 
         Vector3 pos = pathCreator.path.GetPointAtDistance(newDistance, EndOfPathInstruction.Stop);
-        float distanceToDestination = Vector3.Distance(ball.transform.value.position, pos);
-        ball.AddMoveAnimation(distanceToDestination / animSpeed, pos, action);
+        ball.AddMoveAnimation(animDuration, pos, action);
     }
     #endregion
 }
