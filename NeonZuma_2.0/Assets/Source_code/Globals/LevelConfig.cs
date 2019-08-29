@@ -13,7 +13,7 @@ public class LevelConfig : ScriptableObject
     public float followSpeed = .5f;
     public float insertDuration = .25f;
     public float destroyAnimationDuration = .25f;
-
+    [Space]
     public float ballDiametr = .36f;
     public float minScaleSize = .05f;
     public Vector3 normalScale = new Vector3(.4f, .4f, .4f);
@@ -21,7 +21,18 @@ public class LevelConfig : ScriptableObject
     [Header("Chain fields"), Space]
     public int minLengthSeries = 1;
     public int maxLengthSeries = 6;
-    public float alignBallSpeed = 5f;
+    [Space]
+    public float alignBallAnimationDuration = 5f;
+    [Space]
+    public float moveBackSpeed = 3f;
+    public float moveBackDuration = .5f;
+    public float increaseMoveBackFactor = .25f;
+    public float gravitateSpeed = 2f;
+    [Space]
+    public float startSpeed = 5f;
+    public float startDuration = 4f;
+    [Space]
+    public float normalSpeedLengthPercent = .75f;
 
     [Header("Player fields"), Space]
     public float rotateSpeed = 1f;

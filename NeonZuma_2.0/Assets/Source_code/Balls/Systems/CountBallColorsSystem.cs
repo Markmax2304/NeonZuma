@@ -46,7 +46,7 @@ public class CountBallColorsSystem : ReactiveSystem<GameEntity>
         if (records.ContainsKey(color))
             records[color]++;
         else
-            records[color] = 1;
+            records.Add(color, 1);
     }
 
     private void DecrementColorRecords(Dictionary<ColorBall, int> records, ColorBall color)

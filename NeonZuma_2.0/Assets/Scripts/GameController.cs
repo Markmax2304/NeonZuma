@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.IO;
+using System.Collections.Generic;
 
 using NLog;
 using UnityEngine;
 using Entitas;
-using System;
-using System.IO;
 
 public class GameController : MonoBehaviour
 {
@@ -24,12 +24,13 @@ public class GameController : MonoBehaviour
 
         Contexts contexts = Contexts.sharedInstance;
 
-        contexts.game.SetLevelConfig(config);
-        contexts.game.SetBallColors(new Dictionary<ColorBall, int>());
-
+        InitializeSingletonComponents(contexts);
         _systems = CreateSystems(contexts);
-
         _systems.Initialize();
+
+        // score combo
+        // TODO: transfer to some systems
+        contexts.game.SetMoveBackCombo(0);
     }
 
     void Update()
@@ -54,6 +55,16 @@ public class GameController : MonoBehaviour
     private void OnDestroy()
     {
         _systems.TearDown();
+
+        // clean up gameobject pools
+    }
+
+    private void InitializeSingletonComponents(Contexts contexts)
+    {
+        contexts.game.SetLevelConfig(config);
+        contexts.game.SetBallColors(new Dictionary<ColorBall, int>());
+        // events
+        contexts.manage.SetStartPlayEvent(new List<Action>());
     }
 
     private Systems CreateSystems(Contexts contexts)
@@ -69,6 +80,12 @@ public class GameController : MonoBehaviour
             //Overlaping
             .Add(new BallOverlapSystem(contexts))
 
+            //Counter
+            .Add(new TickCountersSystem(contexts))
+            
+            //Animation finishing
+            .Add(new FinishMoveAnimationSystem(contexts))
+
             //Collision of screen
             .Add(new EnteringBallsToScreenSystem(contexts))
             .Add(new CollisionObjectDestroySystem(contexts))        //разобраться с этими коллизиями
@@ -76,9 +93,6 @@ public class GameController : MonoBehaviour
             .Add(new ConnectChainsSystem(contexts))
             //Inserting
             .Add(new CollidingAndInsertingProjectileSystem(contexts))
-
-            //Animation finishing
-            .Add(new FinishMoveAnimationSystem(contexts))
 
             //Destroying balls in chain
             .Add(new MatchInsertedBallInChainSystem(contexts))
@@ -94,7 +108,7 @@ public class GameController : MonoBehaviour
 
             //Updating
             .Add(new SetChainEdgesSystem(contexts))
-            .Add(new UpdateChainSpeedSystem(contexts))
+            .Add(new SetChainSpeedSystem(contexts))
 
             //Animation beginning
             .Add(new MoveAnimationControlSystem(contexts))

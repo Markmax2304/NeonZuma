@@ -8,18 +8,18 @@
 //------------------------------------------------------------------------------
 public partial class GameEntity {
 
-    static readonly InsertedBallComponent insertedBallComponent = new InsertedBallComponent();
+    static readonly NearToEndComponent nearToEndComponent = new NearToEndComponent();
 
-    public bool isInsertedBall {
-        get { return HasComponent(GameComponentsLookup.InsertedBall); }
+    public bool isNearToEnd {
+        get { return HasComponent(GameComponentsLookup.NearToEnd); }
         set {
-            if (value != isInsertedBall) {
-                var index = GameComponentsLookup.InsertedBall;
+            if (value != isNearToEnd) {
+                var index = GameComponentsLookup.NearToEnd;
                 if (value) {
                     var componentPool = GetComponentPool(index);
                     var component = componentPool.Count > 0
                             ? componentPool.Pop()
-                            : insertedBallComponent;
+                            : nearToEndComponent;
 
                     AddComponent(index, component);
                 } else {
@@ -40,17 +40,17 @@ public partial class GameEntity {
 //------------------------------------------------------------------------------
 public sealed partial class GameMatcher {
 
-    static Entitas.IMatcher<GameEntity> _matcherInsertedBall;
+    static Entitas.IMatcher<GameEntity> _matcherNearToEnd;
 
-    public static Entitas.IMatcher<GameEntity> InsertedBall {
+    public static Entitas.IMatcher<GameEntity> NearToEnd {
         get {
-            if (_matcherInsertedBall == null) {
-                var matcher = (Entitas.Matcher<GameEntity>)Entitas.Matcher<GameEntity>.AllOf(GameComponentsLookup.InsertedBall);
+            if (_matcherNearToEnd == null) {
+                var matcher = (Entitas.Matcher<GameEntity>)Entitas.Matcher<GameEntity>.AllOf(GameComponentsLookup.NearToEnd);
                 matcher.componentNames = GameComponentsLookup.componentNames;
-                _matcherInsertedBall = matcher;
+                _matcherNearToEnd = matcher;
             }
 
-            return _matcherInsertedBall;
+            return _matcherNearToEnd;
         }
     }
 }

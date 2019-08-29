@@ -21,14 +21,17 @@ public class MatchInsertedBallInChainSystem : ReactiveSystem<GameEntity>
 
     protected override void Execute(List<GameEntity> entities)
     {
-        foreach(var insertedBall in entities)
+        foreach(var checkedBall in entities)
         {
-            logger.Trace($" ___ Start to match around inserted ball: {insertedBall.ToString()}");
+            logger.Trace($" ___ Start to match around inserted ball: {checkedBall.ToString()}");
             GameController.HasRecordToLog = true;
 
-            insertedBall.isInsertedBall = false;
+            if (checkedBall == null)
+                continue;
 
-            var chain = _contexts.game.GetEntitiesWithChainId(insertedBall.parentChainId.value).FirstOrDefault();
+            checkedBall.isCheckTargetBall = false;
+
+            var chain = _contexts.game.GetEntitiesWithChainId(checkedBall.parentChainId.value).FirstOrDefault();
             if(chain == null)
             {
                 Debug.Log("Failed to match inserted ball. Chain is null");
@@ -44,8 +47,8 @@ public class MatchInsertedBallInChainSystem : ReactiveSystem<GameEntity>
                 continue;
             }
 
-            int insertedBallIndex;
-            if(!GetBallIndex(balls, insertedBall, out insertedBallIndex))
+            int checkedBallIndex;
+            if(!GetBallIndex(balls, checkedBall, out checkedBallIndex))
             {
                 Debug.LogError("Failed to match inserted ball. Inserted ball isn't found in ball chain");
                 logger.Error("Failed to match inserted ball. Inserted ball isn't found in ball chain");
@@ -53,25 +56,25 @@ public class MatchInsertedBallInChainSystem : ReactiveSystem<GameEntity>
             }
 
             int count = 0;
-            PassBallsWithSameColor(balls, insertedBall.color.value, insertedBallIndex, (ball) => count++);
+            PassBallsWithSameColor(balls, checkedBall.color.value, checkedBallIndex, (ball) => count++);
 
             if (count >= 3)
             {
                 int destroyId = Extensions.DestroyGroupId;
                 logger.Trace($" ___ Mark balls for destroying. DestroyGroupId - {destroyId.ToString()}. Count of ball - {count.ToString()}");
-                PassBallsWithSameColor(balls, insertedBall.color.value, insertedBallIndex, (ball) => ball.AddGroupDestroy(destroyId));
+                PassBallsWithSameColor(balls, checkedBall.color.value, checkedBallIndex, (ball) => ball.AddGroupDestroy(destroyId));
             }
         }
     }
 
     protected override bool Filter(GameEntity entity)
     {
-        return entity.isInsertedBall && entity.hasBallId && entity.hasParentChainId;
+        return entity.isCheckTargetBall && entity.hasBallId && entity.hasParentChainId && !entity.hasGroupDestroy;
     }
 
     protected override ICollector<GameEntity> GetTrigger(IContext<GameEntity> context)
     {
-        return context.CreateCollector(GameMatcher.InsertedBall);
+        return context.CreateCollector(GameMatcher.CheckTargetBall);
     }
 
     #region Private Methods

@@ -53,10 +53,9 @@ public class BallRayCastSystem : IExecuteSystem
     #region Private Methods
     private void ProcessRayCastCollision(RaycastHit2D[] hits, int count, GameEntity ball)
     {
-        for(int i = 1; i < count; i++)
+        for(int i = 0; i < count; i++)
         {
-            var hitGameObject = hits[i].transform.gameObject;
-            var hitEntity = hitGameObject.GetEntityLink()?.entity;
+            var hitEntity = hits[i].transform.gameObject.GetEntityLink()?.entity;
             if (hitEntity == null)
             {
                 Debug.Log("Failed to create collision entity. Hit entity is null");
@@ -64,6 +63,9 @@ public class BallRayCastSystem : IExecuteSystem
                 GameController.HasRecordToLog = true;
                 return;
             }
+
+            if (hitEntity == ball)
+                continue;
 
             // projectile collistion stuff
             if (IsProjectileCollision(ball, hitEntity))

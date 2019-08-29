@@ -58,22 +58,14 @@ public class VisualDestroyingBallsSystem : ReactiveSystem<GameEntity>, ICleanupS
                 continue;
             }
 
-            logger.Trace($" ___ Reduce chain speed to zero. Chain: {chain.ToString()}");
-            chain.ReplaceChainSpeed(0f);
-
             for (int i = 0; i < balls.Count; i++)
             {
                 var ball = balls[i];
                 ball.RemoveBallId();
                 ball.RemoveParentChainId();
                 ball.transform.value.tag = Constants.UNTAGGED_TAG;
+                ball.isRemovedBall = true;
                 ball.AddScaleAnimation(destroyDuration, minScale, delegate () { ball.DestroyBall(); });
-
-                //ball.DestroyBall();
-                //ball.transform.value.DOScale(minScale, destroyDuration).onComplete += delegate ()
-                //{
-                //    ball.isDestroyed = true;
-                //};
             }
 
             if (chain.GetChainedBalls() == null)

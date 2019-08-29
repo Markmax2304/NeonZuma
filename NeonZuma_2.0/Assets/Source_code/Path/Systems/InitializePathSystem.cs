@@ -26,6 +26,8 @@ public class InitializePathSystem : IInitializeSystem
             int maxLength = _contexts.game.levelConfig.value.maxLengthSeries;
             trackEntity.AddRandomizer(new Randomizer(minLength, maxLength));
             trackEntity.AddTrackId(i);
+
+            // this component is controlling start and further spawn balls
             trackEntity.isSpawnAccess = true;
         }
     }
