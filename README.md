@@ -3,8 +3,8 @@ Zuma clone by Unity for Google Play.
 
 ## Settings of Gameplay level
 <p align="center">
-  <img src="images/settings_1.PNG" alt="Settings">
-  <img src="images/settings_2.PNG" alt="Settings">
+  <img src="images/settings_1.PNG" alt="Settings" width=150>
+  <img src="images/settings_2.PNG" alt="Settings" width=150>
 </p>
 
 ### Prefab Fields
