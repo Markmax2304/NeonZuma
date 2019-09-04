@@ -1,17 +1,12 @@
 ﻿using System.Linq;
 using System.Collections.Generic;
 
-using NLog;
-using Log = NLog.Logger;
-
 using Entitas;
 using UnityEngine;
 
 public class SetChainEdgesSystem : ReactiveSystem<GameEntity>
 {
     private Contexts _contexts;
-
-    private static Log logger = LogManager.GetCurrentClassLogger();
 
     public SetChainEdgesSystem(Contexts contexts) : base(contexts.game)
     {
@@ -22,14 +17,18 @@ public class SetChainEdgesSystem : ReactiveSystem<GameEntity>
     {
         foreach(var track in entities)
         {
-            logger.Trace($" ___ Start setting chain edges and RayCast component. For track - {track.ToString()}");
-            GameController.HasRecordToLog = true;
+            if (_contexts.manage.isDebugAccess)
+            {
+                _contexts.manage.CreateEntity()
+                    .AddLogMessage($" ___ Start setting chain edges and RayCast component. For track - {track.ToString()}", 
+                    TypeLogMessage.Trace, false);
+            }
 
             var chains = track.GetChains(true);
             if(chains == null)
             {
-                Debug.Log("Failed to update chain edges. Chain collection is null");
-                logger.Error("Failed to update chain edges. Chain collection is null");
+                _contexts.manage.CreateEntity()
+                    .AddLogMessage("Failed to update chain edges. Chain collection is null", TypeLogMessage.Error, true);
                 continue;
             }
 
@@ -39,8 +38,8 @@ public class SetChainEdgesSystem : ReactiveSystem<GameEntity>
 
                 if (balls == null)
                 {
-                    Debug.Log("Failed to update chain edges. Some chain is null");
-                    logger.Error("Failed to update chain edges. Some chain is null");
+                    _contexts.manage.CreateEntity()
+                        .AddLogMessage("Failed to update chain edges. Some chain is null", TypeLogMessage.Error, true);
                     continue;
                 }
 
@@ -83,12 +82,11 @@ public class SetChainEdgesSystem : ReactiveSystem<GameEntity>
         ball.isBackEdge = back;
         ball.isOverlap = overlap;
 
-        if (isChange)
+        if (_contexts.manage.isDebugAccess && isChange)
         {
-            if (overlap)
-                logger.Trace($" ___ Add Overlap component - {ball.ToString()}");
-            else
-                logger.Trace($" ___ Remove Overlap component - {ball.ToString()}");
+            _contexts.manage.CreateEntity()
+                .AddLogMessage(overlap ? $" ___ Add Overlap component - {ball.ToString()}"
+                : $" ___ Remove Overlap component - {ball.ToString()}", TypeLogMessage.Trace, false);
         }
     }
     #endregion

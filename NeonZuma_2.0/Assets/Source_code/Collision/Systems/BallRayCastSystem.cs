@@ -1,16 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 
-using NLog;
-using Log = NLog.Logger;
-
 using UnityEngine;
 using Entitas;
 
 public class BallRayCastSystem : IExecuteSystem
 {
-    private static Log logger = LogManager.GetCurrentClassLogger();
-
     private Contexts _contexts;
     private float ballDiametr;
     private LayerMask mask;
@@ -58,9 +53,8 @@ public class BallRayCastSystem : IExecuteSystem
             var hitEntity = hits[i].transform.gameObject.GetEntityLink()?.entity;
             if (hitEntity == null)
             {
-                Debug.Log("Failed to create collision entity. Hit entity is null");
-                logger.Error("Failed to create collision entity. Hit entity is null");
-                GameController.HasRecordToLog = true;
+                _contexts.manage.CreateEntity()
+                    .AddLogMessage("Failed to create collision entity. Hit entity is null", TypeLogMessage.Error, true);
                 return;
             }
 
@@ -70,9 +64,12 @@ public class BallRayCastSystem : IExecuteSystem
             // projectile collistion stuff
             if (IsProjectileCollision(ball, hitEntity))
             {
-                logger.Trace(" ___ Creating collision with type - {0}, handler - {1}, collider - {2}",
-                    CollisionType.Projectile.ToString(), ball.ToString(), hitEntity.ToString());
-                GameController.HasRecordToLog = true;
+                if (_contexts.manage.isDebugAccess)
+                {
+                    _contexts.manage.CreateEntity()
+                        .AddLogMessage(string.Format(" ___ Creating collision with type - {0}, handler - {1}, collider - {2}",
+                        CollisionType.Projectile.ToString(), ball.ToString(), hitEntity.ToString()), TypeLogMessage.Trace, false);
+                }
 
                 Contexts.sharedInstance.input.CreateEntity()
                     .AddCollision(CollisionType.Projectile, ball, hitEntity);

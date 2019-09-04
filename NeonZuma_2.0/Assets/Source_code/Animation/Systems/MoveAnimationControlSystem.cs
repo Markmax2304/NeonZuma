@@ -1,8 +1,5 @@
 ﻿using System.Collections.Generic;
 
-using NLog;
-using Log = NLog.Logger;
-
 using UnityEngine;
 using Entitas;
 using DG.Tweening;
@@ -13,8 +10,6 @@ public class MoveAnimationControlSystem : ReactiveSystem<GameEntity>
     private Contexts _contexts;
 
     private List<Tween> filledList;
-
-    private static Log logger = LogManager.GetCurrentClassLogger();
 
     public MoveAnimationControlSystem(Contexts contexts) : base(contexts.game)
     {
@@ -27,7 +22,11 @@ public class MoveAnimationControlSystem : ReactiveSystem<GameEntity>
     {
         foreach(var animatedEntity in entities)
         {
-            logger.Trace($" ___ Apply moving animation to object: {animatedEntity.ToString()}");
+            if (_contexts.manage.isDebugAccess)
+            {
+                _contexts.manage.CreateEntity()
+                    .AddLogMessage($" ___ Apply moving animation to object: {animatedEntity.ToString()}", TypeLogMessage.Trace, false);
+            }
 
             Vector3 target = animatedEntity.moveAnimation.target;
             float duration = animatedEntity.moveAnimation.duration;
@@ -40,12 +39,18 @@ public class MoveAnimationControlSystem : ReactiveSystem<GameEntity>
             if (tweens == null || tweens.Count == 0)
             {
                 animatedEntity.AddAnimationInfo(new List<Action>() { postAction });
+
                 transform.DOMove(target, duration).onComplete += delegate ()
                 {
                     if (animatedEntity != null)
                     {
                         animatedEntity.isAnimationDone = true;
-                        logger.Trace($" ___ Added done animation component to: {animatedEntity.ToString()}");
+
+                        if (_contexts.manage.isDebugAccess)
+                        {
+                            _contexts.manage.CreateEntity()
+                                .AddLogMessage($" ___ Added done animation component to: {animatedEntity.ToString()}", TypeLogMessage.Trace, false);
+                        }
                     }
                 };
             }
@@ -59,7 +64,12 @@ public class MoveAnimationControlSystem : ReactiveSystem<GameEntity>
                     if (animatedEntity != null)
                     {
                         animatedEntity.isAnimationDone = true;
-                        logger.Trace($" ___ Added done animation component to: {animatedEntity.ToString()}");
+
+                        if (_contexts.manage.isDebugAccess)
+                        {
+                            _contexts.manage.CreateEntity()
+                                .AddLogMessage($" ___ Added done animation component to: {animatedEntity.ToString()}", TypeLogMessage.Trace, false);
+                        }
                     }
                 };
             }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Entitas;
 
-[Game, Input]
+[Game, Input, Manage]
 public class DestroyedComponent : IComponent
 {
     

@@ -8,15 +8,24 @@
 //------------------------------------------------------------------------------
 public static class ManageComponentsLookup {
 
-    public const int StartPlayEvent = 0;
+    public const int DebugAccess = 0;
+    public const int Destroyed = 1;
+    public const int LogMessage = 2;
+    public const int StartPlayEvent = 3;
 
-    public const int TotalComponents = 1;
+    public const int TotalComponents = 4;
 
     public static readonly string[] componentNames = {
+        "DebugAccess",
+        "Destroyed",
+        "LogMessage",
         "StartPlayEvent"
     };
 
     public static readonly System.Type[] componentTypes = {
+        typeof(DebugAccessComponent),
+        typeof(DestroyedComponent),
+        typeof(LogMessageComponent),
         typeof(StartPlayEventComponent)
     };
 }

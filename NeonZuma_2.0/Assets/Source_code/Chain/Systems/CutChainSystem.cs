@@ -1,9 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-using NLog;
-using Log = NLog.Logger;
-
 using Entitas;
 using UnityEngine;
 
@@ -11,8 +8,6 @@ public class CutChainSystem : ReactiveSystem<GameEntity>
 {
     private Contexts _contexts;
     private float ballDiametr;
-
-    private static Log logger = LogManager.GetCurrentClassLogger();
 
     public CutChainSystem(Contexts contexts) : base(contexts.game)
     {
@@ -24,14 +19,17 @@ public class CutChainSystem : ReactiveSystem<GameEntity>
     {
         foreach(var chain in entities)
         {
-            logger.Trace($" ___ Start to cut chain: {chain.ToString()} on other chains");
-            GameController.HasRecordToLog = true;
+            if (_contexts.manage.isDebugAccess)
+            {
+                _contexts.manage.CreateEntity()
+                    .AddLogMessage($" ___ Start to cut chain: {chain.ToString()} on other chains", TypeLogMessage.Trace, false);
+            }
 
             var balls = chain.GetChainedBalls(true);
             if(balls == null)
             {
-                Debug.Log("Failed to cut chain. Chain balls is null");
-                logger.Error("Failed to cut chain. Chain balls is null");
+                _contexts.manage.CreateEntity()
+                    .AddLogMessage("Failed to cut chain. Chain balls is null", TypeLogMessage.Error, true);
                 continue;
             }
 
@@ -41,10 +39,22 @@ public class CutChainSystem : ReactiveSystem<GameEntity>
             {
                 if(balls[i-1].distanceBall.value - balls[i].distanceBall.value > ballDiametr * 1.1f)
                 {
-                    logger.Trace($" ___ Found gap in chian between {balls[i - 1].ToString()} and {balls[i].ToString()}");
+                    if (_contexts.manage.isDebugAccess)
+                    {
+                        _contexts.manage.CreateEntity()
+                            .AddLogMessage($" ___ Found gap in chian between {balls[i - 1].ToString()} and {balls[i].ToString()}", 
+                            TypeLogMessage.Trace, false);
+                    }
+
                     var newChain = CreateEmptyChain(chain.parentTrackId.value);
 
-                    logger.Trace($" ___ Move cutted balls to new chain. Count of balls - {(i - firstIndex).ToString()}");
+                    if (_contexts.manage.isDebugAccess)
+                    {
+                        _contexts.manage.CreateEntity()
+                            .AddLogMessage($" ___ Move cutted balls to new chain. Count of balls - {(i - firstIndex).ToString()}",
+                            TypeLogMessage.Trace, false);
+                    }
+
                     for(int x = firstIndex; x < i; x++)
                     {
                         balls[x].ReplaceParentChainId(newChain.chainId.value);
@@ -59,13 +69,18 @@ public class CutChainSystem : ReactiveSystem<GameEntity>
             var track = _contexts.game.GetEntitiesWithTrackId(chain.parentTrackId.value).FirstOrDefault();
             if(track == null)
             {
-                Debug.Log("Failed to cut chain. Track is null");
-                logger.Error("Failed to cut chain. Track is null");
+                _contexts.manage.CreateEntity()
+                    .AddLogMessage("Failed to cut chain. Track is null", TypeLogMessage.Error, true);
                 continue;
             }
 
             track.isResetChainEdges = true;
-            logger.Trace($" ___ Mark track for updating chain edges");
+
+            if (_contexts.manage.isDebugAccess)
+            {
+                _contexts.manage.CreateEntity()
+                    .AddLogMessage($" ___ Mark track for updating chain edges", TypeLogMessage.Trace, false);
+            }
         }
     }
 
@@ -86,7 +101,13 @@ public class CutChainSystem : ReactiveSystem<GameEntity>
         newChain.AddChainId(Extensions.ChainId);
         newChain.AddParentTrackId(trackId);
         newChain.AddChainSpeed(0f);
-        logger.Trace($" ___ Created new chain {newChain.ToString()}");
+
+        if (_contexts.manage.isDebugAccess)
+        {
+            _contexts.manage.CreateEntity()
+                .AddLogMessage($" ___ Created new chain {newChain.ToString()}", TypeLogMessage.Trace, false);
+        }
+
         return newChain;
     }
     #endregion

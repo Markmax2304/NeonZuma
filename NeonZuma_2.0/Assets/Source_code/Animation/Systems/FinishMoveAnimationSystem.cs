@@ -1,16 +1,11 @@
 ﻿using System.Collections.Generic;
 
-using NLog;
-using Log = NLog.Logger;
-
 using UnityEngine;
 using Entitas;
 
 public class FinishMoveAnimationSystem : ReactiveSystem<GameEntity>
 {
     private Contexts _contexts;
-
-    private static Log logger = LogManager.GetCurrentClassLogger();
 
     public FinishMoveAnimationSystem(Contexts contexts) : base(contexts.game)
     {
@@ -21,8 +16,11 @@ public class FinishMoveAnimationSystem : ReactiveSystem<GameEntity>
     {
         foreach(var animatedBall in entities)
         {
-            logger.Trace($" ___ Finished animation of object: {animatedBall.ToString()}");
-
+            if (_contexts.manage.isDebugAccess)
+            {
+                _contexts.manage.CreateEntity()
+                    .AddLogMessage($" ___ Finished animation of object: {animatedBall.ToString()}", TypeLogMessage.Trace, false);
+            }
             animatedBall.isAnimationDone = false;
 
             var animationActions = animatedBall.animationInfo.completeActions;

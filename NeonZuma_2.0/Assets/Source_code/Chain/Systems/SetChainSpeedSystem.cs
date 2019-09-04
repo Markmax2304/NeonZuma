@@ -1,9 +1,6 @@
 ﻿using System.Linq;
 using System.Collections.Generic;
 
-using NLog;
-using Log = NLog.Logger;
-
 using UnityEngine;
 using Entitas;
 
@@ -14,7 +11,6 @@ public class SetChainSpeedSystem : ReactiveSystem<GameEntity>, IInitializeSystem
     private float gravitateSpeed;
     private float increaseSpeed;
 
-    private static Log logger = LogManager.GetCurrentClassLogger();
     private static Dictionary<int, List<GameEntity>> chainDict = new Dictionary<int, List<GameEntity>>();
 
     public SetChainSpeedSystem(Contexts contexts) : base(contexts.game)
@@ -39,7 +35,12 @@ public class SetChainSpeedSystem : ReactiveSystem<GameEntity>, IInitializeSystem
         var counterEntity = _contexts.game.CreateEntity();
         counterEntity.AddCounter(_contexts.game.levelConfig.value.startDuration, delegate ()
         {
-            logger.Trace($" ___ Recover normal speed. Mark to update speed. And invoke start game event");
+            if (_contexts.manage.isDebugAccess)
+            {
+                _contexts.manage.CreateEntity()
+                    .AddLogMessage($" ___ Recover normal speed. Mark to update speed. And invoke start game event", TypeLogMessage.Trace, false);
+            }
+
             normalChainSpeed = oldNormalSpeed;
 
             foreach(var track in tracks)
@@ -62,16 +63,19 @@ public class SetChainSpeedSystem : ReactiveSystem<GameEntity>, IInitializeSystem
     {
         foreach(var track in entities)
         {
-            logger.Trace($" ___ Update speed of track chains. Track - {track.ToString()}");
-            GameController.HasRecordToLog = true;
+            if (_contexts.manage.isDebugAccess)
+            {
+                _contexts.manage.CreateEntity()
+                    .AddLogMessage($" ___ Update speed of track chains. Track - {track.ToString()}", TypeLogMessage.Trace, false);
+            }
 
             track.isUpdateSpeed = false;
 
             var chains = track.GetChains(true);
             if(chains == null)
             {
-                Debug.Log("Failed to update chains speed. Chain collection is null");
-                logger.Error("Failed to update chains speed. Chain collection is null");
+                _contexts.manage.CreateEntity()
+                    .AddLogMessage("Failed to update chains speed. Chain collection is null", TypeLogMessage.Error, true);
                 continue;
             }
 
@@ -87,8 +91,8 @@ public class SetChainSpeedSystem : ReactiveSystem<GameEntity>, IInitializeSystem
                 var balls = chains[i].GetChainedBalls(true);
                 if(balls == null)
                 {
-                    Debug.Log("Failed to update chains speed. Balls of chain is null");
-                    logger.Error("Failed to update chains speed. Balls of chain is null");
+                    _contexts.manage.CreateEntity()
+                        .AddLogMessage("Failed to update chains speed. Balls of chain is null", TypeLogMessage.Error, true);
                     return;
                 }
 

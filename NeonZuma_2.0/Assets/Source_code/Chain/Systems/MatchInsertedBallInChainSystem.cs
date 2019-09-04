@@ -2,17 +2,12 @@
 using System.Linq;
 using System.Collections.Generic;
 
-using NLog;
-using Log = NLog.Logger;
-
 using UnityEngine;
 using Entitas;
 
 public class MatchInsertedBallInChainSystem : ReactiveSystem<GameEntity>
 {
     private Contexts _contexts;
-
-    private static Log logger = LogManager.GetCurrentClassLogger();
 
     public MatchInsertedBallInChainSystem(Contexts contexts) : base(contexts.game)
     {
@@ -23,8 +18,11 @@ public class MatchInsertedBallInChainSystem : ReactiveSystem<GameEntity>
     {
         foreach(var checkedBall in entities)
         {
-            logger.Trace($" ___ Start to match around inserted ball: {checkedBall.ToString()}");
-            GameController.HasRecordToLog = true;
+            if (_contexts.manage.isDebugAccess)
+            {
+                _contexts.manage.CreateEntity()
+                    .AddLogMessage($" ___ Start to match around inserted ball: {checkedBall.ToString()}", TypeLogMessage.Trace, false);
+            }
 
             if (checkedBall == null)
                 continue;
@@ -34,24 +32,24 @@ public class MatchInsertedBallInChainSystem : ReactiveSystem<GameEntity>
             var chain = _contexts.game.GetEntitiesWithChainId(checkedBall.parentChainId.value).FirstOrDefault();
             if(chain == null)
             {
-                Debug.Log("Failed to match inserted ball. Chain is null");
-                logger.Error("Failed to match inserted ball. Chain is null");
+                _contexts.manage.CreateEntity()
+                    .AddLogMessage("Failed to match inserted ball. Chain is null", TypeLogMessage.Error, true);
                 continue;
             }
 
             var balls = chain.GetChainedBalls(true);
             if(balls == null)
             {
-                Debug.Log("Failed to match inserted ball. Balls is null");
-                logger.Error("Failed to match inserted ball. Balls is null");
+                _contexts.manage.CreateEntity()
+                    .AddLogMessage("Failed to match inserted ball. Balls is null", TypeLogMessage.Error, true);
                 continue;
             }
 
             int checkedBallIndex;
             if(!GetBallIndex(balls, checkedBall, out checkedBallIndex))
             {
-                Debug.LogError("Failed to match inserted ball. Inserted ball isn't found in ball chain");
-                logger.Error("Failed to match inserted ball. Inserted ball isn't found in ball chain");
+                _contexts.manage.CreateEntity()
+                    .AddLogMessage("Failed to match inserted ball. Inserted ball isn't found in ball chain", TypeLogMessage.Error, true);
                 continue;
             }
 
@@ -61,7 +59,14 @@ public class MatchInsertedBallInChainSystem : ReactiveSystem<GameEntity>
             if (count >= 3)
             {
                 int destroyId = Extensions.DestroyGroupId;
-                logger.Trace($" ___ Mark balls for destroying. DestroyGroupId - {destroyId.ToString()}. Count of ball - {count.ToString()}");
+
+                if (_contexts.manage.isDebugAccess)
+                {
+                    _contexts.manage.CreateEntity()
+                        .AddLogMessage($" ___ Mark balls for destroying. DestroyGroupId - {destroyId.ToString()}. Count of ball - {count.ToString()}",
+                        TypeLogMessage.Trace, false);
+                }
+
                 PassBallsWithSameColor(balls, checkedBall.color.value, checkedBallIndex, (ball) => ball.AddGroupDestroy(destroyId));
             }
         }

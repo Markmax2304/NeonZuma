@@ -1,9 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-using NLog;
-using Log = NLog.Logger;
-
 using UnityEngine;
 using Entitas;
 using DG.Tweening;
@@ -14,8 +11,6 @@ public class VisualDestroyingBallsSystem : ReactiveSystem<GameEntity>, ICleanupS
     private Dictionary<int, List<GameEntity>> destroyGroups;
     private float destroyDuration;
     private float minScale;
-
-    private static Log logger = LogManager.GetCurrentClassLogger();
 
     public VisualDestroyingBallsSystem(Contexts contexts) : base(contexts.game)
     {
@@ -39,22 +34,26 @@ public class VisualDestroyingBallsSystem : ReactiveSystem<GameEntity>, ICleanupS
 
         foreach (var balls in destroyGroups.Values)
         {
-            logger.Trace($" ___ Destroy balls with goupId {balls[0].groupDestroy.value}");
-            GameController.HasRecordToLog = true;
+            if (_contexts.manage.isDebugAccess)
+            {
+                _contexts.manage.CreateEntity()
+                    .AddLogMessage($" ___ Destroy balls with goupId {balls[0].groupDestroy.value}", TypeLogMessage.Trace, false);
+            }
 
             var chain = _contexts.game.GetEntitiesWithChainId(balls.First().parentChainId.value).FirstOrDefault();
-            if(chain == null)
+            if (chain == null)
             {
-                Debug.Log("Failed to destroying grouped balls. Chain is null");
-                logger.Error("Failed to destroying grouped balls. Chain is null");
+                _contexts.manage.CreateEntity()
+                    .AddLogMessage("Failed to destroying grouped balls. Chain is null", TypeLogMessage.Error, true);
                 continue;
             }
 
             var track = _contexts.game.GetEntitiesWithTrackId(chain.parentTrackId.value).FirstOrDefault();
             if (track == null)
             {
-                Debug.Log("Failed to mark for recover chain speed during destroying balls. Track request return null");
-                logger.Error("Failed to mark for recover chain speed during destroying balls. Track request return null");
+                _contexts.manage.CreateEntity()
+                    .AddLogMessage("Failed to mark for recover chain speed during destroying balls. Track request return null",
+                    TypeLogMessage.Error, true);
                 continue;
             }
 
@@ -70,18 +69,33 @@ public class VisualDestroyingBallsSystem : ReactiveSystem<GameEntity>, ICleanupS
 
             if (chain.GetChainedBalls() == null)
             {
-                logger.Trace($" ___ All of chain balls is destroyed. Destroy the chain: {chain.ToString()}");
+                if (_contexts.manage.isDebugAccess)
+                {
+                    _contexts.manage.CreateEntity()
+                        .AddLogMessage($" ___ All of chain balls is destroyed. Destroy the chain: {chain.ToString()}", TypeLogMessage.Trace, false);
+                }
+
                 chain.Destroy();
             }
             else
             {
                 // TODO MAYBE: change cut mark to exacter definition, like place where it should be cutted
-                logger.Trace($" ___ Mark chain for cutting");
+                if (_contexts.manage.isDebugAccess)
+                {
+                    _contexts.manage.CreateEntity()
+                        .AddLogMessage($" ___ Mark chain for cutting", TypeLogMessage.Trace, false);
+                }
+
                 chain.isCut = true;
             }
 
             track.isUpdateSpeed = true;
-            logger.Trace($" ___ Mark track for updating speed");
+
+            if (_contexts.manage.isDebugAccess)
+            {
+                _contexts.manage.CreateEntity()
+                    .AddLogMessage($" ___ Mark track for updating speed", TypeLogMessage.Trace, false);
+            }
         }
     }
 

@@ -1,16 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 
-using NLog;
-using Log = NLog.Logger;
-
 using UnityEngine;
 using Entitas;
 
 public class BallOverlapSystem : IExecuteSystem
 {
-    private static Log logger = LogManager.GetCurrentClassLogger();
-
     private Contexts _contexts;
     private float overlapRadius;
     private LayerMask mask;
@@ -50,9 +45,8 @@ public class BallOverlapSystem : IExecuteSystem
             var hitEntity = hits[i].transform.gameObject.GetEntityLink()?.entity;
             if (hitEntity == null)
             {
-                Debug.Log("Failed to create collision entity. Hit entity is null");
-                logger.Error("Failed to create collision entity. Hit entity is null");
-                GameController.HasRecordToLog = true;
+                _contexts.manage.CreateEntity()
+                    .AddLogMessage("Failed to create collision entity. Hit entity is null", TypeLogMessage.Error, true);
                 return;
             }
 
@@ -62,9 +56,12 @@ public class BallOverlapSystem : IExecuteSystem
             // chain edges collision stuff
             if (IsChainContactCollision(ball, hitEntity))
             {
-                logger.Trace(" ___ Creating collision with type - {0}, handler - {1}, collider - {2}",
-                    CollisionType.ChainContact.ToString(), ball.ToString(), hitEntity.ToString());
-                GameController.HasRecordToLog = true;
+                if (_contexts.manage.isDebugAccess)
+                {
+                    _contexts.manage.CreateEntity()
+                        .AddLogMessage(string.Format(" ___ Creating collision with type - {0}, handler - {1}, collider - {2}",
+                        CollisionType.ChainContact.ToString(), ball.ToString(), hitEntity.ToString()), TypeLogMessage.Trace, false);
+                }
 
                 Contexts.sharedInstance.input.CreateEntity()
                     .AddCollision(CollisionType.ChainContact, ball, hitEntity);

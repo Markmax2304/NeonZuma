@@ -1,8 +1,5 @@
 ﻿using System.Linq;
 
-using NLog;
-using Log = NLog.Logger;
-
 using UnityEngine;
 using Entitas;
 
@@ -13,10 +10,8 @@ public class CheckAndSpawnBallSystem : IExecuteSystem
     private PoolObjectKeeper pool;
     private Vector3 normalScale;
 
-    private const int clockOverflow = 6;          // increase performance
+    private const int clockOverflow = 4;          // increase performance
     private int clock = clockOverflow;
-
-    private static Log logger = LogManager.GetCurrentClassLogger();
 
     public CheckAndSpawnBallSystem(Contexts contexts)
     {
@@ -34,21 +29,15 @@ public class CheckAndSpawnBallSystem : IExecuteSystem
         else
             clock = 0;
 
-        //logger.Trace($" ___ Start to verify possibility for spawn new ball");
         var tracks = _contexts.game.GetEntities(GameMatcher.TrackId);
 
         for(int i = 0; i < tracks.Length; i++)
         {
             if (!tracks[i].isSpawnAccess)
-            {
-                logger.Trace($" ___ SpawnAccess is false. Let pass spawn verification for track: {tracks[i].ToString()}");
-                GameController.HasRecordToLog = true;
                 continue;
-            }
 
             var lastChain = tracks[i].GetChains(true)?.LastOrDefault();
             var lastBall = lastChain?.GetChainedBalls(true)?.LastOrDefault();
-            //logger.Trace($" ___ Getting the last ball of track. Last ball - {lastBall?.ToString()}");
 
             if (lastBall != null)
             {
@@ -82,7 +71,12 @@ public class CheckAndSpawnBallSystem : IExecuteSystem
             lastChain.AddChainId(Extensions.ChainId);
             lastChain.AddParentTrackId(track.trackId.value);
             lastChain.AddChainSpeed(_contexts.game.levelConfig.value.followSpeed);
-            logger.Trace($" ___ Created new chain: {lastChain.ToString()}");
+
+            if (_contexts.manage.isDebugAccess)
+            {
+                _contexts.manage.CreateEntity()
+                    .AddLogMessage($" ___ Created new chain: {lastChain.ToString()}", TypeLogMessage.Trace, false);
+            }
         }
         else
         {
@@ -91,8 +85,12 @@ public class CheckAndSpawnBallSystem : IExecuteSystem
 
         CreateBall(track, lastChain, distance);
         track.isResetChainEdges = true;
-        logger.Trace(" ___ Mark track for updating chain edges");
-        GameController.HasRecordToLog = true;
+
+        if (_contexts.manage.isDebugAccess)
+        {
+            _contexts.manage.CreateEntity()
+                .AddLogMessage(" ___ Mark track for updating chain edges", TypeLogMessage.Trace, false);
+        }
     }
 
     private void CreateBall(GameEntity track, GameEntity chain, float distance)
@@ -112,7 +110,11 @@ public class CheckAndSpawnBallSystem : IExecuteSystem
         ball.tag = Constants.BALL_TAG;
         ball.gameObject.Link(entityBall, _contexts.game);
 
-        logger.Trace($" ___ Created new ball in chain: {entityBall.ToString()}");
+        if (_contexts.manage.isDebugAccess)
+        {
+            _contexts.manage.CreateEntity()
+                .AddLogMessage($" ___ Created new ball in chain: {entityBall.ToString()}", TypeLogMessage.Trace, false);
+        }
     }
     #endregion
 }

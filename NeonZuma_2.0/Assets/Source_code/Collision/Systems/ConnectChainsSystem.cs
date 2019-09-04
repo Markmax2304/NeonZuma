@@ -1,9 +1,6 @@
 ﻿using System.Linq;
 using System.Collections.Generic;
 
-using NLog;
-using Log = NLog.Logger;
-
 using UnityEngine;
 using Entitas;
 using PathCreation;
@@ -18,8 +15,6 @@ public class ConnectChainsSystem : ReactiveSystem<InputEntity>
     private float moveBackSpeed;
     private float moveBackDuration;
     private float increaseMoveBack;
-
-    private static Log logger = LogManager.GetCurrentClassLogger();
 
     public ConnectChainsSystem(Contexts contexts) : base(contexts.input)
     {
@@ -40,38 +35,38 @@ public class ConnectChainsSystem : ReactiveSystem<InputEntity>
 
             if (frontEdge == null || backEdge == null)
             {
-                Debug.Log("Failed to connect chain. Collision's entities is null");
-                logger.Error("Failed to connect chain. Collision's entities is null");
-                GameController.HasRecordToLog = true;
+                _contexts.manage.CreateEntity()
+                    .AddLogMessage("Failed to connect chain. Collision's entities is null", TypeLogMessage.Error, true);
                 continue;
             }
 
-            logger.Trace($" ___ Connect two chains in one. Front and back edges: {frontEdge.ToString()} and {backEdge.ToString()}");
-            GameController.HasRecordToLog = true;
+            if (_contexts.manage.isDebugAccess)
+            {
+                _contexts.manage.CreateEntity()
+                    .AddLogMessage($" ___ Connect two chains in one. Front and back edges: {frontEdge.ToString()} and {backEdge.ToString()}",
+                    TypeLogMessage.Trace, false);
+            }
 
             var frontChain = _contexts.game.GetEntitiesWithChainId(backEdge.parentChainId.value).FirstOrDefault();
             var backChain = _contexts.game.GetEntitiesWithChainId(frontEdge.parentChainId.value).FirstOrDefault();
             if(frontChain == null || backChain == null)
             {
-                Debug.Log("Failed to conncet chain. front or back chain is null");
-                logger.Error("Failed to conncet chain. front or back chain is null");
-                continue;
+                _contexts.manage.CreateEntity()
+                    .AddLogMessage("Failed to conncet chain. front or back chain is null", TypeLogMessage.Error, true);
             }
 
             var track = _contexts.game.GetEntitiesWithTrackId(backChain.parentTrackId.value).FirstOrDefault();
             if(track == null)
             {
-                Debug.Log("Failed to connect chain. track of chains is null");
-                logger.Error("Failed to connect chain. track of chains is null");
-                continue;
+                _contexts.manage.CreateEntity()
+                    .AddLogMessage("Failed to connect chain. track of chains is null", TypeLogMessage.Error, true);
             }
 
             var frontBalls = frontChain.GetChainedBalls(true, true);
             if(frontBalls == null)
             {
-                Debug.Log("Failed to conncet chain. front balls is null");
-                logger.Error("Failed to conncet chain. front balls is null");
-                continue;
+                _contexts.manage.CreateEntity()
+                    .AddLogMessage("Failed to conncet chain. front balls is null", TypeLogMessage.Error, true);
             }
 
             // start to process connecting
@@ -89,12 +84,21 @@ public class ConnectChainsSystem : ReactiveSystem<InputEntity>
                 else
                     AnimateShiftBall(frontBalls[i], newDistance, delegate () { }, pathCreator);
 
-                logger.Trace($" ___ Transfer ball to other chain: {frontBalls[i].ToString()}");
+                if (_contexts.manage.isDebugAccess)
+                {
+                    _contexts.manage.CreateEntity()
+                        .AddLogMessage($" ___ Transfer ball to other chain: {frontBalls[i].ToString()}", TypeLogMessage.Trace, false);
+                }
             }
 
             track.isResetChainEdges = true;
-            logger.Trace($" ___ Update track: {track.ToString()}");
-            logger.Trace($" ___ And destroy chain: {frontChain.ToString()}");
+
+            if (_contexts.manage.isDebugAccess)
+            {
+                _contexts.manage.CreateEntity().AddLogMessage($" ___ Update track: {track.ToString()}", TypeLogMessage.Trace, false);
+                _contexts.manage.CreateEntity().AddLogMessage($" ___ And destroy chain: {frontChain.ToString()}", TypeLogMessage.Trace, false);
+            }
+
             frontChain.Destroy();
             coll.isDestroyed = true;
 
@@ -108,7 +112,11 @@ public class ConnectChainsSystem : ReactiveSystem<InputEntity>
                     if (backEdge != null)
                         backEdge.isCheckTargetBall = true;
 
-                    logger.Trace($" ___ Mark both ball as ready to check: {frontEdge.ToString()} and {backEdge.ToString()}");
+                    if (_contexts.manage.isDebugAccess)
+                    {
+                        _contexts.manage.CreateEntity()
+                            .AddLogMessage($" ___ Mark both ball as ready to check: {frontEdge.ToString()} and {backEdge.ToString()}", TypeLogMessage.Trace, false);
+                    }
 
                     // combo
                     int combo = _contexts.game.moveBackCombo.value;
@@ -119,16 +127,27 @@ public class ConnectChainsSystem : ReactiveSystem<InputEntity>
                     backChain.AddCounter(moveBackDuration, delegate ()
                     {
                         track.isUpdateSpeed = true;
-                        logger.Trace($" ___ Mark for updating speed after connecting chains");
+                        if (_contexts.manage.isDebugAccess)
+                        {
+                            _contexts.manage.CreateEntity()
+                                .AddLogMessage($" ___ Mark for updating speed after connecting chains", TypeLogMessage.Trace, false);
+                        }
                     });
 
-                    logger.Trace($" ___ Set move back parameters for chain: {backChain.ToString()}");
+                    if (_contexts.manage.isDebugAccess)
+                    {
+                        _contexts.manage.CreateEntity()
+                            .AddLogMessage($" ___ Set move back parameters for chain: {backChain.ToString()}", TypeLogMessage.Trace, false);
+                    }
                 }
                 else
                 {
                     _contexts.game.ReplaceMoveBackCombo(0);
                     track.isUpdateSpeed = true;
-                    logger.Trace($" ___ Mark for updating speed after connecting chains");
+                    if (_contexts.manage.isDebugAccess)
+                    {
+                        _contexts.manage.CreateEntity().AddLogMessage($" ___ Mark for updating speed after connecting chains", TypeLogMessage.Trace, false);
+                    }
                 }
             }
         }

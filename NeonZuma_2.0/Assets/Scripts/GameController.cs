@@ -8,6 +8,7 @@ using Entitas;
 
 public class GameController : MonoBehaviour
 {
+    public bool isDebug = false;
     public LevelConfig config;
 
     private Systems _systems;
@@ -15,12 +16,14 @@ public class GameController : MonoBehaviour
     private static string tempFolder;
     private NLog.Logger logger;
 
-    public static bool HasRecordToLog { get; set; } = true;
-
     void Start()
     {
+
         InitializeLogger();
-        logger.Trace("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+        if (isDebug) 
+        {
+            logger.Trace("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+        }
 
         Contexts contexts = Contexts.sharedInstance;
 
@@ -37,12 +40,6 @@ public class GameController : MonoBehaviour
     {
         try
         {
-            if (HasRecordToLog)
-            {
-                logger.Trace("\n\n\n\t\t *** START NEW FRAME *** \n\n");
-                HasRecordToLog = false;
-            }
-
             _systems.Execute();
             _systems.Cleanup();
         }
@@ -63,6 +60,7 @@ public class GameController : MonoBehaviour
     {
         contexts.game.SetLevelConfig(config);
         contexts.game.SetBallColors(new Dictionary<ColorBall, int>());
+        contexts.manage.isDebugAccess = isDebug;
         // events
         contexts.manage.SetStartPlayEvent(new List<Action>());
     }
@@ -130,9 +128,14 @@ public class GameController : MonoBehaviour
             .Add(new ShootingForceSystem(contexts))
 
 
+            // Log recording
+            .Add(new RecordLogMessageSystem(contexts))
+
+
             //CleanUp
             .Add(new DestroyInputEntityHandleSystem(contexts))
             .Add(new DestroyGameEntityHandleSystem(contexts))
+            .Add(new DestroyManageEntityHandleSystem(contexts))
             ;
     }
 

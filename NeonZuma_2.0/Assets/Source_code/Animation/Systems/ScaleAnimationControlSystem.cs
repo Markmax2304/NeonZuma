@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using NLog;
-using Log = NLog.Logger;
-
 using UnityEngine;
 using Entitas;
 using DG.Tweening;
@@ -13,8 +10,6 @@ public class ScaleAnimationControlSystem : ReactiveSystem<GameEntity>
     private Contexts _contexts;
 
     private List<Tween> filledList;
-
-    private static Log logger = LogManager.GetCurrentClassLogger();
 
     public ScaleAnimationControlSystem(Contexts contexts) : base(contexts.game)
     {
@@ -27,7 +22,11 @@ public class ScaleAnimationControlSystem : ReactiveSystem<GameEntity>
     {
         foreach(var scaledEntity in entities)
         {
-            logger.Trace($" ___ Apply scaling animation to object: {scaledEntity.ToString()}");
+            if (_contexts.manage.isDebugAccess)
+            {
+                _contexts.manage.CreateEntity()
+                    .AddLogMessage($" ___ Apply scaling animation to object: {scaledEntity.ToString()}", TypeLogMessage.Trace, false);
+            }
 
             float targetScale = scaledEntity.scaleAnimation.targetScale;
             float duration = scaledEntity.scaleAnimation.duration;
@@ -40,12 +39,18 @@ public class ScaleAnimationControlSystem : ReactiveSystem<GameEntity>
             if (tweens == null || tweens.Count == 0)
             {
                 scaledEntity.AddAnimationInfo(new List<Action>() { postAction });
+
                 transform.DOScale(targetScale, duration).onComplete += delegate ()
                 {
                     if (scaledEntity != null)
                     {
                         scaledEntity.isAnimationDone = true;
-                        logger.Trace($" ___ Added done animation component to: {scaledEntity.ToString()}");
+
+                        if (_contexts.manage.isDebugAccess)
+                        {
+                            _contexts.manage.CreateEntity()
+                                .AddLogMessage($" ___ Added done animation component to: {scaledEntity.ToString()}", TypeLogMessage.Trace, false);
+                        }
                     }
                 };
             }
@@ -59,7 +64,12 @@ public class ScaleAnimationControlSystem : ReactiveSystem<GameEntity>
                     if (scaledEntity != null)
                     {
                         scaledEntity.isAnimationDone = true;
-                        logger.Trace($" ___ Added done animation component to: {scaledEntity.ToString()}");
+
+                        if (_contexts.manage.isDebugAccess)
+                        {
+                            _contexts.manage.CreateEntity()
+                                .AddLogMessage($" ___ Added done animation component to: {scaledEntity.ToString()}", TypeLogMessage.Trace, false);
+                        }
                     }
                 };
             }

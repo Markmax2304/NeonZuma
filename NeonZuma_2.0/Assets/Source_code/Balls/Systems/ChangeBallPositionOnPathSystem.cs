@@ -1,9 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 
-using NLog;
-using Log = NLog.Logger;
-
 using UnityEngine;
 using Entitas;
 using PathCreation;
@@ -14,8 +11,6 @@ public class ChangeBallPositionOnPathSystem : ReactiveSystem<GameEntity>, ITearD
     private Contexts _contexts;
     private Dictionary<int, GameEntity> chains;
     private Dictionary<int, GameEntity> tracks;
-
-    private static Log logger = LogManager.GetCurrentClassLogger();
 
     public ChangeBallPositionOnPathSystem(Contexts contexts) : base(contexts.game)
     {
@@ -34,18 +29,16 @@ public class ChangeBallPositionOnPathSystem : ReactiveSystem<GameEntity>, ITearD
             var chain = GetChain(entities[i].parentChainId.value);
             if(chain == null)
             {
-                Debug.Log($"Failed to change disntace ball. Chain is null");
-                logger.Error($"Failed to change disntace ball. Chain is null");
-                GameController.HasRecordToLog = true;
+                _contexts.manage.CreateEntity()
+                    .AddLogMessage($"Failed to change disntace ball. Chain is null", TypeLogMessage.Error, true);
                 continue;
             }
 
             var track = GetTrack(chain.parentTrackId.value);
             if (track == null)
             {
-                Debug.Log($"Failed to change disntace ball. Track is null");
-                logger.Error($"Failed to change disntace ball. Track is null");
-                GameController.HasRecordToLog = true;
+                _contexts.manage.CreateEntity()
+                    .AddLogMessage($"Failed to change disntace ball. Track is null", TypeLogMessage.Error, true);
                 continue;
             }
 

@@ -1,14 +1,9 @@
-﻿using NLog;
-using Log = NLog.Logger;
-
-using UnityEngine;
+﻿using UnityEngine;
 using Entitas;
 
 public class TickCountersSystem : IExecuteSystem
 {
     private Contexts _contexts;
-
-    private static Log logger = LogManager.GetCurrentClassLogger();
 
     public TickCountersSystem(Contexts contexts)
     {
@@ -28,7 +23,12 @@ public class TickCountersSystem : IExecuteSystem
             {
                 counterEntity.counter.postAction();
                 counterEntity.RemoveCounter();
-                logger.Trace($" ___ Finished counter of - {counterEntity.ToString()}");
+
+                if (_contexts.manage.isDebugAccess)
+                {
+                    _contexts.manage.CreateEntity()
+                        .AddLogMessage($" ___ Finished counter of - {counterEntity.ToString()}", TypeLogMessage.Trace, false);
+                }
             }
             else
             {
