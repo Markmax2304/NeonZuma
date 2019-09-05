@@ -34,8 +34,8 @@ MonoBehaviour:
   minLengthSeries: 1
   maxLengthSeries: 5
   alignBallAnimationDuration: 0.1
-  moveBackSpeed: 5
-  moveBackDuration: 0.25
+  moveBackSpeed: 7
+  moveBackDuration: 0.1
   increaseMoveBackFactor: 0.25
   gravitateSpeed: 4
   startSpeed: 10
