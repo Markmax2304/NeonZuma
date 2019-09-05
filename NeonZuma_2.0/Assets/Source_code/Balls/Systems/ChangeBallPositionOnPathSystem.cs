@@ -30,7 +30,7 @@ public class ChangeBallPositionOnPathSystem : ReactiveSystem<GameEntity>, ITearD
             if(chain == null)
             {
                 _contexts.manage.CreateEntity()
-                    .AddLogMessage($"Failed to change disntace ball. Chain is null", TypeLogMessage.Error, true);
+                    .AddLogMessage($"Failed to change disntace ball. Chain is null", TypeLogMessage.Error, true, GetType());
                 continue;
             }
 
@@ -38,7 +38,7 @@ public class ChangeBallPositionOnPathSystem : ReactiveSystem<GameEntity>, ITearD
             if (track == null)
             {
                 _contexts.manage.CreateEntity()
-                    .AddLogMessage($"Failed to change disntace ball. Track is null", TypeLogMessage.Error, true);
+                    .AddLogMessage($"Failed to change disntace ball. Track is null", TypeLogMessage.Error, true, GetType());
                 continue;
             }
 

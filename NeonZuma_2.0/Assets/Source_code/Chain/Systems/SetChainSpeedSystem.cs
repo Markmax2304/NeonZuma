@@ -38,7 +38,8 @@ public class SetChainSpeedSystem : ReactiveSystem<GameEntity>, IInitializeSystem
             if (_contexts.manage.isDebugAccess)
             {
                 _contexts.manage.CreateEntity()
-                    .AddLogMessage($" ___ Recover normal speed. Mark to update speed. And invoke start game event", TypeLogMessage.Trace, false);
+                    .AddLogMessage($" ___ Recover normal speed. Mark to update speed. And invoke start game event", 
+                    TypeLogMessage.Trace, false, GetType());
             }
 
             normalChainSpeed = oldNormalSpeed;
@@ -66,7 +67,7 @@ public class SetChainSpeedSystem : ReactiveSystem<GameEntity>, IInitializeSystem
             if (_contexts.manage.isDebugAccess)
             {
                 _contexts.manage.CreateEntity()
-                    .AddLogMessage($" ___ Update speed of track chains. Track - {track.ToString()}", TypeLogMessage.Trace, false);
+                    .AddLogMessage($" ___ Update speed of track chains. Track - {track.ToString()}", TypeLogMessage.Trace, false, GetType());
             }
 
             track.isUpdateSpeed = false;
@@ -75,7 +76,7 @@ public class SetChainSpeedSystem : ReactiveSystem<GameEntity>, IInitializeSystem
             if(chains == null)
             {
                 _contexts.manage.CreateEntity()
-                    .AddLogMessage("Failed to update chains speed. Chain collection is null", TypeLogMessage.Error, true);
+                    .AddLogMessage("Failed to update chains speed. Chain collection is null", TypeLogMessage.Error, true, GetType());
                 continue;
             }
 
@@ -92,7 +93,7 @@ public class SetChainSpeedSystem : ReactiveSystem<GameEntity>, IInitializeSystem
                 if(balls == null)
                 {
                     _contexts.manage.CreateEntity()
-                        .AddLogMessage("Failed to update chains speed. Balls of chain is null", TypeLogMessage.Error, true);
+                        .AddLogMessage("Failed to update chains speed. Balls of chain is null", TypeLogMessage.Error, true, GetType());
                     return;
                 }
 

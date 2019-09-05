@@ -11,21 +11,23 @@ public partial class ManageEntity {
     public LogMessageComponent logMessage { get { return (LogMessageComponent)GetComponent(ManageComponentsLookup.LogMessage); } }
     public bool hasLogMessage { get { return HasComponent(ManageComponentsLookup.LogMessage); } }
 
-    public void AddLogMessage(string newMessage, TypeLogMessage newType, bool newToUnityLog) {
+    public void AddLogMessage(string newMessage, TypeLogMessage newType, bool newToUnityLog, System.Type newSourceType) {
         var index = ManageComponentsLookup.LogMessage;
         var component = (LogMessageComponent)CreateComponent(index, typeof(LogMessageComponent));
         component.message = newMessage;
         component.type = newType;
         component.toUnityLog = newToUnityLog;
+        component.sourceType = newSourceType;
         AddComponent(index, component);
     }
 
-    public void ReplaceLogMessage(string newMessage, TypeLogMessage newType, bool newToUnityLog) {
+    public void ReplaceLogMessage(string newMessage, TypeLogMessage newType, bool newToUnityLog, System.Type newSourceType) {
         var index = ManageComponentsLookup.LogMessage;
         var component = (LogMessageComponent)CreateComponent(index, typeof(LogMessageComponent));
         component.message = newMessage;
         component.type = newType;
         component.toUnityLog = newToUnityLog;
+        component.sourceType = newSourceType;
         ReplaceComponent(index, component);
     }
 

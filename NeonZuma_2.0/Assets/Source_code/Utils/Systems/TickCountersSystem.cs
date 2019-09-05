@@ -27,7 +27,7 @@ public class TickCountersSystem : IExecuteSystem
                 if (_contexts.manage.isDebugAccess)
                 {
                     _contexts.manage.CreateEntity()
-                        .AddLogMessage($" ___ Finished counter of - {counterEntity.ToString()}", TypeLogMessage.Trace, false);
+                        .AddLogMessage($" ___ Finished counter of - {counterEntity.ToString()}", TypeLogMessage.Trace, false, GetType());
                 }
             }
             else

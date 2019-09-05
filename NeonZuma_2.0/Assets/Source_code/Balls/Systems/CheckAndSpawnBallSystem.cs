@@ -10,6 +10,7 @@ public class CheckAndSpawnBallSystem : IExecuteSystem
     private PoolObjectKeeper pool;
     private Vector3 normalScale;
 
+    private const int countBallForCutting = 3;
     private const int clockOverflow = 4;          // increase performance
     private int clock = clockOverflow;
 
@@ -36,6 +37,8 @@ public class CheckAndSpawnBallSystem : IExecuteSystem
             if (!tracks[i].isSpawnAccess)
                 continue;
 
+            int countSpawn = GetCountSpawnBalls(tracks[i]);
+
             var lastChain = tracks[i].GetChains(true)?.LastOrDefault();
             var lastBall = lastChain?.GetChainedBalls(true)?.LastOrDefault();
 
@@ -44,12 +47,12 @@ public class CheckAndSpawnBallSystem : IExecuteSystem
                 if (lastBall.distanceBall.value >= ballDiametr)
                 {
                     bool isCreateNewChain = CheckDistanceToLastBall(lastBall);
-                    SpawnBall(tracks[i], lastChain, lastBall, isCreateNewChain);
+                    SpawnBalls(tracks[i], lastChain, lastBall, countSpawn, isCreateNewChain);
                 }
             }
             else
             {
-                SpawnBall(tracks[i], lastChain, lastBall, true);
+                SpawnBalls(tracks[i], lastChain, lastBall, countSpawn, true);
             }
         }
     }
@@ -57,10 +60,24 @@ public class CheckAndSpawnBallSystem : IExecuteSystem
     #region Private Methods
     private bool CheckDistanceToLastBall(GameEntity lastBall)
     {
-        return lastBall == null || lastBall.distanceBall.value > ballDiametr * 3f;
+        return lastBall == null || lastBall.distanceBall.value > ballDiametr * countBallForCutting;
     }
 
-    private void SpawnBall(GameEntity track, GameEntity lastChain, GameEntity lastBall, bool isCreateNewChain)
+    private int GetCountSpawnBalls(GameEntity track)
+    {
+        if (!track.hasGroupSpawn)
+        {
+            return 1;
+        }
+        else
+        {
+            int countSpawn = track.groupSpawn.count;
+            track.RemoveGroupSpawn();
+            return countSpawn;
+        }
+    }
+
+    private void SpawnBalls(GameEntity track, GameEntity lastChain, GameEntity lastBall, int count, bool isCreateNewChain)
     {
         float distance;
 
@@ -75,7 +92,7 @@ public class CheckAndSpawnBallSystem : IExecuteSystem
             if (_contexts.manage.isDebugAccess)
             {
                 _contexts.manage.CreateEntity()
-                    .AddLogMessage($" ___ Created new chain: {lastChain.ToString()}", TypeLogMessage.Trace, false);
+                    .AddLogMessage($" ___ Created new chain: {lastChain.ToString()}", TypeLogMessage.Trace, false, GetType());
             }
         }
         else
@@ -83,13 +100,16 @@ public class CheckAndSpawnBallSystem : IExecuteSystem
             distance = lastBall != null ? lastBall.distanceBall.value - ballDiametr : 0;
         }
 
-        CreateBall(track, lastChain, distance);
-        track.isResetChainEdges = true;
+        for(int i = 0; i < count; i++)
+        {
+            CreateBall(track, lastChain, distance - ballDiametr * i);
+        }
 
+        track.isResetChainEdges = true;
         if (_contexts.manage.isDebugAccess)
         {
             _contexts.manage.CreateEntity()
-                .AddLogMessage(" ___ Mark track for updating chain edges", TypeLogMessage.Trace, false);
+                .AddLogMessage(" ___ Mark track for updating chain edges", TypeLogMessage.Trace, false, GetType());
         }
     }
 
@@ -113,7 +133,7 @@ public class CheckAndSpawnBallSystem : IExecuteSystem
         if (_contexts.manage.isDebugAccess)
         {
             _contexts.manage.CreateEntity()
-                .AddLogMessage($" ___ Created new ball in chain: {entityBall.ToString()}", TypeLogMessage.Trace, false);
+                .AddLogMessage($" ___ Created new ball in chain: {entityBall.ToString()}", TypeLogMessage.Trace, false, GetType());
         }
     }
     #endregion

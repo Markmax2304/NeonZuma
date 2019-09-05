@@ -28,31 +28,32 @@ public static class GameComponentsLookup {
     public const int FrontEdge = 17;
     public const int GravitateCombo = 18;
     public const int GroupDestroy = 19;
-    public const int LevelConfig = 20;
-    public const int MoveAnimation = 21;
-    public const int MoveBackCombo = 22;
-    public const int NearToEnd = 23;
-    public const int Overlap = 24;
-    public const int ParentChainId = 25;
-    public const int ParentTrackId = 26;
-    public const int PathCreator = 27;
-    public const int Player = 28;
-    public const int Projectile = 29;
-    public const int Randomizer = 30;
-    public const int RayCast = 31;
-    public const int Recharge = 32;
-    public const int RechargeDistance = 33;
-    public const int RemovedBall = 34;
-    public const int ResetChainEdges = 35;
-    public const int ScaleAnimation = 36;
-    public const int Shoot = 37;
-    public const int SpawnAccess = 38;
-    public const int Sprite = 39;
-    public const int TrackId = 40;
-    public const int Transform = 41;
-    public const int UpdateSpeed = 42;
+    public const int GroupSpawn = 20;
+    public const int LevelConfig = 21;
+    public const int MoveAnimation = 22;
+    public const int MoveBackCombo = 23;
+    public const int NearToEnd = 24;
+    public const int Overlap = 25;
+    public const int ParentChainId = 26;
+    public const int ParentTrackId = 27;
+    public const int PathCreator = 28;
+    public const int Player = 29;
+    public const int Projectile = 30;
+    public const int Randomizer = 31;
+    public const int RayCast = 32;
+    public const int Recharge = 33;
+    public const int RechargeDistance = 34;
+    public const int RemovedBall = 35;
+    public const int ResetChainEdges = 36;
+    public const int ScaleAnimation = 37;
+    public const int Shoot = 38;
+    public const int SpawnAccess = 39;
+    public const int Sprite = 40;
+    public const int TrackId = 41;
+    public const int Transform = 42;
+    public const int UpdateSpeed = 43;
 
-    public const int TotalComponents = 43;
+    public const int TotalComponents = 44;
 
     public static readonly string[] componentNames = {
         "AddedBall",
@@ -75,6 +76,7 @@ public static class GameComponentsLookup {
         "FrontEdge",
         "GravitateCombo",
         "GroupDestroy",
+        "GroupSpawn",
         "LevelConfig",
         "MoveAnimation",
         "MoveBackCombo",
@@ -121,6 +123,7 @@ public static class GameComponentsLookup {
         typeof(FrontEdgeComponent),
         typeof(GravitateComboComponent),
         typeof(GroupDestroyComponent),
+        typeof(GroupSpawnComponent),
         typeof(LevelConfigComponent),
         typeof(MoveAnimationComponent),
         typeof(MoveBackComboComponent),

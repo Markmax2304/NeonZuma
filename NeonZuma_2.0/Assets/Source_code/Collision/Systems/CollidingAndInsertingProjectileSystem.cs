@@ -26,7 +26,8 @@ public class CollidingAndInsertingProjectileSystem : ReactiveSystem<InputEntity>
             if(coll.collision.collider == null || coll.collision.handler == null)
             {
                 _contexts.manage.CreateEntity()
-                    .AddLogMessage("Failed to define where in chain should insert ball. Collision's entities is null", TypeLogMessage.Error, true);
+                    .AddLogMessage("Failed to define where in chain should insert ball. Collision's entities is null", 
+                    TypeLogMessage.Error, true, GetType());
                 continue;
             }
 
@@ -40,7 +41,7 @@ public class CollidingAndInsertingProjectileSystem : ReactiveSystem<InputEntity>
                 {
                     _contexts.manage.CreateEntity()
                         .AddLogMessage($"Trying to insert ball that is inserting already. Projectile: {projectile.ToString()}. Ball: {ball.ToString()}",
-                        TypeLogMessage.Trace, false);
+                        TypeLogMessage.Trace, false, GetType());
                 }
                 continue;
             }
@@ -49,7 +50,7 @@ public class CollidingAndInsertingProjectileSystem : ReactiveSystem<InputEntity>
             if(chain == null)
             {
                 _contexts.manage.CreateEntity()
-                    .AddLogMessage("Failed to define where in chain should insert ball. chain of ball is null", TypeLogMessage.Error, true);
+                    .AddLogMessage("Failed to define where in chain should insert ball. chain of ball is null", TypeLogMessage.Error, true, GetType());
                 continue;
             }
 
@@ -57,7 +58,7 @@ public class CollidingAndInsertingProjectileSystem : ReactiveSystem<InputEntity>
             if (track == null)
             {
                 _contexts.manage.CreateEntity()
-                    .AddLogMessage("Failed to inserting ball in chain. Couldn't get track entity", TypeLogMessage.Error, true);
+                    .AddLogMessage("Failed to inserting ball in chain. Couldn't get track entity", TypeLogMessage.Error, true, GetType());
                 continue;
             }
 
@@ -65,7 +66,7 @@ public class CollidingAndInsertingProjectileSystem : ReactiveSystem<InputEntity>
             if (balls == null)
             {
                 _contexts.manage.CreateEntity()
-                    .AddLogMessage("Failed to inserting ball in chain. chain balls is null", TypeLogMessage.Error, true);
+                    .AddLogMessage("Failed to inserting ball in chain. chain balls is null", TypeLogMessage.Error, true, GetType());
                 continue;
             }
 
@@ -77,7 +78,7 @@ public class CollidingAndInsertingProjectileSystem : ReactiveSystem<InputEntity>
                 if (_contexts.manage.isDebugAccess)
                 {
                     _contexts.manage.CreateEntity()
-                        .AddLogMessage($" ___ Insert projectile behind ball index: {frontBallIndex.ToString()}", TypeLogMessage.Trace, false);
+                        .AddLogMessage($" ___ Insert projectile behind ball index: {frontBallIndex.ToString()}", TypeLogMessage.Trace, false, GetType());
                 }
 
                 InsertBall(projectile, frontBallIndex, chain, balls, track);
@@ -86,7 +87,7 @@ public class CollidingAndInsertingProjectileSystem : ReactiveSystem<InputEntity>
                 {
                     _contexts.manage.CreateEntity()
                         .AddLogMessage($" ___ Inserted projectile to chain: projectile {projectile.ToString()} in chain {chain.ToString()}",
-                        TypeLogMessage.Trace, false);
+                        TypeLogMessage.Trace, false, GetType());
                 }
 
                 // combo
@@ -95,7 +96,7 @@ public class CollidingAndInsertingProjectileSystem : ReactiveSystem<InputEntity>
             else
             {
                 _contexts.manage.CreateEntity()
-                    .AddLogMessage("Failed to define where in chain should insert ball. Couldn't find fron ball", TypeLogMessage.Error, true);
+                    .AddLogMessage("Failed to define where in chain should insert ball. Couldn't find fron ball", TypeLogMessage.Error, true, GetType());
             }
 
             coll.isDestroyed = true;
@@ -121,7 +122,7 @@ public class CollidingAndInsertingProjectileSystem : ReactiveSystem<InputEntity>
         {
             _contexts.manage.CreateEntity()
                 .AddLogMessage($" ___ Start to insert projectile. Mark to reset chain edge tags. And reduce chain speed to zero", 
-                TypeLogMessage.Trace, false);
+                TypeLogMessage.Trace, false, GetType());
         }
 
         void postChainAction()
@@ -130,7 +131,7 @@ public class CollidingAndInsertingProjectileSystem : ReactiveSystem<InputEntity>
             if (_contexts.manage.isDebugAccess)
             {
                 _contexts.manage.CreateEntity()
-                    .AddLogMessage(" ___ Ending animation inserting. Mark track for updating speed", TypeLogMessage.Trace, false);
+                    .AddLogMessage(" ___ Ending animation inserting. Mark track for updating speed", TypeLogMessage.Trace, false, GetType());
             }
         }
 
@@ -157,7 +158,7 @@ public class CollidingAndInsertingProjectileSystem : ReactiveSystem<InputEntity>
                 {
                     _contexts.manage.CreateEntity()
                         .AddLogMessage($" ___ Shift balls that's located front of inserted ball. Count of them: {(frontBallIndex + 1).ToString()}",
-                        TypeLogMessage.Trace, false);
+                        TypeLogMessage.Trace, false, GetType());
                 }
 
                 for (int i = 0; i <= frontBallIndex; i++)
@@ -198,7 +199,7 @@ public class CollidingAndInsertingProjectileSystem : ReactiveSystem<InputEntity>
         if (_contexts.manage.isDebugAccess)
         {
             _contexts.manage.CreateEntity()
-                .AddLogMessage($" ___ Convert projectile to ball. projectile: {entity.ToString()}", TypeLogMessage.Trace, false);
+                .AddLogMessage($" ___ Convert projectile to ball. projectile: {entity.ToString()}", TypeLogMessage.Trace, false, GetType());
         }
 
         entity.isProjectile = false;
@@ -218,7 +219,8 @@ public class CollidingAndInsertingProjectileSystem : ReactiveSystem<InputEntity>
             if (_contexts.manage.isDebugAccess)
             {
                 _contexts.manage.CreateEntity()
-                    .AddLogMessage($" ___ Ending animation inserting. Mark ball as inserted ball: {entity.ToString()}", TypeLogMessage.Trace, false);
+                    .AddLogMessage($" ___ Ending animation inserting. Mark ball as inserted ball: {entity.ToString()}", 
+                    TypeLogMessage.Trace, false, GetType());
             }
         };
         entity.AddMoveAnimation(insertDuration, target, postChainAction);

@@ -21,14 +21,14 @@ public class SetChainEdgesSystem : ReactiveSystem<GameEntity>
             {
                 _contexts.manage.CreateEntity()
                     .AddLogMessage($" ___ Start setting chain edges and RayCast component. For track - {track.ToString()}", 
-                    TypeLogMessage.Trace, false);
+                    TypeLogMessage.Trace, false, GetType());
             }
 
             var chains = track.GetChains(true);
             if(chains == null)
             {
                 _contexts.manage.CreateEntity()
-                    .AddLogMessage("Failed to update chain edges. Chain collection is null", TypeLogMessage.Error, true);
+                    .AddLogMessage("Failed to update chain edges. Chain collection is null", TypeLogMessage.Error, true, GetType());
                 continue;
             }
 
@@ -39,7 +39,7 @@ public class SetChainEdgesSystem : ReactiveSystem<GameEntity>
                 if (balls == null)
                 {
                     _contexts.manage.CreateEntity()
-                        .AddLogMessage("Failed to update chain edges. Some chain is null", TypeLogMessage.Error, true);
+                        .AddLogMessage("Failed to update chain edges. Some chain is null", TypeLogMessage.Error, true, GetType());
                     continue;
                 }
 
@@ -86,7 +86,7 @@ public class SetChainEdgesSystem : ReactiveSystem<GameEntity>
         {
             _contexts.manage.CreateEntity()
                 .AddLogMessage(overlap ? $" ___ Add Overlap component - {ball.ToString()}"
-                : $" ___ Remove Overlap component - {ball.ToString()}", TypeLogMessage.Trace, false);
+                : $" ___ Remove Overlap component - {ball.ToString()}", TypeLogMessage.Trace, false, GetType());
         }
     }
     #endregion

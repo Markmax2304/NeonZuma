@@ -26,10 +26,10 @@ public class RecordLogMessageSystem : ReactiveSystem<ManageEntity>
             switch (entity.logMessage.type)
             {
                 case TypeLogMessage.Trace:
-                    logger.Trace(entity.logMessage.message);
+                    logger.Trace(string.Concat(entity.logMessage.sourceType.ToString(), entity.logMessage.message));
                     break;
                 case TypeLogMessage.Error:
-                    logger.Error(entity.logMessage.message);
+                    logger.Error(string.Concat(entity.logMessage.sourceType.ToString(), entity.logMessage.message));
                     break;
             }
 

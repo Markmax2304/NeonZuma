@@ -19,7 +19,7 @@ public class FinishMoveAnimationSystem : ReactiveSystem<GameEntity>
             if (_contexts.manage.isDebugAccess)
             {
                 _contexts.manage.CreateEntity()
-                    .AddLogMessage($" ___ Finished animation of object: {animatedBall.ToString()}", TypeLogMessage.Trace, false);
+                    .AddLogMessage($" ___ Finished animation of object: {animatedBall.ToString()}", TypeLogMessage.Trace, false, this.GetType());
             }
             animatedBall.isAnimationDone = false;
 

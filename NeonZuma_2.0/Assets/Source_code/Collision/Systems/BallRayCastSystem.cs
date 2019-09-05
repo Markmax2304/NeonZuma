@@ -54,7 +54,7 @@ public class BallRayCastSystem : IExecuteSystem
             if (hitEntity == null)
             {
                 _contexts.manage.CreateEntity()
-                    .AddLogMessage("Failed to create collision entity. Hit entity is null", TypeLogMessage.Error, true);
+                    .AddLogMessage("Failed to create collision entity. Hit entity is null", TypeLogMessage.Error, true, GetType());
                 return;
             }
 
@@ -68,7 +68,7 @@ public class BallRayCastSystem : IExecuteSystem
                 {
                     _contexts.manage.CreateEntity()
                         .AddLogMessage(string.Format(" ___ Creating collision with type - {0}, handler - {1}, collider - {2}",
-                        CollisionType.Projectile.ToString(), ball.ToString(), hitEntity.ToString()), TypeLogMessage.Trace, false);
+                        CollisionType.Projectile.ToString(), ball.ToString(), hitEntity.ToString()), TypeLogMessage.Trace, false, GetType());
                 }
 
                 Contexts.sharedInstance.input.CreateEntity()

@@ -21,7 +21,7 @@ public class MatchInsertedBallInChainSystem : ReactiveSystem<GameEntity>
             if (_contexts.manage.isDebugAccess)
             {
                 _contexts.manage.CreateEntity()
-                    .AddLogMessage($" ___ Start to match around inserted ball: {checkedBall.ToString()}", TypeLogMessage.Trace, false);
+                    .AddLogMessage($" ___ Start to match around inserted ball: {checkedBall.ToString()}", TypeLogMessage.Trace, false, GetType());
             }
 
             if (checkedBall == null)
@@ -33,7 +33,7 @@ public class MatchInsertedBallInChainSystem : ReactiveSystem<GameEntity>
             if(chain == null)
             {
                 _contexts.manage.CreateEntity()
-                    .AddLogMessage("Failed to match inserted ball. Chain is null", TypeLogMessage.Error, true);
+                    .AddLogMessage("Failed to match inserted ball. Chain is null", TypeLogMessage.Error, true, GetType());
                 continue;
             }
 
@@ -41,7 +41,7 @@ public class MatchInsertedBallInChainSystem : ReactiveSystem<GameEntity>
             if(balls == null)
             {
                 _contexts.manage.CreateEntity()
-                    .AddLogMessage("Failed to match inserted ball. Balls is null", TypeLogMessage.Error, true);
+                    .AddLogMessage("Failed to match inserted ball. Balls is null", TypeLogMessage.Error, true, GetType());
                 continue;
             }
 
@@ -49,7 +49,7 @@ public class MatchInsertedBallInChainSystem : ReactiveSystem<GameEntity>
             if(!GetBallIndex(balls, checkedBall, out checkedBallIndex))
             {
                 _contexts.manage.CreateEntity()
-                    .AddLogMessage("Failed to match inserted ball. Inserted ball isn't found in ball chain", TypeLogMessage.Error, true);
+                    .AddLogMessage("Failed to match inserted ball. Inserted ball isn't found in ball chain", TypeLogMessage.Error, true, GetType());
                 continue;
             }
 
@@ -64,7 +64,7 @@ public class MatchInsertedBallInChainSystem : ReactiveSystem<GameEntity>
                 {
                     _contexts.manage.CreateEntity()
                         .AddLogMessage($" ___ Mark balls for destroying. DestroyGroupId - {destroyId.ToString()}. Count of ball - {count.ToString()}",
-                        TypeLogMessage.Trace, false);
+                        TypeLogMessage.Trace, false, GetType());
                 }
 
                 PassBallsWithSameColor(balls, checkedBall.color.value, checkedBallIndex, (ball) => ball.AddGroupDestroy(destroyId));

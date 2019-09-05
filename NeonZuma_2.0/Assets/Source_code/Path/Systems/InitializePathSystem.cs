@@ -20,13 +20,16 @@ public class InitializePathSystem : IInitializeSystem
             GameObject path = GameObject.Instantiate(paths[i], Vector3.zero, Quaternion.identity);
 
             GameEntity trackEntity = _contexts.game.CreateEntity();
-            trackEntity.AddPathCreator(path.GetComponent<PathCreator>());
+            var pathCreator = path.GetComponent<PathCreator>();
+            trackEntity.AddPathCreator(pathCreator);
 
             int minLength = _contexts.game.levelConfig.value.minLengthSeries;
             int maxLength = _contexts.game.levelConfig.value.maxLengthSeries;
             trackEntity.AddRandomizer(new Randomizer(minLength, maxLength));
             trackEntity.AddTrackId(i);
 
+            int countBallsOnEntirePath = (int)(pathCreator.path.length / _contexts.game.levelConfig.value.ballDiametr);
+            trackEntity.AddGroupSpawn(countBallsOnEntirePath);
             // this component is controlling start and further spawn balls
             trackEntity.isSpawnAccess = true;
         }

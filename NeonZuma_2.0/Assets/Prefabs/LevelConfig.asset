@@ -38,8 +38,8 @@ MonoBehaviour:
   moveBackDuration: 0.25
   increaseMoveBackFactor: 0.25
   gravitateSpeed: 4
-  startSpeed: 5
-  startDuration: 2.5
+  startSpeed: 10
+  startDuration: 1.5
   normalSpeedLengthPercent: 0.75
   rotateSpeed: 20
   rechargeTime: 0.5

@@ -31,7 +31,7 @@ public class UpdateBallDistanceBySpeedSystem : IExecuteSystem
             if(chains == null)
             {
                 _contexts.manage.CreateEntity()
-                    .AddLogMessage("Failed to update distance ball. Chain collection is null", TypeLogMessage.Error, true);
+                    .AddLogMessage("Failed to update distance ball. Chain collection is null", TypeLogMessage.Error, true, GetType());
                 continue;
             }
 
