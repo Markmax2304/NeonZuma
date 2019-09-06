@@ -40,6 +40,10 @@ public class LevelConfig : ScriptableObject
 
     [Header("Projectile fields"), Space]
     public float forceSpeed = 5f;
+
+    [Header("Score fields"), Space]
+    public int scorePerBall = 10;
+    public int AmountBallAfterApplyRowCombo = 3;
 }
 
 [System.Serializable]

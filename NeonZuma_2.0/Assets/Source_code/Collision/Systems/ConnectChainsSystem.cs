@@ -109,7 +109,6 @@ public class ConnectChainsSystem : ReactiveSystem<InputEntity>
                 {
                     if (frontEdge != null)
                         frontEdge.isCheckTargetBall = true;
-                    // maybe it's excess
                     if (backEdge != null)
                         backEdge.isCheckTargetBall = true;
 
@@ -121,8 +120,8 @@ public class ConnectChainsSystem : ReactiveSystem<InputEntity>
                     }
 
                     // combo
-                    int combo = _contexts.game.moveBackCombo.value;
-                    _contexts.game.ReplaceMoveBackCombo(combo + 1);
+                    int combo = _contexts.manage.moveBackCombo.value;
+                    _contexts.manage.ReplaceMoveBackCombo(combo + 1);
 
                     // move back
                     backChain.ReplaceChainSpeed(-moveBackSpeed * (1 + increaseMoveBack * combo));
@@ -145,7 +144,7 @@ public class ConnectChainsSystem : ReactiveSystem<InputEntity>
                 }
                 else
                 {
-                    _contexts.game.ReplaceMoveBackCombo(0);
+                    _contexts.manage.ReplaceMoveBackCombo(0);
                     track.isUpdateSpeed = true;
                     if (_contexts.manage.isDebugAccess)
                     {

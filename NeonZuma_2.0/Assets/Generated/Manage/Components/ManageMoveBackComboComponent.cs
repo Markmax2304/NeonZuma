@@ -6,13 +6,13 @@
 //     the code is regenerated.
 // </auto-generated>
 //------------------------------------------------------------------------------
-public partial class GameContext {
+public partial class ManageContext {
 
-    public GameEntity moveBackComboEntity { get { return GetGroup(GameMatcher.MoveBackCombo).GetSingleEntity(); } }
+    public ManageEntity moveBackComboEntity { get { return GetGroup(ManageMatcher.MoveBackCombo).GetSingleEntity(); } }
     public MoveBackComboComponent moveBackCombo { get { return moveBackComboEntity.moveBackCombo; } }
     public bool hasMoveBackCombo { get { return moveBackComboEntity != null; } }
 
-    public GameEntity SetMoveBackCombo(int newValue) {
+    public ManageEntity SetMoveBackCombo(int newValue) {
         if (hasMoveBackCombo) {
             throw new Entitas.EntitasException("Could not set MoveBackCombo!\n" + this + " already has an entity with MoveBackComboComponent!",
                 "You should check if the context already has a moveBackComboEntity before setting it or use context.ReplaceMoveBackCombo().");
@@ -44,27 +44,27 @@ public partial class GameContext {
 //     the code is regenerated.
 // </auto-generated>
 //------------------------------------------------------------------------------
-public partial class GameEntity {
+public partial class ManageEntity {
 
-    public MoveBackComboComponent moveBackCombo { get { return (MoveBackComboComponent)GetComponent(GameComponentsLookup.MoveBackCombo); } }
-    public bool hasMoveBackCombo { get { return HasComponent(GameComponentsLookup.MoveBackCombo); } }
+    public MoveBackComboComponent moveBackCombo { get { return (MoveBackComboComponent)GetComponent(ManageComponentsLookup.MoveBackCombo); } }
+    public bool hasMoveBackCombo { get { return HasComponent(ManageComponentsLookup.MoveBackCombo); } }
 
     public void AddMoveBackCombo(int newValue) {
-        var index = GameComponentsLookup.MoveBackCombo;
+        var index = ManageComponentsLookup.MoveBackCombo;
         var component = (MoveBackComboComponent)CreateComponent(index, typeof(MoveBackComboComponent));
         component.value = newValue;
         AddComponent(index, component);
     }
 
     public void ReplaceMoveBackCombo(int newValue) {
-        var index = GameComponentsLookup.MoveBackCombo;
+        var index = ManageComponentsLookup.MoveBackCombo;
         var component = (MoveBackComboComponent)CreateComponent(index, typeof(MoveBackComboComponent));
         component.value = newValue;
         ReplaceComponent(index, component);
     }
 
     public void RemoveMoveBackCombo() {
-        RemoveComponent(GameComponentsLookup.MoveBackCombo);
+        RemoveComponent(ManageComponentsLookup.MoveBackCombo);
     }
 }
 
@@ -76,15 +76,15 @@ public partial class GameEntity {
 //     the code is regenerated.
 // </auto-generated>
 //------------------------------------------------------------------------------
-public sealed partial class GameMatcher {
+public sealed partial class ManageMatcher {
 
-    static Entitas.IMatcher<GameEntity> _matcherMoveBackCombo;
+    static Entitas.IMatcher<ManageEntity> _matcherMoveBackCombo;
 
-    public static Entitas.IMatcher<GameEntity> MoveBackCombo {
+    public static Entitas.IMatcher<ManageEntity> MoveBackCombo {
         get {
             if (_matcherMoveBackCombo == null) {
-                var matcher = (Entitas.Matcher<GameEntity>)Entitas.Matcher<GameEntity>.AllOf(GameComponentsLookup.MoveBackCombo);
-                matcher.componentNames = GameComponentsLookup.componentNames;
+                var matcher = (Entitas.Matcher<ManageEntity>)Entitas.Matcher<ManageEntity>.AllOf(ManageComponentsLookup.MoveBackCombo);
+                matcher.componentNames = ManageComponentsLookup.componentNames;
                 _matcherMoveBackCombo = matcher;
             }
 

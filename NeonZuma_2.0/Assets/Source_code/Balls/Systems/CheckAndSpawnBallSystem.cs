@@ -116,6 +116,7 @@ public class CheckAndSpawnBallSystem : IExecuteSystem
     private void CreateBall(GameEntity track, GameEntity chain, float distance)
     {
         // TODO: if will error - replace zero to some more useful
+        //var pathCreator           // continue point
         Transform ball = pool.RealeseObject(Vector3.zero, Quaternion.identity, normalScale).transform;
         ColorBall colorType = track.randomizer.value.GetRandomColorType();
 

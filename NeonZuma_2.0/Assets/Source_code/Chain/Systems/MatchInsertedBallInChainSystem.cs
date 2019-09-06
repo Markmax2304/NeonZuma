@@ -56,6 +56,9 @@ public class MatchInsertedBallInChainSystem : ReactiveSystem<GameEntity>
             int count = 0;
             PassBallsWithSameColor(balls, checkedBall.color.value, checkedBallIndex, (ball) => count++);
 
+            // score row combo
+            IterateRowCombo(count);
+
             if (count >= 3)
             {
                 int destroyId = Extensions.DestroyGroupId;
@@ -83,6 +86,22 @@ public class MatchInsertedBallInChainSystem : ReactiveSystem<GameEntity>
     }
 
     #region Private Methods
+    private void IterateRowCombo(int count)
+    {
+        if (_contexts.manage.shootInRowCombo.isProjectile)
+        {
+            if (count >= 3)
+            {
+                int rowCombo = _contexts.manage.shootInRowCombo.value;
+                _contexts.manage.ReplaceShootInRowCombo(rowCombo + 1, false);
+            }
+            else
+            {
+                _contexts.manage.ReplaceShootInRowCombo(0, false);
+            }
+        }
+    }
+
     private bool GetBallIndex(List<GameEntity> balls, GameEntity ball, out int index)
     {
         for (int i = 0; i < balls.Count; i++)

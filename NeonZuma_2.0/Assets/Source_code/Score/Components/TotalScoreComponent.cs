@@ -3,7 +3,7 @@ using Entitas;
 using Entitas.CodeGeneration.Attributes;
 
 [Manage, Unique]
-public class MoveBackComboComponent : IComponent
+public class TotalScoreComponent : IComponent
 {
     public int value;
 }

@@ -130,7 +130,7 @@ public class SetChainSpeedSystem : ReactiveSystem<GameEntity>, IInitializeSystem
 
         if(frontBalls.Last().color.value == backBalls.First().color.value)
         {
-            frontChain.ReplaceChainSpeed(-gravitateSpeed * (1 + increaseSpeed * _contexts.game.moveBackCombo.value));
+            frontChain.ReplaceChainSpeed(-gravitateSpeed * (1 + increaseSpeed * _contexts.manage.moveBackCombo.value));
         }
     }
     #endregion

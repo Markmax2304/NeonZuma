@@ -57,15 +57,10 @@ public class VisualDestroyingBallsSystem : ReactiveSystem<GameEntity>, ICleanupS
                 continue;
             }
 
-            for (int i = 0; i < balls.Count; i++)
-            {
-                var ball = balls[i];
-                ball.RemoveBallId();
-                ball.RemoveParentChainId();
-                ball.transform.value.tag = Constants.UNTAGGED_TAG;
-                ball.isRemovedBall = true;
-                ball.AddScaleAnimation(destroyDuration, minScale, delegate () { ball.DestroyBall(); });
-            }
+            // score stuff
+            _contexts.manage.CreateEntity().AddScorePiece(balls.Count());
+
+            DestroyBalls(balls);
 
             if (chain.GetChainedBalls() == null)
             {
@@ -114,4 +109,19 @@ public class VisualDestroyingBallsSystem : ReactiveSystem<GameEntity>, ICleanupS
     {
         destroyGroups.Clear();
     }
+
+    #region Private Methods
+    private void DestroyBalls(List<GameEntity> balls)
+    {
+        for (int i = 0; i < balls.Count; i++)
+        {
+            var ball = balls[i];
+            ball.RemoveBallId();
+            ball.RemoveParentChainId();
+            ball.transform.value.tag = Constants.UNTAGGED_TAG;
+            ball.isRemovedBall = true;
+            ball.AddScaleAnimation(destroyDuration, minScale, delegate () { ball.DestroyBall(); });
+        }
+    }
+    #endregion
 }

@@ -30,10 +30,6 @@ public class GameController : MonoBehaviour
         InitializeSingletonComponents(contexts);
         _systems = CreateSystems(contexts);
         _systems.Initialize();
-
-        // score combo
-        // TODO: transfer to some systems
-        contexts.game.SetMoveBackCombo(0);
     }
 
     void Update()
@@ -116,6 +112,10 @@ public class GameController : MonoBehaviour
             //Colors
             .Add(new UpdateColorBallSystem(contexts))
             .Add(new CountBallColorsSystem(contexts))
+
+
+            //Score
+            .Add(new ScoreCounterSystem(contexts))
 
 
             //Input
