@@ -20,8 +20,11 @@ public class TouchHandleSystem : IExecuteSystem
     {
         if (Input.GetMouseButtonDown(0)) {
             PointerEventData data;
+#if UNITY_ANDROID
+            data = GetPointerData(Input.touches[0].fingerId);
+#else
             data = GetPointerData(-1);
-            //data = GetPointerData(Input.touches[0].fingerId);
+#endif
 
             if (data == null) {
                 return;

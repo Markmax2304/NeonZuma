@@ -30,7 +30,7 @@ public class ChangeBallPositionOnPathSystem : ReactiveSystem<GameEntity>, ITearD
             if(chain == null)
             {
                 _contexts.manage.CreateEntity()
-                    .AddLogMessage($"Failed to change disntace ball. Chain is null", TypeLogMessage.Error, true);
+                    .AddLogMessage($"Failed to change disntace ball. Chain is null", TypeLogMessage.Error, true, GetType());
                 continue;
             }
 
@@ -38,7 +38,7 @@ public class ChangeBallPositionOnPathSystem : ReactiveSystem<GameEntity>, ITearD
             if (track == null)
             {
                 _contexts.manage.CreateEntity()
-                    .AddLogMessage($"Failed to change disntace ball. Track is null", TypeLogMessage.Error, true);
+                    .AddLogMessage($"Failed to change disntace ball. Track is null", TypeLogMessage.Error, true, GetType());
                 continue;
             }
 
@@ -54,7 +54,7 @@ public class ChangeBallPositionOnPathSystem : ReactiveSystem<GameEntity>, ITearD
             // increase CPU perfomance by 150 %     
             // TODO: try to optimize
             Vector3 direction = pathCreator.path.GetDirectionAtDistance(distance, EndOfPathInstruction.Stop);
-            Quaternion rotation = Quaternion.FromToRotation(Vector3.down, direction);
+            Quaternion rotation = Quaternion.FromToRotation(Vector3.up, direction);
             entities[i].transform.value.rotation = rotation;
         }
     }

@@ -25,7 +25,7 @@ public class MoveAnimationControlSystem : ReactiveSystem<GameEntity>
             if (_contexts.manage.isDebugAccess)
             {
                 _contexts.manage.CreateEntity()
-                    .AddLogMessage($" ___ Apply moving animation to object: {animatedEntity.ToString()}", TypeLogMessage.Trace, false);
+                    .AddLogMessage($" ___ Apply moving animation to object: {animatedEntity.ToString()}", TypeLogMessage.Trace, false, GetType());
             }
 
             Vector3 target = animatedEntity.moveAnimation.target;
@@ -49,7 +49,8 @@ public class MoveAnimationControlSystem : ReactiveSystem<GameEntity>
                         if (_contexts.manage.isDebugAccess)
                         {
                             _contexts.manage.CreateEntity()
-                                .AddLogMessage($" ___ Added done animation component to: {animatedEntity.ToString()}", TypeLogMessage.Trace, false);
+                                .AddLogMessage($" ___ Added done animation component to: {animatedEntity.ToString()}",
+                                TypeLogMessage.Trace, false, GetType());
                         }
                     }
                 };
@@ -68,7 +69,8 @@ public class MoveAnimationControlSystem : ReactiveSystem<GameEntity>
                         if (_contexts.manage.isDebugAccess)
                         {
                             _contexts.manage.CreateEntity()
-                                .AddLogMessage($" ___ Added done animation component to: {animatedEntity.ToString()}", TypeLogMessage.Trace, false);
+                                .AddLogMessage($" ___ Added done animation component to: {animatedEntity.ToString()}", 
+                                TypeLogMessage.Trace, false, GetType());
                         }
                     }
                 };

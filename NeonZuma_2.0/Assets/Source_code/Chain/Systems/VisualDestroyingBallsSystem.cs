@@ -37,14 +37,14 @@ public class VisualDestroyingBallsSystem : ReactiveSystem<GameEntity>, ICleanupS
             if (_contexts.manage.isDebugAccess)
             {
                 _contexts.manage.CreateEntity()
-                    .AddLogMessage($" ___ Destroy balls with goupId {balls[0].groupDestroy.value}", TypeLogMessage.Trace, false);
+                    .AddLogMessage($" ___ Destroy balls with goupId {balls[0].groupDestroy.value}", TypeLogMessage.Trace, false, GetType());
             }
 
             var chain = _contexts.game.GetEntitiesWithChainId(balls.First().parentChainId.value).FirstOrDefault();
             if (chain == null)
             {
                 _contexts.manage.CreateEntity()
-                    .AddLogMessage("Failed to destroying grouped balls. Chain is null", TypeLogMessage.Error, true);
+                    .AddLogMessage("Failed to destroying grouped balls. Chain is null", TypeLogMessage.Error, true, GetType());
                 continue;
             }
 
@@ -53,26 +53,22 @@ public class VisualDestroyingBallsSystem : ReactiveSystem<GameEntity>, ICleanupS
             {
                 _contexts.manage.CreateEntity()
                     .AddLogMessage("Failed to mark for recover chain speed during destroying balls. Track request return null",
-                    TypeLogMessage.Error, true);
+                    TypeLogMessage.Error, true, GetType());
                 continue;
             }
 
-            for (int i = 0; i < balls.Count; i++)
-            {
-                var ball = balls[i];
-                ball.RemoveBallId();
-                ball.RemoveParentChainId();
-                ball.transform.value.tag = Constants.UNTAGGED_TAG;
-                ball.isRemovedBall = true;
-                ball.AddScaleAnimation(destroyDuration, minScale, delegate () { ball.DestroyBall(); });
-            }
+            // score stuff
+            _contexts.manage.CreateEntity().AddScorePiece(balls.Count());
+
+            DestroyBalls(balls);
 
             if (chain.GetChainedBalls() == null)
             {
                 if (_contexts.manage.isDebugAccess)
                 {
                     _contexts.manage.CreateEntity()
-                        .AddLogMessage($" ___ All of chain balls is destroyed. Destroy the chain: {chain.ToString()}", TypeLogMessage.Trace, false);
+                        .AddLogMessage($" ___ All of chain balls is destroyed. Destroy the chain: {chain.ToString()}", 
+                        TypeLogMessage.Trace, false, GetType());
                 }
 
                 chain.Destroy();
@@ -83,7 +79,7 @@ public class VisualDestroyingBallsSystem : ReactiveSystem<GameEntity>, ICleanupS
                 if (_contexts.manage.isDebugAccess)
                 {
                     _contexts.manage.CreateEntity()
-                        .AddLogMessage($" ___ Mark chain for cutting", TypeLogMessage.Trace, false);
+                        .AddLogMessage($" ___ Mark chain for cutting", TypeLogMessage.Trace, false, GetType());
                 }
 
                 chain.isCut = true;
@@ -94,7 +90,7 @@ public class VisualDestroyingBallsSystem : ReactiveSystem<GameEntity>, ICleanupS
             if (_contexts.manage.isDebugAccess)
             {
                 _contexts.manage.CreateEntity()
-                    .AddLogMessage($" ___ Mark track for updating speed", TypeLogMessage.Trace, false);
+                    .AddLogMessage($" ___ Mark track for updating speed", TypeLogMessage.Trace, false, GetType());
             }
         }
     }
@@ -113,4 +109,19 @@ public class VisualDestroyingBallsSystem : ReactiveSystem<GameEntity>, ICleanupS
     {
         destroyGroups.Clear();
     }
+
+    #region Private Methods
+    private void DestroyBalls(List<GameEntity> balls)
+    {
+        for (int i = 0; i < balls.Count; i++)
+        {
+            var ball = balls[i];
+            ball.RemoveBallId();
+            ball.RemoveParentChainId();
+            ball.transform.value.tag = Constants.UNTAGGED_TAG;
+            ball.isRemovedBall = true;
+            ball.AddScaleAnimation(destroyDuration, minScale, delegate () { ball.DestroyBall(); });
+        }
+    }
+    #endregion
 }

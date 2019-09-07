@@ -22,14 +22,14 @@ public class CutChainSystem : ReactiveSystem<GameEntity>
             if (_contexts.manage.isDebugAccess)
             {
                 _contexts.manage.CreateEntity()
-                    .AddLogMessage($" ___ Start to cut chain: {chain.ToString()} on other chains", TypeLogMessage.Trace, false);
+                    .AddLogMessage($" ___ Start to cut chain: {chain.ToString()} on other chains", TypeLogMessage.Trace, false, GetType());
             }
 
             var balls = chain.GetChainedBalls(true);
             if(balls == null)
             {
                 _contexts.manage.CreateEntity()
-                    .AddLogMessage("Failed to cut chain. Chain balls is null", TypeLogMessage.Error, true);
+                    .AddLogMessage("Failed to cut chain. Chain balls is null", TypeLogMessage.Error, true, GetType());
                 continue;
             }
 
@@ -43,7 +43,7 @@ public class CutChainSystem : ReactiveSystem<GameEntity>
                     {
                         _contexts.manage.CreateEntity()
                             .AddLogMessage($" ___ Found gap in chian between {balls[i - 1].ToString()} and {balls[i].ToString()}", 
-                            TypeLogMessage.Trace, false);
+                            TypeLogMessage.Trace, false, GetType());
                     }
 
                     var newChain = CreateEmptyChain(chain.parentTrackId.value);
@@ -52,7 +52,7 @@ public class CutChainSystem : ReactiveSystem<GameEntity>
                     {
                         _contexts.manage.CreateEntity()
                             .AddLogMessage($" ___ Move cutted balls to new chain. Count of balls - {(i - firstIndex).ToString()}",
-                            TypeLogMessage.Trace, false);
+                            TypeLogMessage.Trace, false, GetType());
                     }
 
                     for(int x = firstIndex; x < i; x++)
@@ -70,7 +70,7 @@ public class CutChainSystem : ReactiveSystem<GameEntity>
             if(track == null)
             {
                 _contexts.manage.CreateEntity()
-                    .AddLogMessage("Failed to cut chain. Track is null", TypeLogMessage.Error, true);
+                    .AddLogMessage("Failed to cut chain. Track is null", TypeLogMessage.Error, true, GetType());
                 continue;
             }
 
@@ -79,7 +79,7 @@ public class CutChainSystem : ReactiveSystem<GameEntity>
             if (_contexts.manage.isDebugAccess)
             {
                 _contexts.manage.CreateEntity()
-                    .AddLogMessage($" ___ Mark track for updating chain edges", TypeLogMessage.Trace, false);
+                    .AddLogMessage($" ___ Mark track for updating chain edges", TypeLogMessage.Trace, false, GetType());
             }
         }
     }
@@ -105,7 +105,7 @@ public class CutChainSystem : ReactiveSystem<GameEntity>
         if (_contexts.manage.isDebugAccess)
         {
             _contexts.manage.CreateEntity()
-                .AddLogMessage($" ___ Created new chain {newChain.ToString()}", TypeLogMessage.Trace, false);
+                .AddLogMessage($" ___ Created new chain {newChain.ToString()}", TypeLogMessage.Trace, false, GetType());
         }
 
         return newChain;

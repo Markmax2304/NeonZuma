@@ -28,9 +28,9 @@ public static class GameComponentsLookup {
     public const int FrontEdge = 17;
     public const int GravitateCombo = 18;
     public const int GroupDestroy = 19;
-    public const int LevelConfig = 20;
-    public const int MoveAnimation = 21;
-    public const int MoveBackCombo = 22;
+    public const int GroupSpawn = 20;
+    public const int LevelConfig = 21;
+    public const int MoveAnimation = 22;
     public const int NearToEnd = 23;
     public const int Overlap = 24;
     public const int ParentChainId = 25;
@@ -75,9 +75,9 @@ public static class GameComponentsLookup {
         "FrontEdge",
         "GravitateCombo",
         "GroupDestroy",
+        "GroupSpawn",
         "LevelConfig",
         "MoveAnimation",
-        "MoveBackCombo",
         "NearToEnd",
         "Overlap",
         "ParentChainId",
@@ -121,9 +121,9 @@ public static class GameComponentsLookup {
         typeof(FrontEdgeComponent),
         typeof(GravitateComboComponent),
         typeof(GroupDestroyComponent),
+        typeof(GroupSpawnComponent),
         typeof(LevelConfigComponent),
         typeof(MoveAnimationComponent),
-        typeof(MoveBackComboComponent),
         typeof(NearToEndComponent),
         typeof(OverlapComponent),
         typeof(ParentChainId),

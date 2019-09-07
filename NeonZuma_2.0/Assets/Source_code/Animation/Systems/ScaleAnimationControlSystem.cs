@@ -25,7 +25,7 @@ public class ScaleAnimationControlSystem : ReactiveSystem<GameEntity>
             if (_contexts.manage.isDebugAccess)
             {
                 _contexts.manage.CreateEntity()
-                    .AddLogMessage($" ___ Apply scaling animation to object: {scaledEntity.ToString()}", TypeLogMessage.Trace, false);
+                    .AddLogMessage($" ___ Apply scaling animation to object: {scaledEntity.ToString()}", TypeLogMessage.Trace, false, GetType());
             }
 
             float targetScale = scaledEntity.scaleAnimation.targetScale;
@@ -49,7 +49,8 @@ public class ScaleAnimationControlSystem : ReactiveSystem<GameEntity>
                         if (_contexts.manage.isDebugAccess)
                         {
                             _contexts.manage.CreateEntity()
-                                .AddLogMessage($" ___ Added done animation component to: {scaledEntity.ToString()}", TypeLogMessage.Trace, false);
+                                .AddLogMessage($" ___ Added done animation component to: {scaledEntity.ToString()}", 
+                                TypeLogMessage.Trace, false, GetType());
                         }
                     }
                 };
@@ -68,7 +69,8 @@ public class ScaleAnimationControlSystem : ReactiveSystem<GameEntity>
                         if (_contexts.manage.isDebugAccess)
                         {
                             _contexts.manage.CreateEntity()
-                                .AddLogMessage($" ___ Added done animation component to: {scaledEntity.ToString()}", TypeLogMessage.Trace, false);
+                                .AddLogMessage($" ___ Added done animation component to: {scaledEntity.ToString()}", 
+                                TypeLogMessage.Trace, false, GetType());
                         }
                     }
                 };
