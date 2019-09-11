@@ -16,8 +16,8 @@ public class VisualDestroyingBallsSystem : ReactiveSystem<GameEntity>, ICleanupS
     {
         _contexts = contexts;
         destroyGroups = new Dictionary<int, List<GameEntity>>();
-        destroyDuration = _contexts.game.levelConfig.value.destroyAnimationDuration;
-        minScale = _contexts.game.levelConfig.value.minScaleSize;
+        destroyDuration = _contexts.global.levelConfig.value.destroyAnimationDuration;
+        minScale = _contexts.global.levelConfig.value.minScaleSize;
     }
 
     protected override void Execute(List<GameEntity> entities)
@@ -34,7 +34,7 @@ public class VisualDestroyingBallsSystem : ReactiveSystem<GameEntity>, ICleanupS
 
         foreach (var balls in destroyGroups.Values)
         {
-            if (_contexts.manage.isDebugAccess)
+            if (_contexts.global.isDebugAccess)
             {
                 _contexts.manage.CreateEntity()
                     .AddLogMessage($" ___ Destroy balls with goupId {balls[0].groupDestroy.value}", TypeLogMessage.Trace, false, GetType());
@@ -57,40 +57,13 @@ public class VisualDestroyingBallsSystem : ReactiveSystem<GameEntity>, ICleanupS
                 continue;
             }
 
-            // score stuff
-            _contexts.manage.CreateEntity().AddScorePiece(balls.Count());
-
             DestroyBalls(balls);
+            chain.isCut = true;
 
-            if (chain.GetChainedBalls() == null)
-            {
-                if (_contexts.manage.isDebugAccess)
-                {
-                    _contexts.manage.CreateEntity()
-                        .AddLogMessage($" ___ All of chain balls is destroyed. Destroy the chain: {chain.ToString()}", 
-                        TypeLogMessage.Trace, false, GetType());
-                }
-
-                chain.Destroy();
-            }
-            else
-            {
-                // TODO MAYBE: change cut mark to exacter definition, like place where it should be cutted
-                if (_contexts.manage.isDebugAccess)
-                {
-                    _contexts.manage.CreateEntity()
-                        .AddLogMessage($" ___ Mark chain for cutting", TypeLogMessage.Trace, false, GetType());
-                }
-
-                chain.isCut = true;
-            }
-
-            track.isUpdateSpeed = true;
-
-            if (_contexts.manage.isDebugAccess)
+            if (_contexts.global.isDebugAccess)
             {
                 _contexts.manage.CreateEntity()
-                    .AddLogMessage($" ___ Mark track for updating speed", TypeLogMessage.Trace, false, GetType());
+                    .AddLogMessage($" ___ Mark chain for cutting", TypeLogMessage.Trace, false, GetType());
             }
         }
     }
@@ -120,6 +93,8 @@ public class VisualDestroyingBallsSystem : ReactiveSystem<GameEntity>, ICleanupS
             ball.RemoveParentChainId();
             ball.transform.value.tag = Constants.UNTAGGED_TAG;
             ball.isRemovedBall = true;
+            ball.isBackEdge = false;        // just for stable
+            ball.isFrontEdge = false;       // just for stable
             ball.AddScaleAnimation(destroyDuration, minScale, delegate () { ball.DestroyBall(); });
         }
     }

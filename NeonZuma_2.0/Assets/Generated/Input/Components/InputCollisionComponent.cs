@@ -11,7 +11,7 @@ public partial class InputEntity {
     public CollisionComponent collision { get { return (CollisionComponent)GetComponent(InputComponentsLookup.Collision); } }
     public bool hasCollision { get { return HasComponent(InputComponentsLookup.Collision); } }
 
-    public void AddCollision(CollisionType newType, GameEntity newHandler, GameEntity newCollider) {
+    public void AddCollision(TypeCollision newType, GameEntity newHandler, GameEntity newCollider) {
         var index = InputComponentsLookup.Collision;
         var component = (CollisionComponent)CreateComponent(index, typeof(CollisionComponent));
         component.type = newType;
@@ -20,7 +20,7 @@ public partial class InputEntity {
         AddComponent(index, component);
     }
 
-    public void ReplaceCollision(CollisionType newType, GameEntity newHandler, GameEntity newCollider) {
+    public void ReplaceCollision(TypeCollision newType, GameEntity newHandler, GameEntity newCollider) {
         var index = InputComponentsLookup.Collision;
         var component = (CollisionComponent)CreateComponent(index, typeof(CollisionComponent));
         component.type = newType;

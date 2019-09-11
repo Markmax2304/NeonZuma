@@ -18,7 +18,7 @@ public class MatchInsertedBallInChainSystem : ReactiveSystem<GameEntity>
     {
         foreach(var checkedBall in entities)
         {
-            if (_contexts.manage.isDebugAccess)
+            if (_contexts.global.isDebugAccess)
             {
                 _contexts.manage.CreateEntity()
                     .AddLogMessage($" ___ Start to match around inserted ball: {checkedBall.ToString()}", TypeLogMessage.Trace, false, GetType());
@@ -63,7 +63,7 @@ public class MatchInsertedBallInChainSystem : ReactiveSystem<GameEntity>
             {
                 int destroyId = Extensions.DestroyGroupId;
 
-                if (_contexts.manage.isDebugAccess)
+                if (_contexts.global.isDebugAccess)
                 {
                     _contexts.manage.CreateEntity()
                         .AddLogMessage($" ___ Mark balls for destroying. DestroyGroupId - {destroyId.ToString()}. Count of ball - {count.ToString()}",
@@ -71,6 +71,9 @@ public class MatchInsertedBallInChainSystem : ReactiveSystem<GameEntity>
                 }
 
                 PassBallsWithSameColor(balls, checkedBall.color.value, checkedBallIndex, (ball) => ball.AddGroupDestroy(destroyId));
+
+                // score stuff
+                _contexts.manage.CreateEntity().AddScorePiece(count);
             }
         }
     }

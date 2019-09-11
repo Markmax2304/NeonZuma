@@ -40,7 +40,7 @@ public class CollisionObjectDestroySystem : ReactiveSystem<InputEntity>
 
     protected override bool Filter(InputEntity entity)
     {
-        return entity.collision.type == CollisionType.OutBorder;
+        return entity.collision.type == TypeCollision.OutBorder;
     }
 
     protected override ICollector<InputEntity> GetTrigger(IContext<InputEntity> context)

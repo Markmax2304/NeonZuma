@@ -54,9 +54,9 @@ public class GameController : MonoBehaviour
 
     private void InitializeSingletonComponents(Contexts contexts)
     {
-        contexts.game.SetLevelConfig(config);
-        contexts.game.SetBallColors(new Dictionary<ColorBall, int>());
-        contexts.manage.isDebugAccess = isDebug;
+        contexts.global.SetLevelConfig(config);
+        contexts.global.SetBallColors(new Dictionary<ColorBall, int>());
+        contexts.global.isDebugAccess = isDebug;
         // events
         contexts.manage.SetStartPlayEvent(new List<Action>());
     }
@@ -80,12 +80,12 @@ public class GameController : MonoBehaviour
             //Animation finishing
             .Add(new FinishMoveAnimationSystem(contexts))
 
-            //Collision of screen
+
+            //Collision actions
             .Add(new EnteringBallsToScreenSystem(contexts))
             .Add(new CollisionObjectDestroySystem(contexts))        //разобраться с этими коллизиями
-            //Collision of chains
+            .Add(new ExplodeBallSystem(contexts))
             .Add(new ConnectChainsSystem(contexts))
-            //Inserting
             .Add(new CollidingAndInsertingProjectileSystem(contexts))
 
             //Destroying balls in chain
@@ -118,12 +118,18 @@ public class GameController : MonoBehaviour
             .Add(new ScoreCounterSystem(contexts))
 
 
+            //Ability
+            .Add(new InputAbilitySystem(contexts))       // this system just for test and imitating ability invoking behaviour
+            .Add(new InvokingAbilitySystem(contexts))
+
+
             //Input
             .Add(new TouchHandleSystem(contexts))
             //Player
             .Add(new RotatePlayerSystem(contexts))
             .Add(new ShootPlayerSystem(contexts))
             .Add(new BallExchangePlayerSystem(contexts))
+            .Add(new UpdatePointerLengthSystem(contexts))
             //Shooting
             .Add(new ShootingForceSystem(contexts))
 

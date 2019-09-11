@@ -1,7 +1,7 @@
 ﻿using Entitas;
 using Entitas.CodeGeneration.Attributes;
 
-[Game, Unique]
+[Global, Unique]
 public class FireAccessComponent : IComponent
 {
 }

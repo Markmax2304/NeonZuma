@@ -22,13 +22,15 @@ public partial class Contexts : Entitas.IContexts {
     static Contexts _sharedInstance;
 
     public GameContext game { get; set; }
+    public GlobalContext global { get; set; }
     public InputContext input { get; set; }
     public ManageContext manage { get; set; }
 
-    public Entitas.IContext[] allContexts { get { return new Entitas.IContext [] { game, input, manage }; } }
+    public Entitas.IContext[] allContexts { get { return new Entitas.IContext [] { game, global, input, manage }; } }
 
     public Contexts() {
         game = new GameContext();
+        global = new GlobalContext();
         input = new InputContext();
         manage = new ManageContext();
 
@@ -133,6 +135,7 @@ public partial class Contexts {
     public void InitializeContextObservers() {
         try {
             CreateContextObserver(game);
+            CreateContextObserver(global);
             CreateContextObserver(input);
             CreateContextObserver(manage);
         } catch(System.Exception) {

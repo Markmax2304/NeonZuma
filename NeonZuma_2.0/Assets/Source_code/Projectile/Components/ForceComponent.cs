@@ -1,5 +1,5 @@
-﻿using Entitas;
-using UnityEngine;
+﻿using UnityEngine;
+using Entitas;
 
 [Game]
 public class ForceComponent : IComponent

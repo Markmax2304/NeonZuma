@@ -6,7 +6,7 @@ using Entitas;
 [Input]
 public class CollisionComponent : IComponent
 {
-    public CollisionType type;
+    public TypeCollision type;
     public GameEntity handler;
     public GameEntity collider;
 }

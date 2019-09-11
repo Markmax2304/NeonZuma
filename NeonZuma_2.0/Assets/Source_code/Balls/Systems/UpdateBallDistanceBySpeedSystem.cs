@@ -14,13 +14,15 @@ public class UpdateBallDistanceBySpeedSystem : IExecuteSystem
     public UpdateBallDistanceBySpeedSystem(Contexts contexts)
     {
         _contexts = contexts;
-        trackPercent = _contexts.game.levelConfig.value.normalSpeedLengthPercent;
+        trackPercent = _contexts.global.levelConfig.value.normalSpeedLengthPercent;
     }
 
     public void Execute()
     {
-        float delta = _contexts.game.deltaTime.value;
+        if (_contexts.global.isFreeze)
+            return;
 
+        float delta = _contexts.global.deltaTime.value;
         var paths = _contexts.game.GetEntities(GameMatcher.TrackId);
 
         InitTrackLengths(paths);

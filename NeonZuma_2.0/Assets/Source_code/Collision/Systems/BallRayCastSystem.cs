@@ -14,7 +14,7 @@ public class BallRayCastSystem : IExecuteSystem
     public BallRayCastSystem(Contexts contexts)
     {
         _contexts = contexts;
-        ballDiametr = _contexts.game.levelConfig.value.ballDiametr;
+        ballDiametr = _contexts.global.levelConfig.value.ballDiametr;
         mask = LayerMask.GetMask("Balls");
         hits = new RaycastHit2D[4];
     }
@@ -46,7 +46,7 @@ public class BallRayCastSystem : IExecuteSystem
     }
 
     #region Private Methods
-    private void ProcessRayCastCollision(RaycastHit2D[] hits, int count, GameEntity ball)
+    private void ProcessRayCastCollision(RaycastHit2D[] hits, int count, GameEntity projectile)
     {
         for(int i = 0; i < count; i++)
         {
@@ -58,21 +58,31 @@ public class BallRayCastSystem : IExecuteSystem
                 return;
             }
 
-            if (hitEntity == ball)
+            if (hitEntity == projectile)
                 continue;
 
             // projectile collistion stuff
-            if (IsProjectileCollision(ball, hitEntity))
+            if (IsProjectileCollision(projectile, hitEntity))
             {
-                if (_contexts.manage.isDebugAccess)
+                int explosionCount = _contexts.global.explosionCount.value;
+                if (projectile.isExplosion)
                 {
-                    _contexts.manage.CreateEntity()
-                        .AddLogMessage(string.Format(" ___ Creating collision with type - {0}, handler - {1}, collider - {2}",
-                        CollisionType.Projectile.ToString(), ball.ToString(), hitEntity.ToString()), TypeLogMessage.Trace, false, GetType());
+                    _contexts.input.CreateEntity()
+                        .AddCollision(TypeCollision.Explosion, projectile, null);
+                }
+                else
+                {
+                    _contexts.input.CreateEntity()
+                        .AddCollision(TypeCollision.Projectile, projectile, hitEntity);
                 }
 
-                Contexts.sharedInstance.input.CreateEntity()
-                    .AddCollision(CollisionType.Projectile, ball, hitEntity);
+                if (_contexts.global.isDebugAccess)
+                {
+                    string typeCollision = projectile.isExplosion ? "Explosion" : TypeCollision.Projectile.ToString();
+                    _contexts.manage.CreateEntity()
+                        .AddLogMessage(string.Format(" ___ Creating collision with type - {0}, handler - {1}, collider - {2}",
+                        typeCollision, projectile.ToString(), hitEntity.ToString()), TypeLogMessage.Trace, false, GetType());
+                }
             }
         }
     }

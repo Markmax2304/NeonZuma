@@ -13,7 +13,7 @@ public class TickCountersSystem : IExecuteSystem
     public void Execute()
     {
         var counters = _contexts.game.GetEntities(GameMatcher.Counter);
-        var deltaTime = _contexts.game.deltaTime.value;
+        var deltaTime = _contexts.global.deltaTime.value;
 
         foreach(var counterEntity in counters)
         {
@@ -24,7 +24,7 @@ public class TickCountersSystem : IExecuteSystem
                 counterEntity.counter.postAction();
                 counterEntity.RemoveCounter();
 
-                if (_contexts.manage.isDebugAccess)
+                if (_contexts.global.isDebugAccess)
                 {
                     _contexts.manage.CreateEntity()
                         .AddLogMessage($" ___ Finished counter of - {counterEntity.ToString()}", TypeLogMessage.Trace, false, GetType());

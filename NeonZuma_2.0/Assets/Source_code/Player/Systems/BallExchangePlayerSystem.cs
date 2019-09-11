@@ -15,10 +15,10 @@ public class BallExchangePlayerSystem : ReactiveSystem<InputEntity>
 
     protected override void Execute(List<InputEntity> entities)
     {
-        if (!_contexts.game.isFireAccess)
+        if (!_contexts.global.isFireAccess)
             return;
 
-        _contexts.game.isFireAccess = false;
+        _contexts.global.isFireAccess = false;
 
         var shootEntity = _contexts.game.shootEntity;
         var rechargeEntity = _contexts.game.rechargeEntity;
@@ -26,15 +26,15 @@ public class BallExchangePlayerSystem : ReactiveSystem<InputEntity>
         Transform rechargeParent = rechargeEntity.transform.value.parent;
         Transform shootParent = shootEntity.transform.value.parent;
 
-        Vector3 distance = _contexts.game.rechargeDistance.value;
-        float duration = _contexts.game.levelConfig.value.rechargeTime;
+        Vector3 distance = _contexts.global.rechargeDistance.value;
+        float duration = _contexts.global.levelConfig.value.rechargeTime;
         shootEntity.transform.value.DOLocalMove(-distance, duration).onComplete += delegate() 
         {
             ConvertToRecharge(shootEntity, rechargeParent);
         };
         rechargeEntity.transform.value.DOLocalMove(distance, duration).onComplete += delegate () 
         {
-            _contexts.game.isFireAccess = true;
+            _contexts.global.isFireAccess = true;
             ConvertToShoot(rechargeEntity, shootParent);
         };
     }

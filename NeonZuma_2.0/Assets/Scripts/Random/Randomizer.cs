@@ -18,7 +18,7 @@ public class Randomizer
     static Randomizer()
     {
         _contexts = Contexts.sharedInstance;
-        colorsInfo = _contexts.game.levelConfig.value.colors;
+        colorsInfo = _contexts.global.levelConfig.value.colors;
     }
 
     public Randomizer(int minLength, int maxLength)
@@ -41,7 +41,7 @@ public class Randomizer
     public static ColorBall GetSingleColor()
     {
         // TODO: maybe change to more compicated logic
-        var existedColors = _contexts.game.ballColors.value.Keys.ToArray();
+        var existedColors = _contexts.global.ballColors.value.Keys.ToArray();
         if (existedColors.Length > 0)
         {
             return existedColors[Random.Range(0, existedColors.Length)];

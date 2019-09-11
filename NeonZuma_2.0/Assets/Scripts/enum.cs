@@ -6,6 +6,8 @@ public enum TypeTouch { Shoot, Rotate, Exchange };
 
 public enum ColorBall { Red, Green, Blue, Yellow, Purple, White };
 
-public enum CollisionType { OutBorder, InBorder, Projectile, ChainContact };
+public enum TypeCollision { OutBorder, InBorder, Projectile, Explosion, ChainContact };
 
 public enum TypeLogMessage { Trace, Error };
+
+public enum TypeAbility { Freeze, Rollback, Pointer, Explosion };

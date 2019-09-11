@@ -13,7 +13,7 @@ public class CountBallColorsSystem : ReactiveSystem<GameEntity>
 
     protected override void Execute(List<GameEntity> entities)
     {
-        Dictionary<ColorBall, int> colors = _contexts.game.ballColors.value;
+        Dictionary<ColorBall, int> colors = _contexts.global.ballColors.value;
 
         foreach (var entity in entities)
         {

@@ -22,7 +22,7 @@ public class EnteringBallsToScreenSystem : ReactiveSystem<InputEntity>
 
     protected override bool Filter(InputEntity entity)
     {
-        return entity.collision.type == CollisionType.InBorder;
+        return entity.collision.type == TypeCollision.InBorder;
     }
 
     protected override ICollector<InputEntity> GetTrigger(IContext<InputEntity> context)
