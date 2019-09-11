@@ -7,24 +7,17 @@ using Entitas;
 public class SetChainSpeedSystem : ReactiveSystem<GameEntity>, IInitializeSystem, ICleanupSystem
 {
     private Contexts _contexts;
-    private float normalChainSpeed;
-    private float gravitateSpeed;
-    private float increaseSpeed;
 
     private static Dictionary<int, List<GameEntity>> chainDict = new Dictionary<int, List<GameEntity>>();
 
     public SetChainSpeedSystem(Contexts contexts) : base(contexts.game)
     {
         _contexts = contexts;
-        normalChainSpeed = _contexts.game.levelConfig.value.followSpeed;
-        gravitateSpeed = _contexts.game.levelConfig.value.gravitateSpeed;
-        increaseSpeed = _contexts.game.levelConfig.value.increaseMoveBackFactor;
     }
 
     public void Initialize()
     {
-        float oldNormalSpeed = normalChainSpeed;
-        normalChainSpeed = _contexts.game.levelConfig.value.startSpeed;
+        _contexts.global.SetCurrentNormalSpeed(_contexts.global.levelConfig.value.startSpeed);
 
         var tracks = _contexts.game.GetEntities(GameMatcher.TrackId);
         foreach (var track in tracks)
@@ -33,16 +26,16 @@ public class SetChainSpeedSystem : ReactiveSystem<GameEntity>, IInitializeSystem
         }
 
         var counterEntity = _contexts.game.CreateEntity();
-        counterEntity.AddCounter(_contexts.game.levelConfig.value.startDuration, delegate ()
+        counterEntity.AddCounter(_contexts.global.levelConfig.value.startDuration, delegate ()
         {
-            if (_contexts.manage.isDebugAccess)
+            if (_contexts.global.isDebugAccess)
             {
                 _contexts.manage.CreateEntity()
                     .AddLogMessage($" ___ Recover normal speed. Mark to update speed. And invoke start game event", 
                     TypeLogMessage.Trace, false, GetType());
             }
 
-            normalChainSpeed = oldNormalSpeed;
+            _contexts.global.ReplaceCurrentNormalSpeed(_contexts.global.levelConfig.value.followSpeed);
 
             foreach(var track in tracks)
             {
@@ -64,7 +57,7 @@ public class SetChainSpeedSystem : ReactiveSystem<GameEntity>, IInitializeSystem
     {
         foreach(var track in entities)
         {
-            if (_contexts.manage.isDebugAccess)
+            if (_contexts.global.isDebugAccess)
             {
                 _contexts.manage.CreateEntity()
                     .AddLogMessage($" ___ Update speed of track chains. Track - {track.ToString()}", TypeLogMessage.Trace, false, GetType());
@@ -80,30 +73,10 @@ public class SetChainSpeedSystem : ReactiveSystem<GameEntity>, IInitializeSystem
                 continue;
             }
 
-            var lastChain = chains.Last();
-            if (!lastChain.hasCounter)
-            {
-                lastChain.ReplaceChainSpeed(track.isNearToEnd ? normalChainSpeed * .4f : normalChainSpeed);
-            }
+            SetChainsSpeed(track, chains);
 
             // add gravitate speed setting to other chains
-            for(int i = 0; i < chains.Count; i++)
-            {
-                var balls = chains[i].GetChainedBalls(true);
-                if(balls == null)
-                {
-                    _contexts.manage.CreateEntity()
-                        .AddLogMessage("Failed to update chains speed. Balls of chain is null", TypeLogMessage.Error, true, GetType());
-                    return;
-                }
-
-                chainDict.Add(chains[i].chainId.value, balls);
-            }
-
-            for(int i = 0; i < chains.Count - 1; i++)
-            {
-                SetChainSpeedByEdgeBalls(chains[i], chains[i + 1]);
-            }
+            SetChainGravitateSpeed(chains);
         }
     }
 
@@ -130,7 +103,56 @@ public class SetChainSpeedSystem : ReactiveSystem<GameEntity>, IInitializeSystem
 
         if(frontBalls.Last().color.value == backBalls.First().color.value)
         {
+            float gravitateSpeed = _contexts.global.levelConfig.value.gravitateSpeed;
+            float increaseSpeed = _contexts.global.levelConfig.value.increaseMoveBackFactor;
             frontChain.ReplaceChainSpeed(-gravitateSpeed * (1 + increaseSpeed * _contexts.manage.moveBackCombo.value));
+        }
+    }
+
+    private void SetChainsSpeed(GameEntity track, List<GameEntity> chains)
+    {
+        if (_contexts.global.isRollback)
+        {
+            float rollbackSpeed = _contexts.global.levelConfig.value.rollbackSpeed;
+            foreach(var chain in chains)
+            {
+                chain.ReplaceChainSpeed(-rollbackSpeed);
+            }
+        }
+        else
+        {
+            var lastChain = chains.Last();
+            if (!lastChain.hasCounter)
+            {
+                float speed = _contexts.global.currentNormalSpeed.value;
+                lastChain.ReplaceChainSpeed(track.isNearToEnd ? speed * .4f : speed);
+            }
+
+            for(int i = 0; i < chains.Count - 1; i++)
+            {
+                chains[i].ReplaceChainSpeed(0f);
+            }
+        }
+    }
+
+    private void SetChainGravitateSpeed(List<GameEntity> chains)
+    {
+        for (int i = 0; i < chains.Count; i++)
+        {
+            var balls = chains[i].GetChainedBalls(true);
+            if (balls == null)
+            {
+                _contexts.manage.CreateEntity()
+                    .AddLogMessage("Failed to update chains speed. Balls of chain is null", TypeLogMessage.Error, true, GetType());
+                return;
+            }
+
+            chainDict.Add(chains[i].chainId.value, balls);
+        }
+
+        for (int i = 0; i < chains.Count - 1; i++)
+        {
+            SetChainSpeedByEdgeBalls(chains[i], chains[i + 1]);
         }
     }
     #endregion

@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using Entitas;
 
 public class InitializePlayerSystem : IInitializeSystem
@@ -17,7 +15,10 @@ public class InitializePlayerSystem : IInitializeSystem
         GameEntity playerEntity = _contexts.game.CreateEntity();
         playerEntity.isPlayer = true;
 
-        GameObject player = GameObject.Instantiate(_contexts.game.levelConfig.value.playerPrefab);
+        GameObject player = GameObject.Instantiate(_contexts.global.levelConfig.value.playerPrefab);
         playerEntity.AddTransform(player.transform);
+        var lineRenderer = player.GetComponent<LineRenderer>();
+        lineRenderer.enabled = false;
+        playerEntity.AddLineRenderer(lineRenderer);
     }
 }

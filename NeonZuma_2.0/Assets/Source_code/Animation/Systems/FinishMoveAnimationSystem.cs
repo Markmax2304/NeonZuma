@@ -16,7 +16,7 @@ public class FinishMoveAnimationSystem : ReactiveSystem<GameEntity>
     {
         foreach(var animatedBall in entities)
         {
-            if (_contexts.manage.isDebugAccess)
+            if (_contexts.global.isDebugAccess)
             {
                 _contexts.manage.CreateEntity()
                     .AddLogMessage($" ___ Finished animation of object: {animatedBall.ToString()}", TypeLogMessage.Trace, false, this.GetType());

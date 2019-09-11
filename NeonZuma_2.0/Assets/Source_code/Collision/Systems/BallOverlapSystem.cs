@@ -14,7 +14,7 @@ public class BallOverlapSystem : IExecuteSystem
     public BallOverlapSystem(Contexts contexts)
     {
         _contexts = contexts;
-        overlapRadius = _contexts.game.levelConfig.value.ballDiametr / 2f;
+        overlapRadius = _contexts.global.levelConfig.value.ballDiametr / 2f;
         mask = LayerMask.GetMask("Balls");
         hits = new Collider2D[4];
     }
@@ -56,15 +56,15 @@ public class BallOverlapSystem : IExecuteSystem
             // chain edges collision stuff
             if (IsChainContactCollision(ball, hitEntity))
             {
-                if (_contexts.manage.isDebugAccess)
+                if (_contexts.global.isDebugAccess)
                 {
                     _contexts.manage.CreateEntity()
                         .AddLogMessage(string.Format(" ___ Creating collision with type - {0}, handler - {1}, collider - {2}",
-                        CollisionType.ChainContact.ToString(), ball.ToString(), hitEntity.ToString()), TypeLogMessage.Trace, false, GetType());
+                        TypeCollision.ChainContact.ToString(), ball.ToString(), hitEntity.ToString()), TypeLogMessage.Trace, false, GetType());
                 }
 
                 Contexts.sharedInstance.input.CreateEntity()
-                    .AddCollision(CollisionType.ChainContact, ball, hitEntity);
+                    .AddCollision(TypeCollision.ChainContact, ball, hitEntity);
             }
         }
     }

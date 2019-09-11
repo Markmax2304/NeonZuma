@@ -22,7 +22,7 @@ public class ScaleAnimationControlSystem : ReactiveSystem<GameEntity>
     {
         foreach(var scaledEntity in entities)
         {
-            if (_contexts.manage.isDebugAccess)
+            if (_contexts.global.isDebugAccess)
             {
                 _contexts.manage.CreateEntity()
                     .AddLogMessage($" ___ Apply scaling animation to object: {scaledEntity.ToString()}", TypeLogMessage.Trace, false, GetType());
@@ -46,7 +46,7 @@ public class ScaleAnimationControlSystem : ReactiveSystem<GameEntity>
                     {
                         scaledEntity.isAnimationDone = true;
 
-                        if (_contexts.manage.isDebugAccess)
+                        if (_contexts.global.isDebugAccess)
                         {
                             _contexts.manage.CreateEntity()
                                 .AddLogMessage($" ___ Added done animation component to: {scaledEntity.ToString()}", 
@@ -66,7 +66,7 @@ public class ScaleAnimationControlSystem : ReactiveSystem<GameEntity>
                     {
                         scaledEntity.isAnimationDone = true;
 
-                        if (_contexts.manage.isDebugAccess)
+                        if (_contexts.global.isDebugAccess)
                         {
                             _contexts.manage.CreateEntity()
                                 .AddLogMessage($" ___ Added done animation component to: {scaledEntity.ToString()}", 

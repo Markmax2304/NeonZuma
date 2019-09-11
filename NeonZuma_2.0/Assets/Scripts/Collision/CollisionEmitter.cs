@@ -23,7 +23,7 @@ public class CollisionEmitter : MonoBehaviour
         }
     }
 
-    protected void CreateCollisionInputEntity(CollisionType type, GameObject handler, GameObject collider)
+    protected void CreateCollisionInputEntity(TypeCollision type, GameObject handler, GameObject collider)
     {
         var handlerLink = handler.GetEntityLink();
         var colliderLink = collider.GetEntityLink();

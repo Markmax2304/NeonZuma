@@ -26,8 +26,8 @@ public class RotatePlayerSystem : ReactiveSystem<InputEntity>
 
             if (touch.touchType.value == TypeTouch.Rotate)
             {
-                float rotateSpeed = _contexts.game.levelConfig.value.rotateSpeed;
-                playerTransform.up = Vector2.Lerp(playerTransform.up, direction, _contexts.game.deltaTime.value * rotateSpeed);
+                float rotateSpeed = _contexts.global.levelConfig.value.rotateSpeed;
+                playerTransform.up = Vector2.Lerp(playerTransform.up, direction, _contexts.global.deltaTime.value * rotateSpeed);
             }
             else if (touch.touchType.value == TypeTouch.Shoot)
             {

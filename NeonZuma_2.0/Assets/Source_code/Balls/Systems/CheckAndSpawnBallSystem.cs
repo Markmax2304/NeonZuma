@@ -17,10 +17,10 @@ public class CheckAndSpawnBallSystem : IExecuteSystem
     public CheckAndSpawnBallSystem(Contexts contexts)
     {
         _contexts = contexts;
-        ballDiametr = _contexts.game.levelConfig.value.ballDiametr;
+        ballDiametr = _contexts.global.levelConfig.value.ballDiametr;
         pool = PoolManager.instance.GetObjectPoolKeeper(TypeObjectPool.Ball);
-        ballDiametr = _contexts.game.levelConfig.value.ballDiametr;
-        normalScale = _contexts.game.levelConfig.value.normalScale;
+        ballDiametr = _contexts.global.levelConfig.value.ballDiametr;
+        normalScale = _contexts.global.levelConfig.value.normalScale;
     }
 
     public void Execute()
@@ -87,9 +87,9 @@ public class CheckAndSpawnBallSystem : IExecuteSystem
             lastChain = _contexts.game.CreateEntity();
             lastChain.AddChainId(Extensions.ChainId);
             lastChain.AddParentTrackId(track.trackId.value);
-            lastChain.AddChainSpeed(_contexts.game.levelConfig.value.followSpeed);
+            lastChain.AddChainSpeed(_contexts.global.levelConfig.value.followSpeed);
 
-            if (_contexts.manage.isDebugAccess)
+            if (_contexts.global.isDebugAccess)
             {
                 _contexts.manage.CreateEntity()
                     .AddLogMessage($" ___ Created new chain: {lastChain.ToString()}", TypeLogMessage.Trace, false, GetType());
@@ -106,7 +106,7 @@ public class CheckAndSpawnBallSystem : IExecuteSystem
         }
 
         track.isResetChainEdges = true;
-        if (_contexts.manage.isDebugAccess)
+        if (_contexts.global.isDebugAccess)
         {
             _contexts.manage.CreateEntity()
                 .AddLogMessage(" ___ Mark track for updating chain edges", TypeLogMessage.Trace, false, GetType());
@@ -131,7 +131,7 @@ public class CheckAndSpawnBallSystem : IExecuteSystem
         ball.tag = Constants.BALL_TAG;
         ball.gameObject.Link(entityBall, _contexts.game);
 
-        if (_contexts.manage.isDebugAccess)
+        if (_contexts.global.isDebugAccess)
         {
             _contexts.manage.CreateEntity()
                 .AddLogMessage($" ___ Created new ball in chain: {entityBall.ToString()}", TypeLogMessage.Trace, false, GetType());

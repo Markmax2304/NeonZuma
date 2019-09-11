@@ -12,6 +12,6 @@ public class UpdateDeltaTimeSystem : IExecuteSystem
 
     public void Execute()
     {
-        _contexts.game.ReplaceDeltaTime(Time.deltaTime);
+        _contexts.global.ReplaceDeltaTime(Time.deltaTime);
     }
 }

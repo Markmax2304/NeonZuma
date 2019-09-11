@@ -22,7 +22,7 @@ public class MoveAnimationControlSystem : ReactiveSystem<GameEntity>
     {
         foreach(var animatedEntity in entities)
         {
-            if (_contexts.manage.isDebugAccess)
+            if (_contexts.global.isDebugAccess)
             {
                 _contexts.manage.CreateEntity()
                     .AddLogMessage($" ___ Apply moving animation to object: {animatedEntity.ToString()}", TypeLogMessage.Trace, false, GetType());
@@ -46,7 +46,7 @@ public class MoveAnimationControlSystem : ReactiveSystem<GameEntity>
                     {
                         animatedEntity.isAnimationDone = true;
 
-                        if (_contexts.manage.isDebugAccess)
+                        if (_contexts.global.isDebugAccess)
                         {
                             _contexts.manage.CreateEntity()
                                 .AddLogMessage($" ___ Added done animation component to: {animatedEntity.ToString()}",
@@ -66,7 +66,7 @@ public class MoveAnimationControlSystem : ReactiveSystem<GameEntity>
                     {
                         animatedEntity.isAnimationDone = true;
 
-                        if (_contexts.manage.isDebugAccess)
+                        if (_contexts.global.isDebugAccess)
                         {
                             _contexts.manage.CreateEntity()
                                 .AddLogMessage($" ___ Added done animation component to: {animatedEntity.ToString()}", 

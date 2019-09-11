@@ -12,8 +12,8 @@ public class ScoreCounterSystem : ReactiveSystem<ManageEntity>, IInitializeSyste
     public ScoreCounterSystem(Contexts contexts) : base(contexts.manage)
     {
         _contexts = contexts;
-        scorePerBall = _contexts.game.levelConfig.value.scorePerBall;
-        decreaseRowCombo = _contexts.game.levelConfig.value.AmountBallAfterApplyRowCombo;
+        scorePerBall = _contexts.global.levelConfig.value.scorePerBall;
+        decreaseRowCombo = _contexts.global.levelConfig.value.AmountBallAfterApplyRowCombo;
     }
 
     public void Initialize()

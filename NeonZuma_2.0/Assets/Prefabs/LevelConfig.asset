@@ -44,3 +44,11 @@ MonoBehaviour:
   rotateSpeed: 20
   rechargeTime: 0.5
   forceSpeed: 5
+  scorePerBall: 10
+  AmountBallAfterApplyRowCombo: 3
+  freezeDuration: 3
+  rollbackSpeed: 2
+  rollbackDuration: 3
+  pointerDuration: 10
+  pointerShootSpeed: 20
+  explosionRadius: 1.5

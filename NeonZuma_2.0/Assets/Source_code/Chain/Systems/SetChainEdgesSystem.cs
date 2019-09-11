@@ -17,7 +17,7 @@ public class SetChainEdgesSystem : ReactiveSystem<GameEntity>
     {
         foreach(var track in entities)
         {
-            if (_contexts.manage.isDebugAccess)
+            if (_contexts.global.isDebugAccess)
             {
                 _contexts.manage.CreateEntity()
                     .AddLogMessage($" ___ Start setting chain edges and RayCast component. For track - {track.ToString()}", 
@@ -82,7 +82,7 @@ public class SetChainEdgesSystem : ReactiveSystem<GameEntity>
         ball.isBackEdge = back;
         ball.isOverlap = overlap;
 
-        if (_contexts.manage.isDebugAccess && isChange)
+        if (_contexts.global.isDebugAccess && isChange)
         {
             _contexts.manage.CreateEntity()
                 .AddLogMessage(overlap ? $" ___ Add Overlap component - {ball.ToString()}"

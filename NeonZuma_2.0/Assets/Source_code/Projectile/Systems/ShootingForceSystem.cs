@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using Entitas;
 
-public class ShootingForceSystem : IExecuteSystem
+public class ShootingForceSystem : IExecuteSystem, IInitializeSystem
 {
     private Contexts _contexts;
 
@@ -9,7 +9,12 @@ public class ShootingForceSystem : IExecuteSystem
     {
         _contexts = contexts;
     }
-    
+
+    public void Initialize()
+    {
+        _contexts.global.SetForceSpeed(_contexts.global.levelConfig.value.forceSpeed);
+    }
+
     public void Execute()
     {
         GameEntity[] entities = _contexts.game.GetEntities(GameMatcher.Projectile);
@@ -18,7 +23,7 @@ public class ShootingForceSystem : IExecuteSystem
         {
             Transform ball = entities[i].transform.value;
             Vector2 direction = entities[i].force.value;
-            ball.transform.position += (Vector3)direction * _contexts.game.deltaTime.value * _contexts.game.levelConfig.value.forceSpeed;
+            ball.transform.position += (Vector3)direction * _contexts.global.deltaTime.value * _contexts.global.forceSpeed.value;
         }
     }
 }

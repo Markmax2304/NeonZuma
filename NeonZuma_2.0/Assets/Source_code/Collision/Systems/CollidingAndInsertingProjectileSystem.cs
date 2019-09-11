@@ -15,8 +15,8 @@ public class CollidingAndInsertingProjectileSystem : ReactiveSystem<InputEntity>
     public CollidingAndInsertingProjectileSystem(Contexts contexts) : base(contexts.input)
     {
         _contexts = contexts;
-        ballDiametr = _contexts.game.levelConfig.value.ballDiametr;
-        insertDuration = _contexts.game.levelConfig.value.insertDuration;
+        ballDiametr = _contexts.global.levelConfig.value.ballDiametr;
+        insertDuration = _contexts.global.levelConfig.value.insertDuration;
     }
 
     protected override void Execute(List<InputEntity> entities)
@@ -37,7 +37,7 @@ public class CollidingAndInsertingProjectileSystem : ReactiveSystem<InputEntity>
             // some crutch to stop double adding component
             if (projectile.hasParentChainId)
             {
-                if (_contexts.manage.isDebugAccess)
+                if (_contexts.global.isDebugAccess)
                 {
                     _contexts.manage.CreateEntity()
                         .AddLogMessage($"Trying to insert ball that is inserting already. Projectile: {projectile.ToString()}. Ball: {ball.ToString()}",
@@ -75,7 +75,7 @@ public class CollidingAndInsertingProjectileSystem : ReactiveSystem<InputEntity>
             // if projectile must be inserted at first position, frontBall is null
             if (CalculateFrontBallForProjectile(projectile, chain, balls, track, out frontBallIndex))
             {
-                if (_contexts.manage.isDebugAccess)
+                if (_contexts.global.isDebugAccess)
                 {
                     _contexts.manage.CreateEntity()
                         .AddLogMessage($" ___ Insert projectile behind ball index: {frontBallIndex.ToString()}", TypeLogMessage.Trace, false, GetType());
@@ -83,7 +83,7 @@ public class CollidingAndInsertingProjectileSystem : ReactiveSystem<InputEntity>
 
                 InsertBall(projectile, frontBallIndex, chain, balls, track);
 
-                if (_contexts.manage.isDebugAccess)
+                if (_contexts.global.isDebugAccess)
                 {
                     _contexts.manage.CreateEntity()
                         .AddLogMessage($" ___ Inserted projectile to chain: projectile {projectile.ToString()} in chain {chain.ToString()}",
@@ -105,7 +105,7 @@ public class CollidingAndInsertingProjectileSystem : ReactiveSystem<InputEntity>
 
     protected override bool Filter(InputEntity entity)
     {
-        return entity.collision.type == CollisionType.Projectile;
+        return entity.collision.type == TypeCollision.Projectile;
     }
 
     protected override ICollector<InputEntity> GetTrigger(IContext<InputEntity> context)
@@ -118,7 +118,7 @@ public class CollidingAndInsertingProjectileSystem : ReactiveSystem<InputEntity>
     {
         chain.ReplaceChainSpeed(0f);
         track.isResetChainEdges = true;
-        if (_contexts.manage.isDebugAccess)
+        if (_contexts.global.isDebugAccess)
         {
             _contexts.manage.CreateEntity()
                 .AddLogMessage($" ___ Start to insert projectile. Mark to reset chain edge tags. And reduce chain speed to zero", 
@@ -128,7 +128,7 @@ public class CollidingAndInsertingProjectileSystem : ReactiveSystem<InputEntity>
         void postChainAction()
         {
             track.isUpdateSpeed = true;
-            if (_contexts.manage.isDebugAccess)
+            if (_contexts.global.isDebugAccess)
             {
                 _contexts.manage.CreateEntity()
                     .AddLogMessage(" ___ Ending animation inserting. Mark track for updating speed", TypeLogMessage.Trace, false, GetType());
@@ -154,7 +154,7 @@ public class CollidingAndInsertingProjectileSystem : ReactiveSystem<InputEntity>
             {
                 float distance = chainBalls[frontBallIndex].distanceBall.value;
 
-                if (_contexts.manage.isDebugAccess)
+                if (_contexts.global.isDebugAccess)
                 {
                     _contexts.manage.CreateEntity()
                         .AddLogMessage($" ___ Shift balls that's located front of inserted ball. Count of them: {(frontBallIndex + 1).ToString()}",
@@ -196,7 +196,7 @@ public class CollidingAndInsertingProjectileSystem : ReactiveSystem<InputEntity>
 
     private void ConvertProjectileToBall(GameEntity entity, int chainId, float distanceBall, PathCreator pathCreator, Action postChainAction)
     {
-        if (_contexts.manage.isDebugAccess)
+        if (_contexts.global.isDebugAccess)
         {
             _contexts.manage.CreateEntity()
                 .AddLogMessage($" ___ Convert projectile to ball. projectile: {entity.ToString()}", TypeLogMessage.Trace, false, GetType());
@@ -218,7 +218,7 @@ public class CollidingAndInsertingProjectileSystem : ReactiveSystem<InputEntity>
             entity.isCheckTargetBall = true;
             _contexts.manage.shootInRowCombo.isProjectile = true;
 
-            if (_contexts.manage.isDebugAccess)
+            if (_contexts.global.isDebugAccess)
             {
                 _contexts.manage.CreateEntity()
                     .AddLogMessage($" ___ Ending animation inserting. Mark ball as inserted ball: {entity.ToString()}", 

@@ -33,12 +33,17 @@ public class ShootPlayerSystem : ReactiveSystem<InputEntity>, ITearDownSystem
 
     public void InitializeShootPlayer()
     {
-        logger.Trace($" ___ Initialize Shoot player system");
+        if (_contexts.global.isDebugAccess)
+        {
+            _contexts.manage.CreateEntity()
+                .AddLogMessage($" ___ Initialize Shoot player system", TypeLogMessage.Trace, false, GetType());
+        }
+
         player = _contexts.game.playerEntity.transform.value;
         shootPlace = GameObject.Find("Shoot").transform;
         rechargePlace = GameObject.Find("Recharge").transform;
 
-        _contexts.game.ReplaceRechargeDistance(shootPlace.localPosition - rechargePlace.localPosition);
+        _contexts.global.ReplaceRechargeDistance(shootPlace.localPosition - rechargePlace.localPosition);
 
         CreateRechargeEntity();
         Recharge();
@@ -46,7 +51,7 @@ public class ShootPlayerSystem : ReactiveSystem<InputEntity>, ITearDownSystem
 
     protected override void Execute(List<InputEntity> entities)
     {
-        if (!_contexts.game.isFireAccess)
+        if (!_contexts.global.isFireAccess)
             return;
 
         GameEntity player = _contexts.game.playerEntity;
@@ -59,7 +64,7 @@ public class ShootPlayerSystem : ReactiveSystem<InputEntity>, ITearDownSystem
             Vector2 touchPosition = touch.touchPosition.value;
 
             Shoot((touchPosition - playerPosition).normalized);
-            _contexts.game.isFireAccess = false;
+            _contexts.global.isFireAccess = false;
             Recharge();
         }
     }
@@ -89,6 +94,13 @@ public class ShootPlayerSystem : ReactiveSystem<InputEntity>, ITearDownSystem
         projectile.isProjectile = true;
         projectile.AddForce(direction);
         projectile.AddRayCast(projectile.transform.value.position);
+
+        int countExplosion = _contexts.global.explosionCount.value;
+        if(countExplosion > 0)
+        {
+            projectile.isExplosion = true;
+            _contexts.global.ReplaceExplosionCount(countExplosion - 1);
+        }
     }
 
     private void Recharge()
@@ -98,10 +110,10 @@ public class ShootPlayerSystem : ReactiveSystem<InputEntity>, ITearDownSystem
         projectile.isShoot = true;
 
         Transform ball = projectile.transform.value;
-        float duration = _contexts.game.levelConfig.value.rechargeTime;
+        float duration = _contexts.global.levelConfig.value.rechargeTime;
         // TODO: change animate envelope to more usefull or interesting
-        ball.DOLocalMove(_contexts.game.rechargeDistance.value, duration).onComplete += delegate () {
-            ball.parent = shootPlace; _contexts.game.isFireAccess = true; };
+        ball.DOLocalMove(_contexts.global.rechargeDistance.value, duration).onComplete += delegate () {
+            ball.parent = shootPlace; _contexts.global.isFireAccess = true; };
 
         CreateRechargeEntity();
     }
@@ -120,7 +132,7 @@ public class ShootPlayerSystem : ReactiveSystem<InputEntity>, ITearDownSystem
         ball.tag = Constants.PROJECTILE_TAG;
         ball.gameObject.Link(projectile, _contexts.game);
 
-        float duration = _contexts.game.levelConfig.value.rechargeTime;
+        float duration = _contexts.global.levelConfig.value.rechargeTime;
         ball.DOScale(normalScale, duration * 0.9f);
     }
     #endregion

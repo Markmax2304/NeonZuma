@@ -8,19 +8,17 @@
 //------------------------------------------------------------------------------
 public static class ManageComponentsLookup {
 
-    public const int DebugAccess = 0;
-    public const int Destroyed = 1;
-    public const int LogMessage = 2;
-    public const int MoveBackCombo = 3;
-    public const int ScorePiece = 4;
-    public const int ShootInRowCombo = 5;
-    public const int StartPlayEvent = 6;
-    public const int TotalScore = 7;
+    public const int Destroyed = 0;
+    public const int LogMessage = 1;
+    public const int MoveBackCombo = 2;
+    public const int ScorePiece = 3;
+    public const int ShootInRowCombo = 4;
+    public const int StartPlayEvent = 5;
+    public const int TotalScore = 6;
 
-    public const int TotalComponents = 8;
+    public const int TotalComponents = 7;
 
     public static readonly string[] componentNames = {
-        "DebugAccess",
         "Destroyed",
         "LogMessage",
         "MoveBackCombo",
@@ -31,7 +29,6 @@ public static class ManageComponentsLookup {
     };
 
     public static readonly System.Type[] componentTypes = {
-        typeof(DebugAccessComponent),
         typeof(DestroyedComponent),
         typeof(LogMessageComponent),
         typeof(MoveBackComboComponent),

@@ -19,11 +19,11 @@ public class ConnectChainsSystem : ReactiveSystem<InputEntity>
     public ConnectChainsSystem(Contexts contexts) : base(contexts.input)
     {
         _contexts = contexts;
-        ballDiametr = _contexts.game.levelConfig.value.ballDiametr;
-        animDuration = _contexts.game.levelConfig.value.alignBallAnimationDuration;
-        moveBackSpeed = _contexts.game.levelConfig.value.moveBackSpeed;
-        moveBackDuration = _contexts.game.levelConfig.value.moveBackDuration;
-        increaseMoveBack = _contexts.game.levelConfig.value.increaseMoveBackFactor;
+        ballDiametr = _contexts.global.levelConfig.value.ballDiametr;
+        animDuration = _contexts.global.levelConfig.value.alignBallAnimationDuration;
+        moveBackSpeed = _contexts.global.levelConfig.value.moveBackSpeed;
+        moveBackDuration = _contexts.global.levelConfig.value.moveBackDuration;
+        increaseMoveBack = _contexts.global.levelConfig.value.increaseMoveBackFactor;
     }
 
     protected override void Execute(List<InputEntity> entities)
@@ -40,7 +40,7 @@ public class ConnectChainsSystem : ReactiveSystem<InputEntity>
                 continue;
             }
 
-            if (_contexts.manage.isDebugAccess)
+            if (_contexts.global.isDebugAccess)
             {
                 _contexts.manage.CreateEntity()
                     .AddLogMessage($" ___ Connect two chains in one. Front and back edges: {frontEdge.ToString()} and {backEdge.ToString()}",
@@ -84,7 +84,7 @@ public class ConnectChainsSystem : ReactiveSystem<InputEntity>
                 else
                     AnimateShiftBall(frontBalls[i], newDistance, delegate () { }, pathCreator);
 
-                if (_contexts.manage.isDebugAccess)
+                if (_contexts.global.isDebugAccess)
                 {
                     _contexts.manage.CreateEntity()
                         .AddLogMessage($" ___ Transfer ball to other chain: {frontBalls[i].ToString()}", TypeLogMessage.Trace, false, GetType());
@@ -93,7 +93,7 @@ public class ConnectChainsSystem : ReactiveSystem<InputEntity>
 
             track.isResetChainEdges = true;
 
-            if (_contexts.manage.isDebugAccess)
+            if (_contexts.global.isDebugAccess)
             {
                 _contexts.manage.CreateEntity().AddLogMessage($" ___ Update track: {track.ToString()}", TypeLogMessage.Trace, false, GetType());
                 _contexts.manage.CreateEntity().AddLogMessage($" ___ And destroy chain: {frontChain.ToString()}", 
@@ -112,7 +112,7 @@ public class ConnectChainsSystem : ReactiveSystem<InputEntity>
                     if (backEdge != null)
                         backEdge.isCheckTargetBall = true;
 
-                    if (_contexts.manage.isDebugAccess)
+                    if (_contexts.global.isDebugAccess)
                     {
                         _contexts.manage.CreateEntity()
                             .AddLogMessage($" ___ Mark both ball as ready to check: {frontEdge.ToString()} and {backEdge.ToString()}", 
@@ -128,14 +128,14 @@ public class ConnectChainsSystem : ReactiveSystem<InputEntity>
                     backChain.AddCounter(moveBackDuration, delegate ()
                     {
                         track.isUpdateSpeed = true;
-                        if (_contexts.manage.isDebugAccess)
+                        if (_contexts.global.isDebugAccess)
                         {
                             _contexts.manage.CreateEntity()
                                 .AddLogMessage($" ___ Mark for updating speed after connecting chains", TypeLogMessage.Trace, false, GetType());
                         }
                     });
 
-                    if (_contexts.manage.isDebugAccess)
+                    if (_contexts.global.isDebugAccess)
                     {
                         _contexts.manage.CreateEntity()
                             .AddLogMessage($" ___ Set move back parameters for chain: {backChain.ToString()}", 
@@ -146,7 +146,7 @@ public class ConnectChainsSystem : ReactiveSystem<InputEntity>
                 {
                     _contexts.manage.ReplaceMoveBackCombo(0);
                     track.isUpdateSpeed = true;
-                    if (_contexts.manage.isDebugAccess)
+                    if (_contexts.global.isDebugAccess)
                     {
                         _contexts.manage.CreateEntity().AddLogMessage($" ___ Mark for updating speed after connecting chains", 
                             TypeLogMessage.Trace, false, GetType());
@@ -158,7 +158,7 @@ public class ConnectChainsSystem : ReactiveSystem<InputEntity>
 
     protected override bool Filter(InputEntity entity)
     {
-        return entity.hasCollision && entity.collision.type == CollisionType.ChainContact;
+        return entity.hasCollision && entity.collision.type == TypeCollision.ChainContact;
     }
 
     protected override ICollector<InputEntity> GetTrigger(IContext<InputEntity> context)
