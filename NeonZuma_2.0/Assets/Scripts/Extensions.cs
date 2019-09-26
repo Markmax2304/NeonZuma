@@ -3,6 +3,7 @@ using System.Linq;
 
 using UnityEngine;
 using Entitas;
+using DG.Tweening;
 
 public static class Extensions
 {
@@ -86,6 +87,7 @@ public static class Extensions
         if (ball.hasTransform)
         {
             GameObject obj = ball.transform.value.gameObject;
+            DOTween.Kill(obj);
             obj.tag = Constants.UNTAGGED_TAG;
             obj.Unlink();
             var poolObj = obj.GetComponent<PoolingObject>();

@@ -41,33 +41,49 @@ public class GameController : MonoBehaviour
         }
         catch (Exception ex)
         {
-            logger.Error(ex, "Failed to process updarte frame");
+            logger.Error(ex, "Failed to process update frame");
         }
     }
 
     private void OnDestroy()
     {
         _systems.TearDown();
-
-        // clean up gameobject pools
     }
 
     private void InitializeSingletonComponents(Contexts contexts)
     {
         contexts.global.SetLevelConfig(config);
-        contexts.global.SetBallColors(new Dictionary<ColorBall, int>());
         contexts.global.isDebugAccess = isDebug;
-        // events
-        contexts.manage.SetStartPlayEvent(new List<Action>());
+        contexts.manage.SetLogicSystems(CreateLogicSystems(contexts));
     }
 
     private Systems CreateSystems(Contexts contexts)
     {
         return new Feature("Game")
+            .Add(new UpdateDeltaTimeSystem(contexts))
+
+            //Level
+            .Add(new UploadLevelSystem(contexts))
+            .Add(new ExecuteLevelLogicSystem(contexts))         // here locates execution of Logic systems
+            .Add(new FinishLevelSystem(contexts))
+
+            // Log recording
+            .Add(new RecordLogMessageSystem(contexts))
+
+            //CleanUp
+            .Add(new DestroyInputEntityHandleSystem(contexts))
+            .Add(new DestroyGameEntityHandleSystem(contexts))
+            .Add(new DestroyManageEntityHandleSystem(contexts))
+            ;
+    }
+
+    private Systems CreateLogicSystems(Contexts contexts)
+    {
+        return new Feature("Logic")
             //Initialization
             .Add(new InitializePathSystem(contexts))
             .Add(new InitializePlayerSystem(contexts))
-            .Add(new UpdateDeltaTimeSystem(contexts))
+            
 
             //RayCasting
             .Add(new BallRayCastSystem(contexts))
@@ -76,7 +92,7 @@ public class GameController : MonoBehaviour
 
             //Counter
             .Add(new TickCountersSystem(contexts))
-            
+
             //Animation finishing
             .Add(new FinishMoveAnimationSystem(contexts))
 
@@ -95,7 +111,7 @@ public class GameController : MonoBehaviour
 
             //Spawn
             .Add(new CheckAndSpawnBallSystem(contexts))
-            
+
             //Movement
             .Add(new UpdateBallDistanceBySpeedSystem(contexts))
             .Add(new ChangeBallPositionOnPathSystem(contexts))
@@ -133,18 +149,12 @@ public class GameController : MonoBehaviour
             //Shooting
             .Add(new ShootingForceSystem(contexts))
 
-
-            // Log recording
-            .Add(new RecordLogMessageSystem(contexts))
-
-
-            //CleanUp
-            .Add(new DestroyInputEntityHandleSystem(contexts))
-            .Add(new DestroyGameEntityHandleSystem(contexts))
-            .Add(new DestroyManageEntityHandleSystem(contexts))
+            //GameOver
+            .Add(new GameEndProcessSystem(contexts))
             ;
     }
 
+    #region Logger Methods
     private void InitializeLogger()
     {
         try
@@ -174,7 +184,6 @@ public class GameController : MonoBehaviour
         }
     }
 
-
     private static string GetTempFolder()
     {
         if (string.IsNullOrEmpty(tempFolder))
@@ -190,4 +199,5 @@ public class GameController : MonoBehaviour
 
         return tempFolder;
     }
+    #endregion
 }

@@ -99,7 +99,7 @@ public static class GameComponentsLookup {
         typeof(AnimationDoneComponent),
         typeof(AnimationInfoComponent),
         typeof(BackEdgeComponent),
-        typeof(BallId),
+        typeof(BallIdComponent),
         typeof(ChainIdComponent),
         typeof(ChainSpeedComponent),
         typeof(CheckTargetBallComponent),

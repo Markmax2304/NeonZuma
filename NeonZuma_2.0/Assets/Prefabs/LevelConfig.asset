@@ -25,7 +25,7 @@ MonoBehaviour:
     color: {r: 0, g: 0.10449934, b: 1, a: 1}
   - type: 3
     color: {r: 0.9811321, g: 0.97623724, b: 0, a: 1}
-  followSpeed: 0.5
+  followSpeed: 1
   insertDuration: 0.15
   destroyAnimationDuration: 0.2
   ballDiametr: 0.36
@@ -41,6 +41,7 @@ MonoBehaviour:
   startSpeed: 10
   startDuration: 1.5
   normalSpeedLengthPercent: 0.75
+  gameOverSpeed: 20
   rotateSpeed: 20
   rechargeTime: 0.5
   forceSpeed: 5

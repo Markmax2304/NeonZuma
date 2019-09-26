@@ -2,6 +2,9 @@
 using UnityEngine;
 using Entitas;
 
+/// <summary>
+/// Логика уничтожения InputEntity
+/// </summary>
 public class DestroyInputEntityHandleSystem : ReactiveSystem<InputEntity>
 {
     public DestroyInputEntityHandleSystem(Contexts contexts) : base(contexts.input)

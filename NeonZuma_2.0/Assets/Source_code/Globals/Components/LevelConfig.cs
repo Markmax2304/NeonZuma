@@ -9,7 +9,6 @@ public class LevelConfig : ScriptableObject
 
     [Header("Ball fields"), Space]
     public ColorInfo[] colors;
-    [Range(0, 5)]
     public float followSpeed = .5f;
     public float insertDuration = .25f;
     public float destroyAnimationDuration = .25f;
@@ -33,6 +32,8 @@ public class LevelConfig : ScriptableObject
     public float startDuration = 4f;
     [Space]
     public float normalSpeedLengthPercent = .75f;
+    [Space]
+    public float gameOverSpeed = 12f;
 
     [Header("Player fields"), Space]
     public float rotateSpeed = 1f;
