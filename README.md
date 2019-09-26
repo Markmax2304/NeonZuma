@@ -1,5 +1,6 @@
 # NeonZuma
-Zuma clone by Unity for Google Play.
+Zuma clone by Unity for Google Play.<br/>
+[Project Documentation](Documentation.md)
 
 ## Settings of Gameplay level
 <p align="center">
