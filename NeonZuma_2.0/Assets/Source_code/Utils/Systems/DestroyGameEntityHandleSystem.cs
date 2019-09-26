@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using Entitas;
 
+/// <summary>
+/// Логика уничтожения GameEntity
+/// </summary>
 public class DestroyGameEntityHandleSystem : ReactiveSystem<GameEntity>
 {
     public DestroyGameEntityHandleSystem(Contexts contexts) : base(contexts.game)

@@ -6,6 +6,9 @@ using Log = NLog.Logger;
 using UnityEngine;
 using Entitas;
 
+/// <summary>
+/// Логика записи сообщений в лог
+/// </summary>
 public class RecordLogMessageSystem : ReactiveSystem<ManageEntity>
 {
     private static Log logger = LogManager.GetCurrentClassLogger();

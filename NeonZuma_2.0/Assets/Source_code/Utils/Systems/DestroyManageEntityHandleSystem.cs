@@ -3,6 +3,9 @@
 using UnityEngine;
 using Entitas;
 
+/// <summary>
+/// Логика уничтожения ManageEntity
+/// </summary>
 public class DestroyManageEntityHandleSystem : ReactiveSystem<ManageEntity>
 {
     public DestroyManageEntityHandleSystem(Contexts contexts) : base(contexts.manage)
