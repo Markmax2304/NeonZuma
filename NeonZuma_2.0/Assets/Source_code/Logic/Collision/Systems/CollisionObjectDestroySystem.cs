@@ -20,7 +20,7 @@ public class CollisionObjectDestroySystem : ReactiveSystem<InputEntity>, ITearDo
         {
             if (coll.collision.handler == null || coll.collision.collider == null)
             {
-                Debug.Log("Failed to proccess with moving out screen. Collision's entities is null");
+                //Debug.Log("Failed to proccess with moving out screen. Collision's entities is null");
                 continue;
             }
 

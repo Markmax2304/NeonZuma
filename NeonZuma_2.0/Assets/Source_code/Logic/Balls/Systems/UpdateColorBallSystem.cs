@@ -19,7 +19,9 @@ public class UpdateColorBallSystem : ReactiveSystem<GameEntity>
     {
         foreach(var entity in entities)
         {
-            entity.sprite.value.color = Randomizer.ConvertToColor(entity.color.value);
+            Color color = Randomizer.ConvertToColor(entity.color.value);
+            entity.sprite.value.color = color;
+            entity.spriteGlowEffect.value.GlowColor = color;
         }
     }
 

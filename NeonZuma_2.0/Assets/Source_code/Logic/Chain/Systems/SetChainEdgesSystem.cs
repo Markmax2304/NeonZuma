@@ -20,18 +20,21 @@ public class SetChainEdgesSystem : ReactiveSystem<GameEntity>
     {
         foreach(var track in entities)
         {
+#if UNITY_EDITOR
             if (_contexts.global.isDebugAccess)
             {
                 _contexts.manage.CreateEntity()
                     .AddLogMessage($" ___ Start setting chain edges and RayCast component. For track - {track.ToString()}", 
                     TypeLogMessage.Trace, false, GetType());
             }
-
+#endif
             var chains = track.GetChains(true);
             if(chains == null)
             {
+#if UNITY_EDITOR
                 _contexts.manage.CreateEntity()
                     .AddLogMessage("Failed to update chain edges. Chain collection is null", TypeLogMessage.Error, true, GetType());
+#endif
                 continue;
             }
 
@@ -41,8 +44,10 @@ public class SetChainEdgesSystem : ReactiveSystem<GameEntity>
 
                 if (balls == null)
                 {
+#if UNITY_EDITOR
                     _contexts.manage.CreateEntity()
                         .AddLogMessage("Failed to update chain edges. Some chain is null", TypeLogMessage.Error, true, GetType());
+#endif
                     continue;
                 }
 
@@ -85,12 +90,14 @@ public class SetChainEdgesSystem : ReactiveSystem<GameEntity>
         ball.isBackEdge = back;
         ball.isOverlap = overlap;
 
+#if UNITY_EDITOR
         if (_contexts.global.isDebugAccess && isChange)
         {
             _contexts.manage.CreateEntity()
                 .AddLogMessage(overlap ? $" ___ Add Overlap component - {ball.ToString()}"
                 : $" ___ Remove Overlap component - {ball.ToString()}", TypeLogMessage.Trace, false, GetType());
         }
+#endif
     }
     #endregion
 }

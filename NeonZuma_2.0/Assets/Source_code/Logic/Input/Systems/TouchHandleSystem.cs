@@ -22,10 +22,10 @@ public class TouchHandleSystem : IExecuteSystem, ITearDownSystem
     {
         if (Input.GetMouseButtonDown(0)) {
             PointerEventData data;
-#if UNITY_ANDROID
-            data = GetPointerData(Input.touches[0].fingerId);
-#else
+#if UNITY_EDITOR
             data = GetPointerData(-1);
+#elif UNITY_ANDROID
+            data = GetPointerData(Input.touches[0].fingerId);
 #endif
 
             if (data == null) {

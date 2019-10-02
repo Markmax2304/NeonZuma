@@ -38,8 +38,9 @@ public class ScoreCounterSystem : ReactiveSystem<ManageEntity>, IInitializeSyste
             int addingToScore = scoreEntity.scorePiece.value * scorePerBall * moveBackCombo + shootInRowCombo * scorePerBall;
 
             // TODO: vfx effect
+#if UNITY_EDITOR
             Debug.Log($"+ {scoreEntity.scorePiece.value} x {moveBackCombo} + {shootInRowCombo} x {scorePerBall} = {addingToScore}");
-
+#endif
             int totalScore = _contexts.manage.totalScore.value;
             _contexts.manage.ReplaceTotalScore(totalScore + addingToScore);
 

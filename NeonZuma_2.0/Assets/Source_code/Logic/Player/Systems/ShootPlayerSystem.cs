@@ -7,6 +7,7 @@ using Log = NLog.Logger;
 using Entitas;
 using DG.Tweening;
 using UnityEngine;
+using SpriteGlow;
 
 /// <summary>
 /// Логика выстрела снаряда и последующей перезарядки, а также создания нового шара для перезарядки
@@ -40,12 +41,13 @@ public class ShootPlayerSystem : ReactiveSystem<InputEntity>, IInitializeSystem,
 
     public void InitializeShootPlayer()
     {
+#if UNITY_EDITOR
         if (_contexts.global.isDebugAccess)
         {
             _contexts.manage.CreateEntity()
                 .AddLogMessage($" ___ Initialize Shoot player system", TypeLogMessage.Trace, false, GetType());
         }
-
+#endif
         player = _contexts.game.playerEntity.transform.value;
         shootPlace = GameObject.Find("Shoot").transform;
         rechargePlace = GameObject.Find("Recharge").transform;
@@ -143,6 +145,7 @@ public class ShootPlayerSystem : ReactiveSystem<InputEntity>, IInitializeSystem,
         projectile.isRecharge = true;
         projectile.AddTransform(ball);
         projectile.AddSprite(ball.GetComponent<SpriteRenderer>());
+        projectile.AddSpriteGlowEffect(ball.GetComponent<SpriteGlowEffect>());
         projectile.AddColor(Randomizer.GetSingleColor());
 
         ball.tag = Constants.PROJECTILE_TAG;

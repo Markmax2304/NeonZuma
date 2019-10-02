@@ -72,6 +72,7 @@ GameObject:
   - component: {fileID: 2866933259869512606}
   - component: {fileID: 2866933259869512600}
   - component: {fileID: 1843557085053761711}
+  - component: {fileID: 2126079594}
   m_Layer: 5
   m_Name: Player
   m_TagString: Player
@@ -112,7 +113,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -132,7 +133,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 5
-  m_Sprite: {fileID: 21300000, guid: 3093e8836aa43dd4f935da382bc4bbcf, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 891a9d2091ec12345a753687cf2f375a, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -263,3 +264,21 @@ LineRenderer:
     generateLightingData: 0
   m_UseWorldSpace: 0
   m_Loop: 0
+--- !u!114 &2126079594
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2866933259869512605}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8f6d3c6e4250e84192f5b34ce9e71bc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  glowColor: {r: 0, g: 1, b: 0, a: 1}
+  glowBrightness: 3.5
+  outlineWidth: 7
+  alphaThreshold: 0.019
+  drawOutside: 0
+  enableInstancing: 0

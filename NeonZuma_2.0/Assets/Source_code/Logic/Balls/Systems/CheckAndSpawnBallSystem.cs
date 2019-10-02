@@ -2,6 +2,7 @@
 
 using UnityEngine;
 using Entitas;
+using SpriteGlow;
 
 /// <summary>
 /// Логика проверки готовности к появлению нового шара, а также самого создания новго шара
@@ -110,11 +111,13 @@ public class CheckAndSpawnBallSystem : IExecuteSystem, IInitializeSystem, ITearD
             lastChain.AddParentTrackId(track.trackId.value);
             lastChain.AddChainSpeed(_contexts.global.levelConfig.value.followSpeed);
 
+#if UNITY_EDITOR
             if (_contexts.global.isDebugAccess)
             {
                 _contexts.manage.CreateEntity()
                     .AddLogMessage($" ___ Created new chain: {lastChain.ToString()}", TypeLogMessage.Trace, false, GetType());
             }
+#endif
         }
         else
         {
@@ -127,17 +130,18 @@ public class CheckAndSpawnBallSystem : IExecuteSystem, IInitializeSystem, ITearD
         }
 
         track.isResetChainEdges = true;
+#if UNITY_EDITOR
         if (_contexts.global.isDebugAccess)
         {
             _contexts.manage.CreateEntity()
                 .AddLogMessage(" ___ Mark track for updating chain edges", TypeLogMessage.Trace, false, GetType());
         }
+#endif
     }
 
     private void CreateBall(GameEntity track, GameEntity chain, float distance)
     {
         // TODO: if will error - replace zero to some more useful
-        //var pathCreator           // continue point
         Transform ball = pool.RealeseObject(Vector3.zero, Quaternion.identity, normalScale).transform;
         ColorBall colorType = track.randomizer.value.GetRandomColorType();
 
@@ -146,17 +150,20 @@ public class CheckAndSpawnBallSystem : IExecuteSystem, IInitializeSystem, ITearD
         entityBall.AddDistanceBall(distance);
         entityBall.AddTransform(ball);
         entityBall.AddSprite(ball.GetComponent<SpriteRenderer>());
+        entityBall.AddSpriteGlowEffect(ball.GetComponent<SpriteGlowEffect>());
         entityBall.AddColor(colorType);
         entityBall.AddParentChainId(chain.chainId.value);
 
         ball.tag = Constants.BALL_TAG;
         ball.gameObject.Link(entityBall, _contexts.game);
 
+#if UNITY_EDITOR
         if (_contexts.global.isDebugAccess)
         {
             _contexts.manage.CreateEntity()
                 .AddLogMessage($" ___ Created new ball in chain: {entityBall.ToString()}", TypeLogMessage.Trace, false, GetType());
         }
+#endif
     }
     #endregion
 }

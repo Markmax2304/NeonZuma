@@ -60,8 +60,10 @@ public class BallRayCastSystem : IExecuteSystem, IInitializeSystem
             var hitEntity = hits[i].transform.gameObject.GetEntityLink()?.entity;
             if (hitEntity == null)
             {
+#if UNITY_EDITOR
                 _contexts.manage.CreateEntity()
                     .AddLogMessage("Failed to create collision entity. Hit entity is null", TypeLogMessage.Error, true, GetType());
+#endif
                 return;
             }
 
@@ -83,6 +85,7 @@ public class BallRayCastSystem : IExecuteSystem, IInitializeSystem
                         .AddCollision(TypeCollision.Projectile, projectile, hitEntity);
                 }
 
+#if UNITY_EDITOR
                 if (_contexts.global.isDebugAccess)
                 {
                     string typeCollision = projectile.isExplosion ? "Explosion" : TypeCollision.Projectile.ToString();
@@ -90,6 +93,7 @@ public class BallRayCastSystem : IExecuteSystem, IInitializeSystem
                         .AddLogMessage(string.Format(" ___ Creating collision with type - {0}, handler - {1}, collider - {2}",
                         typeCollision, projectile.ToString(), hitEntity.ToString()), TypeLogMessage.Trace, false, GetType());
                 }
+#endif
             }
         }
     }

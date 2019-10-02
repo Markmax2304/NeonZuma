@@ -26,33 +26,37 @@ public class CutChainSystem : ReactiveSystem<GameEntity>, IInitializeSystem
     {
         foreach(var chain in entities)
         {
+#if UNITY_EDITOR
             if (_contexts.global.isDebugAccess)
             {
                 _contexts.manage.CreateEntity()
                     .AddLogMessage($" ___ Start to cut chain: {chain.ToString()} on other chains", TypeLogMessage.Trace, false, GetType());
             }
+#endif
 
             chain.isCut = false;
             var balls = chain.GetChainedBalls(true);
 
             if (balls == null)
             {
+#if UNITY_EDITOR
                 if (_contexts.global.isDebugAccess)
                 {
                     _contexts.manage.CreateEntity()
                     .AddLogMessage($"Chain is empty. Remove chain entity - {chain.ToString()}", TypeLogMessage.Trace, false, GetType());
                 }
-
+#endif
                 DestroyChain(chain);
             }
             else
             {
+#if UNITY_EDITOR
                 if (_contexts.global.isDebugAccess)
                 {
                     _contexts.manage.CreateEntity()
                     .AddLogMessage($"", TypeLogMessage.Trace, false, GetType());
                 }
-
+#endif
                 CutChain(balls, chain);
                 UpdateTrack(chain);
             }
@@ -72,13 +76,14 @@ public class CutChainSystem : ReactiveSystem<GameEntity>, IInitializeSystem
     #region Private Methods
     private void DestroyChain(GameEntity chain)
     {
+#if UNITY_EDITOR
         if (_contexts.global.isDebugAccess)
         {
             _contexts.manage.CreateEntity()
                 .AddLogMessage($" ___ All of chain balls is destroyed. Destroy the chain: {chain.ToString()}",
                 TypeLogMessage.Trace, false, GetType());
         }
-
+#endif
         chain.RemoveParentTrackId();
         chain.RemoveChainId();
         chain.isDestroyed = true;
@@ -92,22 +97,24 @@ public class CutChainSystem : ReactiveSystem<GameEntity>, IInitializeSystem
         {
             if (balls[i - 1].distanceBall.value - balls[i].distanceBall.value > ballDiametr * 1.1f)
             {
+#if UNITY_EDITOR
                 if (_contexts.global.isDebugAccess)
                 {
                     _contexts.manage.CreateEntity()
                         .AddLogMessage($" ___ Found gap in chian between {balls[i - 1].ToString()} and {balls[i].ToString()}",
                         TypeLogMessage.Trace, false, GetType());
                 }
-
+#endif
                 var newChain = CreateEmptyChain(chain.parentTrackId.value);
 
+#if UNITY_EDITOR
                 if (_contexts.global.isDebugAccess)
                 {
                     _contexts.manage.CreateEntity()
                         .AddLogMessage($" ___ Move cutted balls to new chain. Count of balls - {(i - firstIndex).ToString()}",
                         TypeLogMessage.Trace, false, GetType());
                 }
-
+#endif
                 for (int x = firstIndex; x < i; x++)
                 {
                     balls[x].ReplaceParentChainId(newChain.chainId.value);
@@ -123,14 +130,17 @@ public class CutChainSystem : ReactiveSystem<GameEntity>, IInitializeSystem
         var track = _contexts.game.GetEntitiesWithTrackId(chain.parentTrackId.value).FirstOrDefault();
         if (track == null)
         {
+#if UNITY_EDITOR
             _contexts.manage.CreateEntity()
                 .AddLogMessage("Failed to cut chain. Track is null", TypeLogMessage.Error, true, GetType());
+#endif
             return;
         }
 
         track.isResetChainEdges = true;
         track.isUpdateSpeed = true;
 
+#if UNITY_EDITOR
         if (_contexts.global.isDebugAccess)
         {
             _contexts.manage.CreateEntity()
@@ -138,6 +148,7 @@ public class CutChainSystem : ReactiveSystem<GameEntity>, IInitializeSystem
             _contexts.manage.CreateEntity()
                 .AddLogMessage($" ___ Mark track for updating speed", TypeLogMessage.Trace, false, GetType());
         }
+#endif
     }
 
     private GameEntity CreateEmptyChain(int trackId)
@@ -147,12 +158,13 @@ public class CutChainSystem : ReactiveSystem<GameEntity>, IInitializeSystem
         newChain.AddParentTrackId(trackId);
         newChain.AddChainSpeed(0f);
 
+#if UNITY_EDITOR
         if (_contexts.global.isDebugAccess)
         {
             _contexts.manage.CreateEntity()
                 .AddLogMessage($" ___ Created new chain {newChain.ToString()}", TypeLogMessage.Trace, false, GetType());
         }
-
+#endif
         return newChain;
     }
     #endregion

@@ -23,12 +23,13 @@ public class MatchInsertedBallInChainSystem : ReactiveSystem<GameEntity>
     {
         foreach(var checkedBall in entities)
         {
+#if UNITY_EDITOR
             if (_contexts.global.isDebugAccess)
             {
                 _contexts.manage.CreateEntity()
                     .AddLogMessage($" ___ Start to match around inserted ball: {checkedBall.ToString()}", TypeLogMessage.Trace, false, GetType());
             }
-
+#endif
             if (checkedBall == null)
                 continue;
 
@@ -37,24 +38,30 @@ public class MatchInsertedBallInChainSystem : ReactiveSystem<GameEntity>
             var chain = _contexts.game.GetEntitiesWithChainId(checkedBall.parentChainId.value).FirstOrDefault();
             if(chain == null)
             {
+#if UNITY_EDITOR
                 _contexts.manage.CreateEntity()
                     .AddLogMessage("Failed to match inserted ball. Chain is null", TypeLogMessage.Error, true, GetType());
+#endif
                 continue;
             }
 
             var balls = chain.GetChainedBalls(true);
             if(balls == null)
             {
+#if UNITY_EDITOR
                 _contexts.manage.CreateEntity()
                     .AddLogMessage("Failed to match inserted ball. Balls is null", TypeLogMessage.Error, true, GetType());
+#endif
                 continue;
             }
 
             int checkedBallIndex;
             if(!GetBallIndex(balls, checkedBall, out checkedBallIndex))
             {
+#if UNITY_EDITOR
                 _contexts.manage.CreateEntity()
                     .AddLogMessage("Failed to match inserted ball. Inserted ball isn't found in ball chain", TypeLogMessage.Error, true, GetType());
+#endif
                 continue;
             }
 
@@ -68,13 +75,14 @@ public class MatchInsertedBallInChainSystem : ReactiveSystem<GameEntity>
             {
                 int destroyId = Extensions.DestroyGroupId;
 
+#if UNITY_EDITOR
                 if (_contexts.global.isDebugAccess)
                 {
                     _contexts.manage.CreateEntity()
                         .AddLogMessage($" ___ Mark balls for destroying. DestroyGroupId - {destroyId.ToString()}. Count of ball - {count.ToString()}",
                         TypeLogMessage.Trace, false, GetType());
                 }
-
+#endif
                 PassBallsWithSameColor(balls, checkedBall.color.value, checkedBallIndex, (ball) => ball.AddGroupDestroy(destroyId));
 
                 // score stuff

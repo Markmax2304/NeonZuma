@@ -28,19 +28,22 @@ public class ExplodeBallSystem : ReactiveSystem<InputEntity>
 
             if(explosionEntity == null || !explosionEntity.hasTransform)
             {
+#if UNITY_EDITOR
                 _contexts.manage.CreateEntity()
                     .AddLogMessage($" ___ Failed to get explosion entity: {explosionEntity?.ToString()}", TypeLogMessage.Error, true, GetType());
+#endif
+                continue;
             }
 
             // TODO: invoke vfx before kill balls 
             DestroyExplosionArea(explosionEntity, _contexts.global.levelConfig.value.explosionRadius);
-
+#if UNITY_EDITOR
             if (_contexts.global.isDebugAccess)
             {
                 _contexts.manage.CreateEntity()
                     .AddLogMessage($" ___ Acting role of explosion projectile: {explosionEntity.ToString()}", TypeLogMessage.Trace, false, GetType());
             }
-
+#endif
             DestroyExplosionProjectile(explosionEntity);
         }
     }
@@ -55,7 +58,7 @@ public class ExplodeBallSystem : ReactiveSystem<InputEntity>
         return context.CreateCollector(InputMatcher.Collision);
     }
 
-    #region Private Methods
+#region Private Methods
     private void DestroyExplosionArea(GameEntity explosionEntity, float radius)
     {
         int destroyGroup = Extensions.DestroyGroupId;
@@ -66,9 +69,11 @@ public class ExplodeBallSystem : ReactiveSystem<InputEntity>
             var entityBall = hits[i].gameObject.GetEntityLink().entity;
             if(entityBall == null)
             {
+#if UNITY_EDITOR
                 _contexts.manage.CreateEntity()
                     .AddLogMessage($" ___ Some overlaped object as entity is null: {entityBall.ToString()}",
                     TypeLogMessage.Error, true, GetType());
+#endif
                 continue;
             }
 
@@ -90,5 +95,5 @@ public class ExplodeBallSystem : ReactiveSystem<InputEntity>
         // code above just because in future we can add some animation to this projectile
         projectile.DestroyBall();
     }
-    #endregion
+#endregion
 }

@@ -27,11 +27,13 @@ public class TickCountersSystem : IExecuteSystem, ITearDownSystem
                 counterEntity.counter.postAction();
                 counterEntity.RemoveCounter();
 
+#if UNITY_EDITOR
                 if (_contexts.global.isDebugAccess)
                 {
                     _contexts.manage.CreateEntity()
                         .AddLogMessage($" ___ Finished counter of - {counterEntity.ToString()}", TypeLogMessage.Trace, false, GetType());
                 }
+#endif
             }
             else
             {

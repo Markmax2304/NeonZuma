@@ -25,11 +25,13 @@ public class ScaleAnimationControlSystem : ReactiveSystem<GameEntity>, ITearDown
     {
         foreach(var scaledEntity in entities)
         {
+#if UNITY_EDITOR
             if (_contexts.global.isDebugAccess)
             {
                 _contexts.manage.CreateEntity()
                     .AddLogMessage($" ___ Apply scaling animation to object: {scaledEntity.ToString()}", TypeLogMessage.Trace, false, GetType());
             }
+#endif
 
             float targetScale = scaledEntity.scaleAnimation.targetScale;
             float duration = scaledEntity.scaleAnimation.duration;
@@ -49,12 +51,14 @@ public class ScaleAnimationControlSystem : ReactiveSystem<GameEntity>, ITearDown
                     {
                         scaledEntity.isAnimationDone = true;
 
+#if UNITY_EDITOR
                         if (_contexts.global.isDebugAccess)
                         {
                             _contexts.manage.CreateEntity()
                                 .AddLogMessage($" ___ Added done animation component to: {scaledEntity.ToString()}", 
                                 TypeLogMessage.Trace, false, GetType());
                         }
+#endif
                     }
                 };
             }
@@ -69,12 +73,14 @@ public class ScaleAnimationControlSystem : ReactiveSystem<GameEntity>, ITearDown
                     {
                         scaledEntity.isAnimationDone = true;
 
+#if UNITY_EDITOR
                         if (_contexts.global.isDebugAccess)
                         {
                             _contexts.manage.CreateEntity()
                                 .AddLogMessage($" ___ Added done animation component to: {scaledEntity.ToString()}", 
                                 TypeLogMessage.Trace, false, GetType());
                         }
+#endif
                     }
                 };
             }

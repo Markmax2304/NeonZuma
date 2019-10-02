@@ -32,16 +32,20 @@ public class ChangeBallPositionOnPathSystem : ReactiveSystem<GameEntity>, ITearD
             var chain = GetChain(entities[i].parentChainId.value);
             if(chain == null)
             {
+#if UNITY_EDITOR
                 _contexts.manage.CreateEntity()
                     .AddLogMessage($"Failed to change disntace ball. Chain is null", TypeLogMessage.Error, true, GetType());
+#endif
                 continue;
             }
 
             var track = GetTrack(chain.parentTrackId.value);
             if (track == null)
             {
+#if UNITY_EDITOR
                 _contexts.manage.CreateEntity()
                     .AddLogMessage($"Failed to change disntace ball. Track is null", TypeLogMessage.Error, true, GetType());
+#endif
                 continue;
             }
 

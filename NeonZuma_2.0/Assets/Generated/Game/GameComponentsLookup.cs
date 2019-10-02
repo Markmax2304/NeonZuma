@@ -45,11 +45,12 @@ public static class GameComponentsLookup {
     public const int Shoot = 34;
     public const int SpawnAccess = 35;
     public const int Sprite = 36;
-    public const int TrackId = 37;
-    public const int Transform = 38;
-    public const int UpdateSpeed = 39;
+    public const int SpriteGlowEffect = 37;
+    public const int TrackId = 38;
+    public const int Transform = 39;
+    public const int UpdateSpeed = 40;
 
-    public const int TotalComponents = 40;
+    public const int TotalComponents = 41;
 
     public static readonly string[] componentNames = {
         "AddedBall",
@@ -89,6 +90,7 @@ public static class GameComponentsLookup {
         "Shoot",
         "SpawnAccess",
         "Sprite",
+        "SpriteGlowEffect",
         "TrackId",
         "Transform",
         "UpdateSpeed"
@@ -132,6 +134,7 @@ public static class GameComponentsLookup {
         typeof(ShootComponent),
         typeof(SpawnAccessComponent),
         typeof(SpriteComponent),
+        typeof(SpriteGlowEffectComponent),
         typeof(TrackIdComponent),
         typeof(TransformComponent),
         typeof(UpdateSpeedComponent)

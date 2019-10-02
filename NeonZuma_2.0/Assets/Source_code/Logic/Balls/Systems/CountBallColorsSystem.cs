@@ -63,7 +63,9 @@ public class CountBallColorsSystem : ReactiveSystem<GameEntity>
         }
         else
         {
+#if UNITY_EDITOR
             Debug.Log($"Reducing ball number with {color}, that doesn't exist in records");
+#endif
         }
     }
     #endregion

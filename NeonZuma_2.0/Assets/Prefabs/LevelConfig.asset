@@ -20,11 +20,15 @@ MonoBehaviour:
   - type: 0
     color: {r: 1, g: 0, b: 0, a: 1}
   - type: 1
-    color: {r: 0, g: 1, b: 0.19680619, a: 1}
+    color: {r: 0, g: 1, b: 0, a: 1}
   - type: 2
-    color: {r: 0, g: 0.10449934, b: 1, a: 1}
+    color: {r: 0, g: 0, b: 1, a: 1}
   - type: 3
-    color: {r: 0.9811321, g: 0.97623724, b: 0, a: 1}
+    color: {r: 1, g: 1, b: 0, a: 1}
+  - type: 4
+    color: {r: 1, g: 0, b: 1, a: 1}
+  - type: 5
+    color: {r: 1, g: 1, b: 1, a: 1}
   followSpeed: 1
   insertDuration: 0.15
   destroyAnimationDuration: 0.2

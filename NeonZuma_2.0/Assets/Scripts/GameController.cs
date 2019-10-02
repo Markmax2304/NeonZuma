@@ -18,12 +18,13 @@ public class GameController : MonoBehaviour
 
     void Start()
     {
-
+#if UNITY_EDITOR
         InitializeLogger();
         if (isDebug) 
         {
             logger.Trace("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
         }
+#endif
 
         Contexts contexts = Contexts.sharedInstance;
 
@@ -41,7 +42,9 @@ public class GameController : MonoBehaviour
         }
         catch (Exception ex)
         {
+#if UNITY_EDITOR
             logger.Error(ex, "Failed to process update frame");
+#endif
         }
     }
 
@@ -154,7 +157,7 @@ public class GameController : MonoBehaviour
             ;
     }
 
-    #region Logger Methods
+#region Logger Methods
     private void InitializeLogger()
     {
         try
@@ -199,5 +202,5 @@ public class GameController : MonoBehaviour
 
         return tempFolder;
     }
-    #endregion
+#endregion
 }

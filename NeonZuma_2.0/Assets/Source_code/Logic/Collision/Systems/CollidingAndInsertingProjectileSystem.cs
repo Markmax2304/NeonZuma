@@ -32,9 +32,11 @@ public class CollidingAndInsertingProjectileSystem : ReactiveSystem<InputEntity>
         {
             if(coll.collision.collider == null || coll.collision.handler == null)
             {
+#if UNITY_EDITOR
                 _contexts.manage.CreateEntity()
                     .AddLogMessage("Failed to define where in chain should insert ball. Collision's entities is null", 
                     TypeLogMessage.Error, true, GetType());
+#endif
                 continue;
             }
 
@@ -44,36 +46,44 @@ public class CollidingAndInsertingProjectileSystem : ReactiveSystem<InputEntity>
             // some crutch to stop double adding component
             if (projectile.hasParentChainId)
             {
+#if UNITY_EDITOR
                 if (_contexts.global.isDebugAccess)
                 {
                     _contexts.manage.CreateEntity()
                         .AddLogMessage($"Trying to insert ball that is inserting already. Projectile: {projectile.ToString()}. Ball: {ball.ToString()}",
                         TypeLogMessage.Trace, false, GetType());
                 }
+#endif
                 continue;
             }
 
             var chain = _contexts.game.GetEntitiesWithChainId(ball.parentChainId.value).FirstOrDefault();
             if(chain == null)
             {
+#if UNITY_EDITOR
                 _contexts.manage.CreateEntity()
                     .AddLogMessage("Failed to define where in chain should insert ball. chain of ball is null", TypeLogMessage.Error, true, GetType());
+#endif
                 continue;
             }
 
             var track = _contexts.game.GetEntitiesWithTrackId(chain.parentTrackId.value).FirstOrDefault();
             if (track == null)
             {
+#if UNITY_EDITOR
                 _contexts.manage.CreateEntity()
                     .AddLogMessage("Failed to inserting ball in chain. Couldn't get track entity", TypeLogMessage.Error, true, GetType());
+#endif
                 continue;
             }
 
             var balls = chain.GetChainedBalls(true);
             if (balls == null)
             {
+#if UNITY_EDITOR
                 _contexts.manage.CreateEntity()
                     .AddLogMessage("Failed to inserting ball in chain. chain balls is null", TypeLogMessage.Error, true, GetType());
+#endif
                 continue;
             }
 
@@ -82,28 +92,32 @@ public class CollidingAndInsertingProjectileSystem : ReactiveSystem<InputEntity>
             // if projectile must be inserted at first position, frontBall is null
             if (CalculateFrontBallForProjectile(projectile, chain, balls, track, out frontBallIndex))
             {
+#if UNITY_EDITOR
                 if (_contexts.global.isDebugAccess)
                 {
                     _contexts.manage.CreateEntity()
                         .AddLogMessage($" ___ Insert projectile behind ball index: {frontBallIndex.ToString()}", TypeLogMessage.Trace, false, GetType());
                 }
-
+#endif
                 InsertBall(projectile, frontBallIndex, chain, balls, track);
 
+#if UNITY_EDITOR
                 if (_contexts.global.isDebugAccess)
                 {
                     _contexts.manage.CreateEntity()
                         .AddLogMessage($" ___ Inserted projectile to chain: projectile {projectile.ToString()} in chain {chain.ToString()}",
                         TypeLogMessage.Trace, false, GetType());
                 }
-
+#endif
                 // combo
                 _contexts.manage.ReplaceMoveBackCombo(0);
             }
             else
             {
+#if UNITY_EDITOR
                 _contexts.manage.CreateEntity()
                     .AddLogMessage("Failed to define where in chain should insert ball. Couldn't find fron ball", TypeLogMessage.Error, true, GetType());
+#endif
             }
 
             coll.isDestroyed = true;
@@ -125,21 +139,24 @@ public class CollidingAndInsertingProjectileSystem : ReactiveSystem<InputEntity>
     {
         chain.ReplaceChainSpeed(0f);
         track.isResetChainEdges = true;
+#if UNITY_EDITOR
         if (_contexts.global.isDebugAccess)
         {
             _contexts.manage.CreateEntity()
                 .AddLogMessage($" ___ Start to insert projectile. Mark to reset chain edge tags. And reduce chain speed to zero", 
                 TypeLogMessage.Trace, false, GetType());
         }
-
+#endif
         void postChainAction()
         {
             track.isUpdateSpeed = true;
+#if UNITY_EDITOR
             if (_contexts.global.isDebugAccess)
             {
                 _contexts.manage.CreateEntity()
                     .AddLogMessage(" ___ Ending animation inserting. Mark track for updating speed", TypeLogMessage.Trace, false, GetType());
             }
+#endif
         }
 
         // first ball
@@ -161,13 +178,14 @@ public class CollidingAndInsertingProjectileSystem : ReactiveSystem<InputEntity>
             {
                 float distance = chainBalls[frontBallIndex].distanceBall.value;
 
+#if UNITY_EDITOR
                 if (_contexts.global.isDebugAccess)
                 {
                     _contexts.manage.CreateEntity()
                         .AddLogMessage($" ___ Shift balls that's located front of inserted ball. Count of them: {(frontBallIndex + 1).ToString()}",
                         TypeLogMessage.Trace, false, GetType());
                 }
-
+#endif
                 for (int i = 0; i <= frontBallIndex; i++)
                 {
                     float newDistance = chainBalls[i].distanceBall.value + ballDiametr;
@@ -203,12 +221,13 @@ public class CollidingAndInsertingProjectileSystem : ReactiveSystem<InputEntity>
 
     private void ConvertProjectileToBall(GameEntity entity, int chainId, float distanceBall, PathCreator pathCreator, Action postChainAction)
     {
+#if UNITY_EDITOR
         if (_contexts.global.isDebugAccess)
         {
             _contexts.manage.CreateEntity()
                 .AddLogMessage($" ___ Convert projectile to ball. projectile: {entity.ToString()}", TypeLogMessage.Trace, false, GetType());
         }
-
+#endif
         entity.isProjectile = false;
         entity.RemoveForce();
         entity.RemoveRayCast();
@@ -225,12 +244,14 @@ public class CollidingAndInsertingProjectileSystem : ReactiveSystem<InputEntity>
             entity.isCheckTargetBall = true;
             _contexts.manage.shootInRowCombo.isProjectile = true;
 
+#if UNITY_EDITOR
             if (_contexts.global.isDebugAccess)
             {
                 _contexts.manage.CreateEntity()
                     .AddLogMessage($" ___ Ending animation inserting. Mark ball as inserted ball: {entity.ToString()}", 
                     TypeLogMessage.Trace, false, GetType());
             }
+#endif
         };
         entity.AddMoveAnimation(insertDuration, target, postChainAction);
     }

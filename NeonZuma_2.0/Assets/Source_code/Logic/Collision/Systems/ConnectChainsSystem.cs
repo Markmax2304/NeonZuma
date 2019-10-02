@@ -42,38 +42,50 @@ public class ConnectChainsSystem : ReactiveSystem<InputEntity>, IInitializeSyste
 
             if (frontEdge == null || backEdge == null)
             {
+#if UNITY_EDITOR
                 _contexts.manage.CreateEntity()
                     .AddLogMessage("Failed to connect chain. Collision's entities is null", TypeLogMessage.Error, true, GetType());
+#endif
                 continue;
             }
 
+#if UNITY_EDITOR
             if (_contexts.global.isDebugAccess)
             {
                 _contexts.manage.CreateEntity()
                     .AddLogMessage($" ___ Connect two chains in one. Front and back edges: {frontEdge.ToString()} and {backEdge.ToString()}",
                     TypeLogMessage.Trace, false, GetType());
             }
-
+#endif
             var frontChain = _contexts.game.GetEntitiesWithChainId(backEdge.parentChainId.value).FirstOrDefault();
             var backChain = _contexts.game.GetEntitiesWithChainId(frontEdge.parentChainId.value).FirstOrDefault();
             if(frontChain == null || backChain == null)
             {
+#if UNITY_EDITOR
                 _contexts.manage.CreateEntity()
                     .AddLogMessage("Failed to conncet chain. front or back chain is null", TypeLogMessage.Error, true, GetType());
+#endif
+                continue;
             }
 
             var track = _contexts.game.GetEntitiesWithTrackId(backChain.parentTrackId.value).FirstOrDefault();
             if(track == null)
             {
+#if UNITY_EDITOR
                 _contexts.manage.CreateEntity()
                     .AddLogMessage("Failed to connect chain. track of chains is null", TypeLogMessage.Error, true, GetType());
+#endif
+                continue;
             }
 
             var frontBalls = frontChain.GetChainedBalls(true, true);
             if(frontBalls == null)
             {
+#if UNITY_EDITOR
                 _contexts.manage.CreateEntity()
                     .AddLogMessage("Failed to conncet chain. front balls is null", TypeLogMessage.Error, true, GetType());
+#endif
+                continue;
             }
 
             // start to process connecting
@@ -91,22 +103,25 @@ public class ConnectChainsSystem : ReactiveSystem<InputEntity>, IInitializeSyste
                 else
                     AnimateShiftBall(frontBalls[i], newDistance, delegate () { }, pathCreator);
 
+#if UNITY_EDITOR
                 if (_contexts.global.isDebugAccess)
                 {
                     _contexts.manage.CreateEntity()
                         .AddLogMessage($" ___ Transfer ball to other chain: {frontBalls[i].ToString()}", TypeLogMessage.Trace, false, GetType());
                 }
+#endif
             }
 
             track.isResetChainEdges = true;
 
+#if UNITY_EDITOR
             if (_contexts.global.isDebugAccess)
             {
                 _contexts.manage.CreateEntity().AddLogMessage($" ___ Update track: {track.ToString()}", TypeLogMessage.Trace, false, GetType());
                 _contexts.manage.CreateEntity().AddLogMessage($" ___ And destroy chain: {frontChain.ToString()}", 
                     TypeLogMessage.Trace, false, GetType());
             }
-
+#endif
             frontChain.Destroy();
             coll.isDestroyed = true;
 
@@ -119,13 +134,14 @@ public class ConnectChainsSystem : ReactiveSystem<InputEntity>, IInitializeSyste
                     if (backEdge != null)
                         backEdge.isCheckTargetBall = true;
 
+#if UNITY_EDITOR
                     if (_contexts.global.isDebugAccess)
                     {
                         _contexts.manage.CreateEntity()
                             .AddLogMessage($" ___ Mark both ball as ready to check: {frontEdge.ToString()} and {backEdge.ToString()}", 
                             TypeLogMessage.Trace, false, GetType());
                     }
-
+#endif
                     // combo
                     int combo = _contexts.manage.moveBackCombo.value;
                     _contexts.manage.ReplaceMoveBackCombo(combo + 1);
@@ -135,29 +151,35 @@ public class ConnectChainsSystem : ReactiveSystem<InputEntity>, IInitializeSyste
                     backChain.AddCounter(moveBackDuration, delegate ()
                     {
                         track.isUpdateSpeed = true;
+#if UNITY_EDITOR
                         if (_contexts.global.isDebugAccess)
                         {
                             _contexts.manage.CreateEntity()
                                 .AddLogMessage($" ___ Mark for updating speed after connecting chains", TypeLogMessage.Trace, false, GetType());
                         }
+#endif
                     });
 
+#if UNITY_EDITOR
                     if (_contexts.global.isDebugAccess)
                     {
                         _contexts.manage.CreateEntity()
                             .AddLogMessage($" ___ Set move back parameters for chain: {backChain.ToString()}", 
                             TypeLogMessage.Trace, false, GetType());
                     }
+#endif
                 }
                 else
                 {
                     _contexts.manage.ReplaceMoveBackCombo(0);
                     track.isUpdateSpeed = true;
+#if UNITY_EDITOR
                     if (_contexts.global.isDebugAccess)
                     {
                         _contexts.manage.CreateEntity().AddLogMessage($" ___ Mark for updating speed after connecting chains", 
                             TypeLogMessage.Trace, false, GetType());
                     }
+#endif
                 }
             }
         }

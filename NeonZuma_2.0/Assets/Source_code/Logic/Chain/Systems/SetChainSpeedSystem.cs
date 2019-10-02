@@ -31,13 +31,14 @@ public class SetChainSpeedSystem : ReactiveSystem<GameEntity>, IInitializeSystem
         var counterEntity = _contexts.game.CreateEntity();
         counterEntity.AddCounter(_contexts.global.levelConfig.value.startDuration, delegate ()
         {
+#if UNITY_EDITOR
             if (_contexts.global.isDebugAccess)
             {
                 _contexts.manage.CreateEntity()
                     .AddLogMessage($" ___ Recover normal speed. Mark to update speed. And invoke start game event", 
                     TypeLogMessage.Trace, false, GetType());
             }
-
+#endif
             _contexts.global.ReplaceCurrentNormalSpeed(_contexts.global.levelConfig.value.followSpeed);
 
             foreach(var track in tracks)
@@ -60,19 +61,22 @@ public class SetChainSpeedSystem : ReactiveSystem<GameEntity>, IInitializeSystem
     {
         foreach(var track in entities)
         {
+#if UNITY_EDITOR
             if (_contexts.global.isDebugAccess)
             {
                 _contexts.manage.CreateEntity()
                     .AddLogMessage($" ___ Update speed of track chains. Track - {track.ToString()}", TypeLogMessage.Trace, false, GetType());
             }
-
+#endif
             track.isUpdateSpeed = false;
 
             var chains = track.GetChains(true);
             if(chains == null)
             {
+#if UNITY_EDITOR
                 _contexts.manage.CreateEntity()
                     .AddLogMessage("Failed to update chains speed. Chain collection is null", TypeLogMessage.Error, true, GetType());
+#endif
                 continue;
             }
 
@@ -159,8 +163,10 @@ public class SetChainSpeedSystem : ReactiveSystem<GameEntity>, IInitializeSystem
             var balls = chains[i].GetChainedBalls(true);
             if (balls == null)
             {
+#if UNITY_EDITOR
                 _contexts.manage.CreateEntity()
                     .AddLogMessage("Failed to update chains speed. Balls of chain is null", TypeLogMessage.Error, true, GetType());
+#endif
                 return;
             }
 

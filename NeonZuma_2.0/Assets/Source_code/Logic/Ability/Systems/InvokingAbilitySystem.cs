@@ -76,18 +76,23 @@ public class InvokingAbilitySystem : ReactiveSystem<InputEntity>, IInitializeSys
     private void InvokeFreeze()
     {
         _contexts.global.isFreeze = true;
+
+#if UNITY_EDITOR
         if (_contexts.global.isDebugAccess)
         {
             _contexts.manage.CreateEntity().AddLogMessage("Activate freeze ability.", TypeLogMessage.Trace, false, GetType());
         }
-
+#endif
         _contexts.game.CreateEntity().AddCounter(_contexts.global.levelConfig.value.freezeDuration, delegate ()
         {
             _contexts.global.isFreeze = false;
+
+#if UNITY_EDITOR
             if (_contexts.global.isDebugAccess)
             {
                 _contexts.manage.CreateEntity().AddLogMessage("Deactivate freeze ability.", TypeLogMessage.Trace, false, GetType());
             }
+#endif
         });
 
         // TODO: vfx
@@ -99,22 +104,25 @@ public class InvokingAbilitySystem : ReactiveSystem<InputEntity>, IInitializeSys
         _contexts.global.isRollback = true;
         MarkAllTracksForUpdatingSpeed();
 
+#if UNITY_EDITOR
         if (_contexts.global.isDebugAccess)
         {
             _contexts.manage.CreateEntity()
                 .AddLogMessage("Activate Rollback ability. Mark all track for updating speed", TypeLogMessage.Trace, false, GetType());
         }
-
+#endif
         _contexts.game.CreateEntity().AddCounter(_contexts.global.levelConfig.value.rollbackDuration, delegate ()
         {
             _contexts.global.isRollback = false;
             MarkAllTracksForUpdatingSpeed();
 
+#if UNITY_EDITOR
             if (_contexts.global.isDebugAccess)
             {
                 _contexts.manage.CreateEntity()
                     .AddLogMessage("Deactivate Rollback ability. Mark all track for updating speed", TypeLogMessage.Trace, false, GetType());
             }
+#endif
         });
 
         // TODO: vfx
@@ -128,23 +136,26 @@ public class InvokingAbilitySystem : ReactiveSystem<InputEntity>, IInitializeSys
         _contexts.global.isPointer = true;
         _contexts.global.ReplaceForceSpeed(_contexts.global.levelConfig.value.pointerShootSpeed);
 
+#if UNITY_EDITOR
         if (_contexts.global.isDebugAccess)
         {
             _contexts.manage.CreateEntity()
                 .AddLogMessage("Activate Pointer ability. Enable LineRenderer. Speed up force speed", TypeLogMessage.Trace, false, GetType());
         }
-
+#endif
         _contexts.game.CreateEntity().AddCounter(_contexts.global.levelConfig.value.pointerDuration, delegate ()
         {
             player.lineRenderer.value.enabled = false;
             _contexts.global.isPointer = false;
             _contexts.global.ReplaceForceSpeed(_contexts.global.levelConfig.value.forceSpeed);
 
+#if UNITY_EDITOR
             if (_contexts.global.isDebugAccess)
             {
                 _contexts.manage.CreateEntity()
                     .AddLogMessage("Deactivate Pointer ability. Disable LineRenderer. Slow down force speed", TypeLogMessage.Trace, false, GetType());
             }
+#endif
         });
 
         // TODO: vfx
@@ -156,8 +167,10 @@ public class InvokingAbilitySystem : ReactiveSystem<InputEntity>, IInitializeSys
         var shootEntity = _contexts.game.GetEntities(GameMatcher.Shoot).FirstOrDefault();
         if(shootEntity == null)
         {
+#if UNITY_EDITOR
             _contexts.manage.CreateEntity()
                 .AddLogMessage("Failed to get shoot entity", TypeLogMessage.Error, true, GetType());
+#endif
         }
 
         _contexts.global.ReplaceExplosionCount(_contexts.global.explosionCount.value + 1);
@@ -165,17 +178,20 @@ public class InvokingAbilitySystem : ReactiveSystem<InputEntity>, IInitializeSys
         // TODO: vfx
         Debug.Log("Explosion ability. Do a lot of cool effects");
     }
-    #endregion
+#endregion
 
-    #region Private Methods
+#region Private Methods
     private void MarkAllTracksForUpdatingSpeed()
     {
         var tracks = _contexts.game.GetEntities(GameMatcher.TrackId);
 
         if(tracks == null || tracks.Length == 0)
         {
+#if UNITY_EDITOR
             _contexts.manage.CreateEntity()
                 .AddLogMessage("Any track entity doesn't exist.", TypeLogMessage.Error, true, GetType());
+#endif
+            return;
         }
 
         foreach(var track in tracks)
@@ -183,5 +199,5 @@ public class InvokingAbilitySystem : ReactiveSystem<InputEntity>, IInitializeSys
             track.isUpdateSpeed = true;
         }
     }
-    #endregion
+#endregion
 }

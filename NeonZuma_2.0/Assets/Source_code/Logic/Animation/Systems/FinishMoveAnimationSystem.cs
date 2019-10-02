@@ -20,11 +20,13 @@ public class FinishMoveAnimationSystem : ReactiveSystem<GameEntity>, ITearDownSy
     {
         foreach(var animatedBall in entities)
         {
+#if UNITY_EDITOR
             if (_contexts.global.isDebugAccess)
             {
                 _contexts.manage.CreateEntity()
                     .AddLogMessage($" ___ Finished animation of object: {animatedBall.ToString()}", TypeLogMessage.Trace, false, this.GetType());
             }
+#endif
             animatedBall.isAnimationDone = false;
 
             var animationActions = animatedBall.animationInfo.completeActions;

@@ -22,6 +22,7 @@ public class RecordLogMessageSystem : ReactiveSystem<ManageEntity>
 
     protected override void Execute(List<ManageEntity> entities)
     {
+#if UNITY_EDITOR
         logger.Trace("\n\n\n\t\t *** START NEW FRAME *** \n\n");
 
         foreach (var entity in entities) 
@@ -43,6 +44,7 @@ public class RecordLogMessageSystem : ReactiveSystem<ManageEntity>
 
             entity.isDestroyed = true;
         }
+#endif
     }
 
     protected override bool Filter(ManageEntity entity)

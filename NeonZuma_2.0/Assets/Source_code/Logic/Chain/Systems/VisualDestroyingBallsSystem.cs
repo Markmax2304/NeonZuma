@@ -41,37 +41,44 @@ public class VisualDestroyingBallsSystem : ReactiveSystem<GameEntity>, IInitiali
 
         foreach (var balls in destroyGroups.Values)
         {
+#if UNITY_EDITOR
             if (_contexts.global.isDebugAccess)
             {
                 _contexts.manage.CreateEntity()
                     .AddLogMessage($" ___ Destroy balls with goupId {balls[0].groupDestroy.value}", TypeLogMessage.Trace, false, GetType());
             }
-
+#endif
             var chain = _contexts.game.GetEntitiesWithChainId(balls.First().parentChainId.value).FirstOrDefault();
             if (chain == null)
             {
+#if UNITY_EDITOR
                 _contexts.manage.CreateEntity()
                     .AddLogMessage("Failed to destroying grouped balls. Chain is null", TypeLogMessage.Error, true, GetType());
+#endif
                 continue;
             }
 
             var track = _contexts.game.GetEntitiesWithTrackId(chain.parentTrackId.value).FirstOrDefault();
             if (track == null)
             {
+#if UNITY_EDITOR
                 _contexts.manage.CreateEntity()
                     .AddLogMessage("Failed to mark for recover chain speed during destroying balls. Track request return null",
                     TypeLogMessage.Error, true, GetType());
+#endif
                 continue;
             }
 
             DestroyBalls(balls);
             chain.isCut = true;
 
+#if UNITY_EDITOR
             if (_contexts.global.isDebugAccess)
             {
                 _contexts.manage.CreateEntity()
                     .AddLogMessage($" ___ Mark chain for cutting", TypeLogMessage.Trace, false, GetType());
             }
+#endif
         }
     }
 

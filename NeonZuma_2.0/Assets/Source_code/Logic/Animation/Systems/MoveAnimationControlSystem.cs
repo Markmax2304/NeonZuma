@@ -25,12 +25,13 @@ public class MoveAnimationControlSystem : ReactiveSystem<GameEntity>, ITearDownS
     {
         foreach(var animatedEntity in entities)
         {
+#if UNITY_EDITOR
             if (_contexts.global.isDebugAccess)
             {
                 _contexts.manage.CreateEntity()
                     .AddLogMessage($" ___ Apply moving animation to object: {animatedEntity.ToString()}", TypeLogMessage.Trace, false, GetType());
             }
-
+#endif
             Vector3 target = animatedEntity.moveAnimation.target;
             float duration = animatedEntity.moveAnimation.duration;
             var postAction = animatedEntity.moveAnimation.postAction;
@@ -49,12 +50,14 @@ public class MoveAnimationControlSystem : ReactiveSystem<GameEntity>, ITearDownS
                     {
                         animatedEntity.isAnimationDone = true;
 
+#if UNITY_EDITOR
                         if (_contexts.global.isDebugAccess)
                         {
                             _contexts.manage.CreateEntity()
                                 .AddLogMessage($" ___ Added done animation component to: {animatedEntity.ToString()}",
                                 TypeLogMessage.Trace, false, GetType());
                         }
+#endif
                     }
                 };
             }
@@ -69,12 +72,14 @@ public class MoveAnimationControlSystem : ReactiveSystem<GameEntity>, ITearDownS
                     {
                         animatedEntity.isAnimationDone = true;
 
+#if UNITY_EDITOR
                         if (_contexts.global.isDebugAccess)
                         {
                             _contexts.manage.CreateEntity()
                                 .AddLogMessage($" ___ Added done animation component to: {animatedEntity.ToString()}", 
                                 TypeLogMessage.Trace, false, GetType());
                         }
+#endif
                     }
                 };
             }

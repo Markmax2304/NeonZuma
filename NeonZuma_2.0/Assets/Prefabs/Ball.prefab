@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 4662323106549360211}
   - component: {fileID: 1007611481485136529}
   - component: {fileID: 3784208058023883677}
+  - component: {fileID: 7089621636547599548}
   m_Layer: 8
   m_Name: Ball
   m_TagString: Untagged
@@ -49,10 +50,10 @@ SpriteRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
-  m_RenderingLayerMask: 1
+  m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -151,3 +152,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1da9b69ef46b68643a4861b6f6d44545, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &7089621636547599548
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1951521423057947244}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8f6d3c6e4250e84192f5b34ce9e71bc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  glowColor: {r: 1, g: 1, b: 1, a: 1}
+  glowBrightness: 3
+  outlineWidth: 7
+  alphaThreshold: 0
+  drawOutside: 0
+  enableInstancing: 0

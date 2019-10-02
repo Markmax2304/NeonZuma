@@ -52,8 +52,10 @@ public class BallOverlapSystem : IExecuteSystem, IInitializeSystem
             var hitEntity = hits[i].transform.gameObject.GetEntityLink()?.entity;
             if (hitEntity == null)
             {
+#if UNITY_EDITOR
                 _contexts.manage.CreateEntity()
                     .AddLogMessage("Failed to create collision entity. Hit entity is null", TypeLogMessage.Error, true, GetType());
+#endif
                 return;
             }
 
@@ -63,13 +65,14 @@ public class BallOverlapSystem : IExecuteSystem, IInitializeSystem
             // chain edges collision stuff
             if (IsChainContactCollision(ball, hitEntity))
             {
+#if UNITY_EDITOR
                 if (_contexts.global.isDebugAccess)
                 {
                     _contexts.manage.CreateEntity()
                         .AddLogMessage(string.Format(" ___ Creating collision with type - {0}, handler - {1}, collider - {2}",
                         TypeCollision.ChainContact.ToString(), ball.ToString(), hitEntity.ToString()), TypeLogMessage.Trace, false, GetType());
                 }
-
+#endif
                 Contexts.sharedInstance.input.CreateEntity()
                     .AddCollision(TypeCollision.ChainContact, ball, hitEntity);
             }
