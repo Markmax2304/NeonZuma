@@ -2,37 +2,47 @@
 
 public class BorderCollider : CollisionEmitter
 {
+    private Vector2 upperRightPoint;
+    private Vector2 lowerLeftPoint;
+
     public void Awake()
     {
         Camera mainCamera = Camera.main;
         EdgeCollider2D edge = GetComponent<EdgeCollider2D>();
 
-        Vector2[] corners = new Vector2[5];
-        corners[0] = mainCamera.ScreenToWorldPoint(new Vector2(0, 0));
-        corners[1] = mainCamera.ScreenToWorldPoint(new Vector2(0, mainCamera.pixelHeight));
-        corners[2] = mainCamera.ScreenToWorldPoint(new Vector2(mainCamera.pixelWidth, mainCamera.pixelHeight));
-        corners[3] = mainCamera.ScreenToWorldPoint(new Vector2(mainCamera.pixelWidth, 0));
-        corners[4] = mainCamera.ScreenToWorldPoint(new Vector2(0, 0));
+        Vector2[] screenVertices = new Vector2[5];
+        screenVertices[0] = mainCamera.ScreenToWorldPoint(new Vector2(0, 0));
+        screenVertices[1] = mainCamera.ScreenToWorldPoint(new Vector2(0, mainCamera.pixelHeight));
+        screenVertices[2] = mainCamera.ScreenToWorldPoint(new Vector2(mainCamera.pixelWidth, mainCamera.pixelHeight));
+        screenVertices[3] = mainCamera.ScreenToWorldPoint(new Vector2(mainCamera.pixelWidth, 0));
+        screenVertices[4] = mainCamera.ScreenToWorldPoint(new Vector2(0, 0));
 
-        edge.points = corners;
+        lowerLeftPoint = screenVertices[0];
+        upperRightPoint = screenVertices[2];
+
+        edge.points = screenVertices;
     }
 
     public void OnTriggerExit2D(Collider2D collision)
     {
-        if (CompareWithTags(collision.gameObject, out string tag))
+        if (collision.CompareTag(Constants.PROJECTILE_TAG) || collision.CompareTag(Constants.BALL_TAG))
         {
-            if (string.Compare(tag, Constants.PROJECTILE_TAG) == 0 || string.Compare(tag, Constants.BALL_TAG) == 0)
+            if (IsOutScreen(collision.transform.position))
             {
                 CreateCollisionInputEntity(TypeCollision.OutBorder, gameObject, collision.gameObject);
+            }
+            else
+            {
+                CreateCollisionInputEntity(TypeCollision.InBorder, gameObject, collision.gameObject);
             }
         }
     }
 
-    public void OnTriggerEnter2D(Collider2D collision)
+    #region Private Methods
+    private bool IsOutScreen(Vector2 pos)
     {
-        if (CompareWithTags(collision.gameObject, out string tag) && string.Compare(tag, Constants.BALL_TAG) == 0)
-        {
-            CreateCollisionInputEntity(TypeCollision.InBorder, gameObject, collision.gameObject);
-        }
+        return pos.x <= lowerLeftPoint.x || pos.x >= upperRightPoint.x
+            || pos.y <= lowerLeftPoint.y || pos.y >= upperRightPoint.y;
     }
+    #endregion
 }

@@ -26,6 +26,8 @@ public class GameController : MonoBehaviour
         }
 #endif
 
+        Application.targetFrameRate = 60;
+
         Contexts contexts = Contexts.sharedInstance;
 
         InitializeSingletonComponents(contexts);

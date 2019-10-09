@@ -95,13 +95,9 @@ public class ConnectChainsSystem : ReactiveSystem<InputEntity>, IInitializeSyste
 
             for (int i = 0; i < frontBalls.Count; i++)
             {
-                frontBalls[i].ReplaceParentChainId(backChain.chainId.value);
                 float newDistance = startDistance + ballDiametr * (i + 1);
-
-                if (i == 0)
-                    AnimateShiftBall(frontBalls[i], newDistance, postConnectAction, pathCreator);
-                else
-                    AnimateShiftBall(frontBalls[i], newDistance, delegate () { }, pathCreator);
+                frontBalls[i].ReplaceDistanceBall(newDistance);
+                frontBalls[i].ReplaceParentChainId(backChain.chainId.value);
 
 #if UNITY_EDITOR
                 if (_contexts.global.isDebugAccess)
@@ -124,64 +120,7 @@ public class ConnectChainsSystem : ReactiveSystem<InputEntity>, IInitializeSyste
 #endif
             frontChain.Destroy();
             coll.isDestroyed = true;
-
-            void postConnectAction()
-            {
-                if (isCheckMatch)
-                {
-                    if (frontEdge != null)
-                        frontEdge.isCheckTargetBall = true;
-                    if (backEdge != null)
-                        backEdge.isCheckTargetBall = true;
-
-#if UNITY_EDITOR
-                    if (_contexts.global.isDebugAccess)
-                    {
-                        _contexts.manage.CreateEntity()
-                            .AddLogMessage($" ___ Mark both ball as ready to check: {frontEdge.ToString()} and {backEdge.ToString()}", 
-                            TypeLogMessage.Trace, false, GetType());
-                    }
-#endif
-                    // combo
-                    int combo = _contexts.manage.moveBackCombo.value;
-                    _contexts.manage.ReplaceMoveBackCombo(combo + 1);
-
-                    // move back
-                    backChain.ReplaceChainSpeed(-moveBackSpeed * (1 + increaseMoveBack * combo));
-                    backChain.AddCounter(moveBackDuration, delegate ()
-                    {
-                        track.isUpdateSpeed = true;
-#if UNITY_EDITOR
-                        if (_contexts.global.isDebugAccess)
-                        {
-                            _contexts.manage.CreateEntity()
-                                .AddLogMessage($" ___ Mark for updating speed after connecting chains", TypeLogMessage.Trace, false, GetType());
-                        }
-#endif
-                    });
-
-#if UNITY_EDITOR
-                    if (_contexts.global.isDebugAccess)
-                    {
-                        _contexts.manage.CreateEntity()
-                            .AddLogMessage($" ___ Set move back parameters for chain: {backChain.ToString()}", 
-                            TypeLogMessage.Trace, false, GetType());
-                    }
-#endif
-                }
-                else
-                {
-                    _contexts.manage.ReplaceMoveBackCombo(0);
-                    track.isUpdateSpeed = true;
-#if UNITY_EDITOR
-                    if (_contexts.global.isDebugAccess)
-                    {
-                        _contexts.manage.CreateEntity().AddLogMessage($" ___ Mark for updating speed after connecting chains", 
-                            TypeLogMessage.Trace, false, GetType());
-                    }
-#endif
-                }
-            }
+            CheckingAfterChainMerging(isCheckMatch, frontEdge, backEdge, backChain, track);
         }
     }
 
@@ -196,12 +135,63 @@ public class ConnectChainsSystem : ReactiveSystem<InputEntity>, IInitializeSyste
     }
 
     #region Private Methods
-    private void AnimateShiftBall(GameEntity ball, float newDistance, Action action, PathCreator pathCreator)
+    private void CheckingAfterChainMerging(bool isCheckMatch, GameEntity frontEdge, GameEntity backEdge, GameEntity backChain, GameEntity track)
     {
-        ball.ReplaceDistanceBall(newDistance);
+        if (isCheckMatch)
+        {
+            if (frontEdge != null)
+                frontEdge.isCheckTargetBall = true;
+            if (backEdge != null)
+                backEdge.isCheckTargetBall = true;
 
-        Vector3 pos = pathCreator.path.GetPointAtDistance(newDistance, EndOfPathInstruction.Stop);
-        ball.AddMoveAnimation(animDuration, pos, action);
+#if UNITY_EDITOR
+            if (_contexts.global.isDebugAccess)
+            {
+                _contexts.manage.CreateEntity()
+                    .AddLogMessage($" ___ Mark both ball as ready to check: {frontEdge.ToString()} and {backEdge.ToString()}",
+                    TypeLogMessage.Trace, false, GetType());
+            }
+#endif
+            // combo
+            int combo = _contexts.manage.moveBackCombo.value;
+            _contexts.manage.ReplaceMoveBackCombo(combo + 1);
+
+            // move back
+            backChain.ReplaceChainSpeed(-moveBackSpeed * (1 + increaseMoveBack * combo));
+            backChain.AddCounter(moveBackDuration, delegate ()
+            {
+                track.isUpdateSpeed = true;
+#if UNITY_EDITOR
+                if (_contexts.global.isDebugAccess)
+                {
+                    _contexts.manage.CreateEntity()
+                        .AddLogMessage($" ___ Mark for updating speed after connecting chains", TypeLogMessage.Trace, false, GetType());
+                }
+#endif
+            });
+
+#if UNITY_EDITOR
+            if (_contexts.global.isDebugAccess)
+            {
+                _contexts.manage.CreateEntity()
+                    .AddLogMessage($" ___ Set move back parameters for chain: {backChain.ToString()}",
+                    TypeLogMessage.Trace, false, GetType());
+            }
+#endif
+        }
+        else
+        {
+            _contexts.manage.ReplaceMoveBackCombo(0);
+            track.isUpdateSpeed = true;
+#if UNITY_EDITOR
+            if (_contexts.global.isDebugAccess)
+            {
+                _contexts.manage.CreateEntity().AddLogMessage($" ___ Mark for updating speed after connecting chains",
+                    TypeLogMessage.Trace, false, GetType());
+            }
+#endif
+        }
     }
+
     #endregion
 }
