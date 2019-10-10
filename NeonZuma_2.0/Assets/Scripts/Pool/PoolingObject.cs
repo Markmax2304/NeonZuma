@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class PoolingObject : MonoBehaviour
 {
-    GameObject _gameObject;
+    private GameObject _gameObject;
+    private Transform parent;
 
     public bool IsAccess {
         get { return !_gameObject.activeInHierarchy; }
@@ -13,11 +14,12 @@ public class PoolingObject : MonoBehaviour
     void Awake()
     {
         _gameObject = gameObject;
+        parent = _gameObject.transform.parent;
     }
 
     public void ReturnToPool()
     {
-        _gameObject.transform.parent = PoolManager.instance.transform;
+        parent = PoolManager.instance.transform;
         _gameObject.SetActive(false);
     }
 }

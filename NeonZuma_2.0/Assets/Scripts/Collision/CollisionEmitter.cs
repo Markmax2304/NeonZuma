@@ -3,15 +3,16 @@ using UnityEngine;
 
 public class CollisionEmitter : MonoBehaviour
 {
-    public string[] targetTags;
-
+    private Contexts contexts;
     private void Start()
     {
+        contexts = Contexts.sharedInstance;
+
         if (gameObject.GetEntityLink() == null)
         {
-            var entity = Contexts.sharedInstance.game.CreateEntity();
+            var entity = contexts.game.CreateEntity();
             entity.AddTransform(transform);
-            gameObject.Link(entity, Contexts.sharedInstance.game);
+            gameObject.Link(entity, contexts.game);
         }
     }
 
@@ -37,22 +38,7 @@ public class CollisionEmitter : MonoBehaviour
             throw new Exception($"Collider link is null. Object - {collider.ToString()}");
         }
 
-        Contexts.sharedInstance.input.CreateEntity()
+        contexts.input.CreateEntity()
             .AddCollision(type, handlerLink.entity, colliderLink.entity);
     }
-
-    //protected bool CompareWithTags(GameObject go, out string tag)
-    //{
-    //    for(int i = 0; i < targetTags.Length; i++)
-    //    {
-    //        if (go.CompareTag(targetTags[i]))
-    //        {
-    //            tag = targetTags[i];
-    //            return true;
-    //        }
-    //    }
-
-    //    tag = string.Empty;
-    //    return false;
-    //}
 }
