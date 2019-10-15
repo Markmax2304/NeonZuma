@@ -53,11 +53,11 @@ public class UploadLevelSystem : ReactiveSystem<ManageEntity>
     private void InvokeEventListeners()
     {
         var listeners = _contexts.manage.GetEntities(ManageMatcher.StartLevelListener);
-        foreach (var listener in listeners)
+        for(int i = 0; i < listeners.Length; i++)
         {
-            foreach (var action in listener.startLevelListener.value)
+            foreach (var action in listeners[i].startLevelListener.value)
             {
-                action.OnStartLevel(listener);
+                action.OnStartLevel(listeners[i]);
             }
         }
     }

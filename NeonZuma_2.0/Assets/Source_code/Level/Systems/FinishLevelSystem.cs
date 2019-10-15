@@ -17,8 +17,7 @@ public class FinishLevelSystem : ReactiveSystem<ManageEntity>
 
     protected override void Execute(List<ManageEntity> entities)
     {
-        var entity = entities.SingleEntity();
-        entity.isDestroyed = true;
+        entities[0].isDestroyed = true;
 
         if (_contexts.manage.hasLogicSystems)
         {
@@ -44,11 +43,11 @@ public class FinishLevelSystem : ReactiveSystem<ManageEntity>
     private void InvokeEventListeners()
     {
         var listeners = _contexts.manage.GetEntities(ManageMatcher.FinishLevelListener);
-        foreach (var listener in listeners)
+        for(int i = 0; i < listeners.Length; i++)
         {
-            foreach (var action in listener.finishLevelListener.value)
+            foreach (var action in listeners[i].finishLevelListener.value)
             {
-                action.OnFinishLevel(listener);
+                action.OnFinishLevel(listeners[i]);
             }
         }
     }

@@ -92,7 +92,7 @@ public class ExplodeBallSystem : ReactiveSystem<InputEntity>
         projectile.RemoveForce();
         projectile.RemoveRayCast();
         projectile.isExplosion = false;
-        // code above just because in future we can add some animation to this projectile
+        // code above is here just because in future we can add some animation to this projectile
         projectile.DestroyBall();
     }
 #endregion

@@ -7,6 +7,7 @@ using DG.Tweening;
 
 public static class Extensions
 {
+    #region ID stuff
     // TODO: move this Ids to separeted class or something
     private static int nextChainId = 0;
     private static int nextBallId = 0;
@@ -26,6 +27,7 @@ public static class Extensions
     {
         get { return nextGroupId++; }
     }
+    #endregion
 
     #region Extension Methods
     /// <summary>
@@ -39,7 +41,7 @@ public static class Extensions
         if (!gameEntity.hasChainId)
             return null;
 
-        List<GameEntity> balls = Contexts.sharedInstance.game.GetEntitiesWithParentChainId(gameEntity.chainId.value).ToList();
+        var balls = Contexts.sharedInstance.game.GetEntitiesWithParentChainId(gameEntity.chainId.value).ToList();
 
         if (balls == null || balls.Count == 0)
             return null;

@@ -5,17 +5,21 @@ using UnityEngine;
 
 public class PoolObjectKeeper
 {
+    private const string underDash = "_";
+
     private static int id = 0;
+    private string name;
     private int maxCount;
-    private Transform parent;
-    private GameObject prefab;
+    private Transform _parent;
+    private GameObject _prefab;
     private List<PoolingObject> pool;
 
-    public PoolObjectKeeper(GameObject prefab, Transform parent, int count)
+    public PoolObjectKeeper(GameObject prefab, Transform parent, int count, string objectName)
     {
-        this.prefab = prefab;
-        this.parent = parent;
+        _prefab = prefab;
+        _parent = parent;
         maxCount = count;
+        name = objectName;
         pool = new List<PoolingObject>();
     }
 
@@ -77,12 +81,12 @@ public class PoolObjectKeeper
     }
 
     #region Private
-
     private void AddNewObject()
     {
-        GameObject obj = GameObject.Instantiate(prefab, Vector3.zero, Quaternion.identity, parent);
-        StringBuilder name = new StringBuilder("Ball_").Append(id++);
-        obj.name = name.ToString();                                              // just test, will delete
+        GameObject obj = GameObject.Instantiate(_prefab, Vector3.zero, Quaternion.identity, _parent);
+        StringBuilder sb = new StringBuilder(name).Append(underDash).Append(id++);
+        // TODO: just test, will delete
+        obj.name = sb.ToString();
         obj.SetActive(false);
         pool.Add(obj.GetComponent<PoolingObject>());
     }
@@ -96,14 +100,15 @@ public class PoolObjectKeeper
 
     private PoolingObject GetFreeObject()
     {
-        for (int i = 0; i < pool.Count; i++) {
+        int count = pool.Count;
+        for (int i = 0; i < count; i++) {
             if (pool[i].IsAccess) {
                 return pool[i];
             }
         }
 
         AddNewObject(maxCount);
-        return pool[pool.Count - 1];
+        return pool[count + 1];
     }
     #endregion
 }

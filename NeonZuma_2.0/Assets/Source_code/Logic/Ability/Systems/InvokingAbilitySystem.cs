@@ -83,20 +83,12 @@ public class InvokingAbilitySystem : ReactiveSystem<InputEntity>, IInitializeSys
             _contexts.manage.CreateEntity().AddLogMessage("Activate freeze ability.", TypeLogMessage.Trace, false, GetType());
         }
 #endif
-        _contexts.game.CreateEntity().AddCounter(_contexts.global.levelConfig.value.freezeDuration, delegate ()
-        {
-            _contexts.global.isFreeze = false;
-
-#if UNITY_EDITOR
-            if (_contexts.global.isDebugAccess)
-            {
-                _contexts.manage.CreateEntity().AddLogMessage("Deactivate freeze ability.", TypeLogMessage.Trace, false, GetType());
-            }
-#endif
-        });
+        _contexts.game.CreateEntity().AddCounter(_contexts.global.levelConfig.value.freezeDuration, FreezeCallback);
 
         // TODO: vfx
+#if UNITY_EDITOR
         Debug.Log("Freeze ability. Do some cool effects");
+#endif
     }
 
     private void InvokeRollback()
@@ -111,22 +103,12 @@ public class InvokingAbilitySystem : ReactiveSystem<InputEntity>, IInitializeSys
                 .AddLogMessage("Activate Rollback ability. Mark all track for updating speed", TypeLogMessage.Trace, false, GetType());
         }
 #endif
-        _contexts.game.CreateEntity().AddCounter(_contexts.global.levelConfig.value.rollbackDuration, delegate ()
-        {
-            _contexts.global.isRollback = false;
-            MarkAllTracksForUpdatingSpeed();
-
-#if UNITY_EDITOR
-            if (_contexts.global.isDebugAccess)
-            {
-                _contexts.manage.CreateEntity()
-                    .AddLogMessage("Deactivate Rollback ability. Mark all track for updating speed", TypeLogMessage.Trace, false, GetType());
-            }
-#endif
-        });
+        _contexts.game.CreateEntity().AddCounter(_contexts.global.levelConfig.value.rollbackDuration, RollbackCallback);
 
         // TODO: vfx
+#if UNITY_EDITOR
         Debug.Log("Rollback ability. Do some cool effect");
+#endif
     }
 
     private void InvokePointer()
@@ -143,23 +125,12 @@ public class InvokingAbilitySystem : ReactiveSystem<InputEntity>, IInitializeSys
                 .AddLogMessage("Activate Pointer ability. Enable LineRenderer. Speed up force speed", TypeLogMessage.Trace, false, GetType());
         }
 #endif
-        _contexts.game.CreateEntity().AddCounter(_contexts.global.levelConfig.value.pointerDuration, delegate ()
-        {
-            player.lineRenderer.value.enabled = false;
-            _contexts.global.isPointer = false;
-            _contexts.global.ReplaceForceSpeed(_contexts.global.levelConfig.value.forceSpeed);
-
-#if UNITY_EDITOR
-            if (_contexts.global.isDebugAccess)
-            {
-                _contexts.manage.CreateEntity()
-                    .AddLogMessage("Deactivate Pointer ability. Disable LineRenderer. Slow down force speed", TypeLogMessage.Trace, false, GetType());
-            }
-#endif
-        });
+        _contexts.game.CreateEntity().AddCounter(_contexts.global.levelConfig.value.pointerDuration, PointerCallback);
 
         // TODO: vfx
+#if UNITY_EDITOR
         Debug.Log("Pointer ability, but without cool effect");
+#endif
     }
 
     private void InvokeExplosion()
@@ -175,8 +146,10 @@ public class InvokingAbilitySystem : ReactiveSystem<InputEntity>, IInitializeSys
 
         _contexts.global.ReplaceExplosionCount(_contexts.global.explosionCount.value + 1);
 
+#if UNITY_EDITOR
         // TODO: vfx
         Debug.Log("Explosion ability. Do a lot of cool effects");
+#endif
     }
 #endregion
 
@@ -199,5 +172,47 @@ public class InvokingAbilitySystem : ReactiveSystem<InputEntity>, IInitializeSys
             track.isUpdateSpeed = true;
         }
     }
-#endregion
+
+    private void FreezeCallback()
+    {
+        _contexts.global.isFreeze = false;
+
+#if UNITY_EDITOR
+        if (_contexts.global.isDebugAccess)
+        {
+            _contexts.manage.CreateEntity().AddLogMessage("Deactivate freeze ability.", TypeLogMessage.Trace, false, GetType());
+        }
+#endif
+    }
+
+    private void RollbackCallback()
+    {
+        _contexts.global.isRollback = false;
+        MarkAllTracksForUpdatingSpeed();
+
+#if UNITY_EDITOR
+        if (_contexts.global.isDebugAccess)
+        {
+            _contexts.manage.CreateEntity()
+                .AddLogMessage("Deactivate Rollback ability. Mark all track for updating speed", TypeLogMessage.Trace, false, GetType());
+        }
+#endif
+    }
+
+    private void PointerCallback()
+    {
+        var player = _contexts.game.playerEntity;
+        player.lineRenderer.value.enabled = false;
+        _contexts.global.isPointer = false;
+        _contexts.global.ReplaceForceSpeed(_contexts.global.levelConfig.value.forceSpeed);
+
+#if UNITY_EDITOR
+        if (_contexts.global.isDebugAccess)
+        {
+            _contexts.manage.CreateEntity()
+                .AddLogMessage("Deactivate Pointer ability. Disable LineRenderer. Slow down force speed", TypeLogMessage.Trace, false, GetType());
+        }
+#endif
+    }
+    #endregion
 }

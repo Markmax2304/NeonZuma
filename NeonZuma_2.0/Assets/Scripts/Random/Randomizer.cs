@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
+//using System.Linq;
 using UnityEngine;
 
 public class Randomizer
@@ -12,6 +12,7 @@ public class Randomizer
 
     private int currentSeries;
     private ColorBall currentColor;
+    private static ColorBall[] existedColors;
     #endregion
 
     #region Constructors
@@ -19,6 +20,8 @@ public class Randomizer
     {
         _contexts = Contexts.sharedInstance;
         colorsInfo = _contexts.global.levelConfig.value.colors;
+
+        existedColors = new ColorBall[colorsInfo.Length];
     }
 
     public Randomizer(int minLength, int maxLength)
@@ -41,10 +44,16 @@ public class Randomizer
     public static ColorBall GetSingleColor()
     {
         // TODO: maybe change to more compicated logic
-        var existedColors = _contexts.global.ballColors.value.Keys.ToArray();
-        if (existedColors.Length > 0)
+        var colors = _contexts.global.ballColors.value;
+        int count = 0;
+        foreach(var color in colors.Keys)
         {
-            return existedColors[Random.Range(0, existedColors.Length)];
+            existedColors[count++] = color;
+        }
+
+        if (count > 0)
+        {
+            return existedColors[Random.Range(0, count)];
         }
         else
         {
@@ -67,7 +76,9 @@ public class Randomizer
             }
         }
 
+#if UNITY_EDITOR
         Debug.Log($"Color type({colorType}) is not found in colors collection");
+#endif
         return Color.white;
     }
     #endregion
@@ -76,18 +87,15 @@ public class Randomizer
     private void RandomNewSeries()
     {
         // TODO: In future, change choosing logic to more complicated (based on existing colors and its quantity)
-        int newColorIndex = Random.Range(0, colorsInfo.Length);
-        // TODO: Maybe replace recursion to do-while loop
-        if (newColorIndex == (int)currentColor)
+        int newColorIndex = (int)currentColor;
+        do
         {
-            RandomNewSeries();
-            return;
+            newColorIndex = Random.Range(0, colorsInfo.Length);
         }
+        while (newColorIndex == (int)currentColor);
 
         currentColor = (ColorBall)newColorIndex;
         currentSeries = Random.Range(minLengthSeries, maxLengthSeries + 1);
     }
-
-    
     #endregion
 }

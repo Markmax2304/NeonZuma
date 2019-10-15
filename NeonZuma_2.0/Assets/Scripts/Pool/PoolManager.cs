@@ -44,12 +44,12 @@ public class PoolManager : MonoBehaviour
         for (int i = 0; i < poolInfo.Length; i++)
         {
             Transform parent = poolInfo[i].parent == null ? transform : poolInfo[i].parent;
-            pools.Add(poolInfo[i].type, new PoolObjectKeeper(poolInfo[i].prefab, parent, poolInfo[i].count));
+            pools.Add(poolInfo[i].type, new PoolObjectKeeper(poolInfo[i].prefab, parent, poolInfo[i].count, poolInfo[i].type.ToString()));
         }
 
-        foreach (PoolObjectKeeper pool in pools.Values)
+        foreach (var pool in pools)
         {
-            pool.InitializePool();
+            pool.Value.InitializePool();
         }
     }
     #endregion
