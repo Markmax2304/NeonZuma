@@ -45,44 +45,30 @@ public class ScaleAnimationControlSystem : ReactiveSystem<GameEntity>, ITearDown
             {
                 scaledEntity.AddAnimationInfo(new List<Action>() { postAction });
 
-                transform.DOScale(targetScale, duration).onComplete += delegate ()
-                {
-                    if (scaledEntity != null)
-                    {
-                        scaledEntity.isAnimationDone = true;
-
-#if UNITY_EDITOR
-                        if (_contexts.global.isDebugAccess)
-                        {
-                            _contexts.manage.CreateEntity()
-                                .AddLogMessage($" ___ Added done animation component to: {scaledEntity.ToString()}", 
-                                TypeLogMessage.Trace, false, GetType());
-                        }
-#endif
-                    }
-                };
+                transform.DOScale(targetScale, duration).onComplete += CompleteAnimatinoCallback;
             }
             else
             {
                 scaledEntity.animationInfo.completeActions.Add(postAction);
                 DOTween.Kill(transform);
 
-                transform.DOScale(targetScale, duration).onComplete += delegate ()
-                {
-                    if (scaledEntity != null)
-                    {
-                        scaledEntity.isAnimationDone = true;
+                transform.DOScale(targetScale, duration).onComplete += CompleteAnimatinoCallback;
+            }
 
+            void CompleteAnimatinoCallback()
+            {
+                if (scaledEntity != null)
+                {
+                    scaledEntity.isAnimationDone = true;
 #if UNITY_EDITOR
-                        if (_contexts.global.isDebugAccess)
-                        {
-                            _contexts.manage.CreateEntity()
-                                .AddLogMessage($" ___ Added done animation component to: {scaledEntity.ToString()}", 
-                                TypeLogMessage.Trace, false, GetType());
-                        }
-#endif
+                    if (_contexts.global.isDebugAccess)
+                    {
+                        _contexts.manage.CreateEntity()
+                            .AddLogMessage($" ___ Added done animation component to: {scaledEntity.ToString()}",
+                            TypeLogMessage.Trace, false, GetType());
                     }
-                };
+#endif
+                }
             }
         }
     }

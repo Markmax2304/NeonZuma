@@ -32,10 +32,10 @@ public class FinishMoveAnimationSystem : ReactiveSystem<GameEntity>, ITearDownSy
             var animationActions = animatedBall.animationInfo.completeActions;
             animatedBall.RemoveAnimationInfo();
 
-            foreach(var action in animationActions)
+            for (int i = 0; i < animationActions.Count; i++)
             {
-                if (action != null)
-                    action();
+                if (animationActions[i] != null)
+                    animationActions[i]();
             }
         }
     }
@@ -53,14 +53,14 @@ public class FinishMoveAnimationSystem : ReactiveSystem<GameEntity>, ITearDownSy
     public void TearDown()
     {
         var animations = _contexts.game.GetEntities(GameMatcher.AnimationInfo);
-        foreach (var animation in animations)
+        for(int i = 0; i < animations.Length; i++)
         {
-            if (animation.hasTransform)
+            if (animations[i].hasTransform)
             {
-                DOTween.Kill(animation.transform.value);
+                DOTween.Kill(animations[i].transform.value);
             }
 
-            animation.DestroyBall();
+            animations[i].DestroyBall();
         }
     }
 }

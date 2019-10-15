@@ -28,33 +28,40 @@ public class TouchHandleSystem : IExecuteSystem, ITearDownSystem
             data = GetPointerData(Input.touches[0].fingerId);
 #endif
 
-            if (data == null) {
+            if (data == null)
+            {
                 return;
             }
 
             InputEntity touchEntity = _contexts.input.CreateEntity();
 
-            if (data.pointerEnter != null && data.pointerEnter.gameObject.CompareTag(Constants.PLAYER_TAG)) {
+            if (data.pointerEnter != null && data.pointerEnter.gameObject.CompareTag(Constants.PLAYER_TAG))
+            {
                 touchEntity.AddTouchType(TypeTouch.Exchange);
                 touchEntity.isDestroyed = true;
             }
-            else {
+            else
+            {
                 touchEntity.AddTouchType(TypeTouch.Rotate);
                 touchEntity.AddTouchPosition(GetMousePosition);
             }
         }
 
-        if (Input.GetMouseButton(0)) {
+        if (Input.GetMouseButton(0))
+        {
             InputEntity[] inputs = _contexts.input.GetEntities(InputMatcher.TouchPosition);
 
-            for(int i = 0; i < inputs.Length; i++) {
+            for (int i = 0; i < inputs.Length; i++)
+            {
                 inputs[i].ReplaceTouchPosition(GetMousePosition);
             }
         }
-        else if (Input.GetMouseButtonUp(0)) {
+        else if (Input.GetMouseButtonUp(0))
+        {
             InputEntity[] inputs = _contexts.input.GetEntities(InputMatcher.TouchPosition);
 
-            for (int i = 0; i < inputs.Length; i++) {
+            for (int i = 0; i < inputs.Length; i++)
+            {
                 inputs[i].ReplaceTouchPosition(GetMousePosition);
                 inputs[i].ReplaceTouchType(TypeTouch.Shoot);
                 inputs[i].isDestroyed = true;

@@ -11,7 +11,6 @@ using System;
 public class UpdatePointerLengthSystem : IExecuteSystem, IInitializeSystem, ITearDownSystem
 {
     private Contexts _contexts;
-    private Camera mainCamera;
     private Transform playerTransform;
     private LineRenderer lineRenderer;
     private int mask;
@@ -23,13 +22,13 @@ public class UpdatePointerLengthSystem : IExecuteSystem, IInitializeSystem, ITea
     public UpdatePointerLengthSystem(Contexts contexts)
     {
         _contexts = contexts;
-        mainCamera = Camera.main;
         mask = LayerMask.GetMask("Balls");
-        hits = new RaycastHit2D[4];
+        hits = new RaycastHit2D[1];
         screenCorners = new Vector2[4];
     }
     public void Initialize()
     {
+        Camera mainCamera = Camera.main;
         screenCorners[0] = mainCamera.ScreenToWorldPoint(new Vector2(0, 0));
         screenCorners[1] = mainCamera.ScreenToWorldPoint(new Vector2(0, mainCamera.pixelHeight));
         screenCorners[2] = mainCamera.ScreenToWorldPoint(new Vector2(mainCamera.pixelWidth, mainCamera.pixelHeight));
@@ -42,7 +41,6 @@ public class UpdatePointerLengthSystem : IExecuteSystem, IInitializeSystem, ITea
 
     public void Execute()
     {
-        // TODO MAYBE: update only when rotate is changed
         if (!_contexts.global.isPointer)
             return;
 
@@ -57,6 +55,7 @@ public class UpdatePointerLengthSystem : IExecuteSystem, IInitializeSystem, ITea
         }
         else
         {
+            // TODO MAYBE: maximum we can optimize this moment. if distance is the same that we dont need recalculate it
             lineRenderer.SetPosition(1, Vector2.up * CalculateDistanceToOutScreen());
         }
     }
@@ -73,16 +72,16 @@ public class UpdatePointerLengthSystem : IExecuteSystem, IInitializeSystem, ITea
         Vector2 rayBegin = playerTransform.position;
         Vector2 rayEnd = rayBegin + (Vector2)playerTransform.up * maxDistance;
         Vector2 intersectionPoint = Vector2.zero;
-        
-        for(int i = 0; i <= screenCorners.Length; i++)
+
+        for (int i = 0; i <= screenCorners.Length; i++)
         {
-            if(HasIntersection(rayBegin, rayEnd, screenCorners[i], screenCorners[(i+1)&3], ref intersectionPoint))
+            if (HasIntersection(rayBegin, rayEnd, screenCorners[i], screenCorners[(i + 1) & 3], ref intersectionPoint))
             {
                 return (rayBegin - intersectionPoint).magnitude;
             }
         }
 
-        throw new InvalidOperationException("Failed to calculate distance to screen border.");
+        return 0;
     }
 
     private bool HasIntersection(Vector3 v11, Vector3 v12, Vector3 v21, Vector3 v22, ref Vector2 intersect)

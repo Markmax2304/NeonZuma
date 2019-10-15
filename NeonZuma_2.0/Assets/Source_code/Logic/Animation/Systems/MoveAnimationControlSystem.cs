@@ -44,44 +44,31 @@ public class MoveAnimationControlSystem : ReactiveSystem<GameEntity>, ITearDownS
             {
                 animatedEntity.AddAnimationInfo(new List<Action>() { postAction });
 
-                transform.DOMove(target, duration).onComplete += delegate ()
-                {
-                    if (animatedEntity != null)
-                    {
-                        animatedEntity.isAnimationDone = true;
-
-#if UNITY_EDITOR
-                        if (_contexts.global.isDebugAccess)
-                        {
-                            _contexts.manage.CreateEntity()
-                                .AddLogMessage($" ___ Added done animation component to: {animatedEntity.ToString()}",
-                                TypeLogMessage.Trace, false, GetType());
-                        }
-#endif
-                    }
-                };
+                transform.DOMove(target, duration).onComplete += CompleteAnimationCallback;
             }
             else
             {
                 animatedEntity.animationInfo.completeActions.Add(postAction);
                 DOTween.Kill(transform);
 
-                transform.DOMove(target, duration).onComplete += delegate ()
+                transform.DOMove(target, duration).onComplete += CompleteAnimationCallback;
+            }
+
+            void CompleteAnimationCallback()
+            {
+                if (animatedEntity != null)
                 {
-                    if (animatedEntity != null)
-                    {
-                        animatedEntity.isAnimationDone = true;
+                    animatedEntity.isAnimationDone = true;
 
 #if UNITY_EDITOR
-                        if (_contexts.global.isDebugAccess)
-                        {
-                            _contexts.manage.CreateEntity()
-                                .AddLogMessage($" ___ Added done animation component to: {animatedEntity.ToString()}", 
-                                TypeLogMessage.Trace, false, GetType());
-                        }
-#endif
+                    if (_contexts.global.isDebugAccess)
+                    {
+                        _contexts.manage.CreateEntity()
+                            .AddLogMessage($" ___ Added done animation component to: {animatedEntity.ToString()}",
+                            TypeLogMessage.Trace, false, GetType());
                     }
-                };
+#endif
+                }
             }
         }
     }
