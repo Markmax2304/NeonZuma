@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-
-using UnityEngine;
+﻿using UnityEngine;
 using Entitas;
 
 /// <summary>
@@ -73,7 +70,7 @@ public class BallOverlapSystem : IExecuteSystem, IInitializeSystem
                         TypeCollision.ChainContact.ToString(), ball.ToString(), hitEntity.ToString()), TypeLogMessage.Trace, false, GetType());
                 }
 #endif
-                Contexts.sharedInstance.input.CreateEntity()
+                _contexts.input.CreateEntity()
                     .AddCollision(TypeCollision.ChainContact, ball, hitEntity);
             }
         }

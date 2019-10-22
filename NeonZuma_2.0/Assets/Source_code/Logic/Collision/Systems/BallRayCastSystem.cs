@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-
-using UnityEngine;
+﻿using UnityEngine;
 using Entitas;
 
 /// <summary>
@@ -47,7 +44,6 @@ public class BallRayCastSystem : IExecuteSystem, IInitializeSystem
                 ProcessRayCastCollision(hits, countHits, ball);
             }
 
-            //Debug.DrawRay(position, direction * ballDiametr * 3f / 4f, Color.red);
             ball.ReplaceRayCast(position);
         }
     }
@@ -73,22 +69,13 @@ public class BallRayCastSystem : IExecuteSystem, IInitializeSystem
             // projectile collistion stuff
             if (IsProjectileCollision(projectile, hitEntity))
             {
-                int explosionCount = _contexts.global.explosionCount.value;
-                if (projectile.isExplosion)
-                {
-                    _contexts.input.CreateEntity()
-                        .AddCollision(TypeCollision.Explosion, projectile, null);
-                }
-                else
-                {
-                    _contexts.input.CreateEntity()
-                        .AddCollision(TypeCollision.Projectile, projectile, hitEntity);
-                }
+                var type = projectile.isExplosion ? TypeCollision.Explosion : TypeCollision.Projectile;
+                _contexts.input.CreateEntity().AddCollision(type, projectile, hitEntity);
 
 #if UNITY_EDITOR
                 if (_contexts.global.isDebugAccess)
                 {
-                    string typeCollision = projectile.isExplosion ? "Explosion" : TypeCollision.Projectile.ToString();
+                    string typeCollision = projectile.isExplosion ? TypeCollision.Explosion.ToString() : TypeCollision.Projectile.ToString();
                     _contexts.manage.CreateEntity()
                         .AddLogMessage(string.Format(" ___ Creating collision with type - {0}, handler - {1}, collider - {2}",
                         typeCollision, projectile.ToString(), hitEntity.ToString()), TypeLogMessage.Trace, false, GetType());

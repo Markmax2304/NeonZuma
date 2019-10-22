@@ -18,26 +18,26 @@ public class TickCountersSystem : IExecuteSystem, ITearDownSystem
         var counters = _contexts.game.GetEntities(GameMatcher.Counter);
         var deltaTime = _contexts.global.deltaTime.value;
 
-        foreach(var counterEntity in counters)
+        for(int i = 0; i < counters.Length; i++)
         {
-            float newCount = counterEntity.counter.value - deltaTime;
+            float newCount = counters[i].counter.value - deltaTime;
 
             if(newCount <= 0)
             {
-                counterEntity.counter.postAction();
-                counterEntity.RemoveCounter();
+                counters[i].counter.postAction();
+                counters[i].RemoveCounter();
 
 #if UNITY_EDITOR
                 if (_contexts.global.isDebugAccess)
                 {
                     _contexts.manage.CreateEntity()
-                        .AddLogMessage($" ___ Finished counter of - {counterEntity.ToString()}", TypeLogMessage.Trace, false, GetType());
+                        .AddLogMessage($" ___ Finished counter of - {counters[i].ToString()}", TypeLogMessage.Trace, false, GetType());
                 }
 #endif
             }
             else
             {
-                counterEntity.ReplaceCounter(newCount, counterEntity.counter.postAction);
+                counters[i].ReplaceCounter(newCount, counters[i].counter.postAction);
             }
         }
     }
@@ -45,9 +45,9 @@ public class TickCountersSystem : IExecuteSystem, ITearDownSystem
     public void TearDown()
     {
         var counters = _contexts.game.GetEntities(GameMatcher.Counter);
-        foreach(var counter in counters)
+        for (int i = 0; i < counters.Length; i++)
         {
-            counter.Destroy();
+            counters[i].Destroy();
         }
     }
 }

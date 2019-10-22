@@ -30,6 +30,10 @@ public class GameController : MonoBehaviour
 
         Contexts contexts = Contexts.sharedInstance;
 
+        // test
+        // TODO: documantate methods of storage and starts to inject it into code
+        //TrackStorageTest.Test();
+
         InitializeSingletonComponents(contexts);
         _systems = CreateSystems(contexts);
         _systems.Initialize();
@@ -159,7 +163,7 @@ public class GameController : MonoBehaviour
             ;
     }
 
-#region Logger Methods
+    #region Logger Methods
     private void InitializeLogger()
     {
         try
@@ -204,5 +208,5 @@ public class GameController : MonoBehaviour
 
         return tempFolder;
     }
-#endregion
+    #endregion
 }

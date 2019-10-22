@@ -185,6 +185,7 @@ ___
 |***Randomizer***|Game|||Randomizer|Класс хранящий логику рандомизатора шаров<br/>|
 |***SpawnAccess***|Game|||:triangular_flag_on_post:|Флаг о том, что сейчас можно создавать новые шары<br/>|
 |***TrackId***|Game|||int|Идентификатор трека для упрощённого поиска и связки с цепями<br/>|
+|***TrackStorage***|Game|:white_check_mark:||TrackStorage||
 |***UpdateSpeed***|Game|||:triangular_flag_on_post:|Флаг о том, что следует обновить скорости цепей на данном треке<br/>|
 ___
 [:arrow_up:Context](#Context)
@@ -252,6 +253,7 @@ ___
 |***LineRenderer***|Game|||LineRenderer|Хранит Line Renderer компонент из Юнити<br/>|
 |***LogMessage***|Manage|||<ul><li>string</li><li>TypeLogMessage</li><li>bool</li><li>Type</li></ul>|Данные о сообщение, которое будет записано в Лог<br/>Имеет само сообщение, тип записи, следует ли писать в Юнити лог тоже, а также источник вызова лога<br/>|
 |***Sprite***|Game|||SpriteRenderer|Спрайт шара<br/>|
+|***SpriteGlowEffect***|Game|||SpriteGlowEffect||
 |***Transform***|Game|||Transform|Трансформ компонент из Юнити<br/>|
 ___
 [:arrow_up:Context](#Context)

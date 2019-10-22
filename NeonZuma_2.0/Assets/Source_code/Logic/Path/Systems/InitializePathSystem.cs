@@ -17,6 +17,7 @@ public class InitializePathSystem : IInitializeSystem, ITearDownSystem
     public void Initialize()
     {
         var paths = _contexts.global.levelConfig.value.pathCreatorPrefabs;
+        GameEntity[] tracks = new GameEntity[paths.Length];
 
         for(int i = 0; i < paths.Length; i++)
         {
@@ -35,7 +36,12 @@ public class InitializePathSystem : IInitializeSystem, ITearDownSystem
             trackEntity.AddGroupSpawn(countBallsOnEntirePath);
             // this component is controlling start and further spawn balls
             trackEntity.isSpawnAccess = true;
+
+            tracks[i] = trackEntity;
         }
+
+        // init track storage
+        _contexts.game.SetTrackStorage(new TrackStorage(tracks));
     }
 
     public void TearDown()
@@ -47,5 +53,7 @@ public class InitializePathSystem : IInitializeSystem, ITearDownSystem
             GameObject.Destroy(pathCreator.gameObject);
             path.Destroy();
         }
+
+        _contexts.game.RemoveTrackStorage();
     }
 }
