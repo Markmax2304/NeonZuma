@@ -16,6 +16,8 @@ MonoBehaviour:
   - {fileID: 4124922719851949013, guid: 504b4be4d06d09d4b82aafb8187b0779, type: 3}
   playerPrefab: {fileID: 2866933259869512605, guid: 27e23631b0c349a4b9c8bdf478544676,
     type: 3}
+  botPrefab: {fileID: 8977826646919949595, guid: 705813217a03ffa499625b306d8065d7,
+    type: 3}
   colors:
   - type: 0
     color: {r: 1, g: 0, b: 0, a: 1}
@@ -30,6 +32,7 @@ MonoBehaviour:
   destroyAnimationDuration: 0.2
   ballDiametr: 0.36
   minScaleSize: 0.05
+  initScale: {x: 0.01, y: 0.01, z: 0.01}
   normalScale: {x: 0.4, y: 0.4, z: 0.4}
   minLengthSeries: 1
   maxLengthSeries: 5
@@ -44,6 +47,11 @@ MonoBehaviour:
   gameOverSpeed: 20
   rotateSpeed: 20
   rechargeTime: 0.5
+  playerStartPosition: {x: 0, y: -1, z: 0}
+  botStartPosition: {x: 0, y: 1, z: 0}
+  scanRayAmount: 72
+  waitingDuration: 1
+  botRotateSpeed: 5
   forceSpeed: 5
   scorePerBall: 10
   AmountBallAfterApplyRowCombo: 3

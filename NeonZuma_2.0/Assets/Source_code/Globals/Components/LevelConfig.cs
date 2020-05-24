@@ -6,6 +6,7 @@ public class LevelConfig : ScriptableObject
 {
     public GameObject[] pathCreatorPrefabs;
     public GameObject playerPrefab;
+    public GameObject botPrefab;
 
     [Header("Ball fields"), Space]
     public ColorInfo[] colors;
@@ -15,6 +16,7 @@ public class LevelConfig : ScriptableObject
     [Space]
     public float ballDiametr = .36f;
     public float minScaleSize = .05f;
+    public Vector3 initScale = new Vector3(.01f, .01f, .01f);
     public Vector3 normalScale = new Vector3(.4f, .4f, .4f);
 
     [Header("Chain fields"), Space]
@@ -38,6 +40,14 @@ public class LevelConfig : ScriptableObject
     [Header("Player fields"), Space]
     public float rotateSpeed = 1f;
     public float rechargeTime = 1f;
+    public Vector3 playerStartPosition = new Vector3(0, -1, 0);
+
+    [Header("Bot fields"), Space]
+    public Vector3 botStartPosition = new Vector3(0, 1, 0);
+    [Range(1, 360)]
+    public int scanRayAmount = 72;
+    public float waitingDuration = 1f;
+    public float botRotateSpeed = 5f;
 
     [Header("Projectile fields"), Space]
     public float forceSpeed = 5f;

@@ -11,3 +11,5 @@ public enum TypeCollision { OutBorder, InBorder, Projectile, Explosion, ChainCon
 public enum TypeLogMessage { Trace, Error };
 
 public enum TypeAbility { Freeze, Rollback, Pointer, Explosion };
+
+public enum BotStateType { Scan, Rotate, Shoot, Idle };

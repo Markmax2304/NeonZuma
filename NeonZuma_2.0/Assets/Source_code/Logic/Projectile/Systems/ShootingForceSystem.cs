@@ -4,7 +4,7 @@ using Entitas;
 /// <summary>
 /// Логика движения снаряда во время полёта
 /// </summary>
-public class ShootingForceSystem : IExecuteSystem, IInitializeSystem
+public class ShootingForceSystem : IExecuteSystem, IInitializeSystem, ITearDownSystem
 {
     private Contexts _contexts;
 
@@ -27,6 +27,18 @@ public class ShootingForceSystem : IExecuteSystem, IInitializeSystem
             Transform ball = entities[i].transform.value;
             Vector2 direction = entities[i].force.value;
             ball.transform.position += (Vector3)direction * _contexts.global.deltaTime.value * _contexts.global.forceSpeed.value;
+        }
+    }
+
+    public void TearDown()
+    {
+        if (_contexts.global.hasForceSpeed)
+            _contexts.global.RemoveForceSpeed();
+
+        var projectiles = _contexts.game.GetEntities(GameMatcher.Projectile);
+        foreach (var projectile in projectiles)
+        {
+            projectile.DestroyBall();
         }
     }
 }
