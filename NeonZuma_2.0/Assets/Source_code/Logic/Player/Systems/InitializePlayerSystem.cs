@@ -20,6 +20,7 @@ public class InitializePlayerSystem : IInitializeSystem, ITearDownSystem
 
         // TODO: использовать pool или глобальный компонент для хранения, чтобы не создавать каждый раз заново
         GameObject player = GameObject.Instantiate(_contexts.global.levelConfig.value.playerPrefab);
+        player.transform.position = _contexts.global.levelConfig.value.playerStartPosition;
         playerEntity.AddTransform(player.transform);
         var lineRenderer = player.GetComponent<LineRenderer>();
         lineRenderer.enabled = false;
@@ -51,17 +52,6 @@ public class InitializePlayerSystem : IInitializeSystem, ITearDownSystem
         if (_contexts.global.hasRechargeDistance)
         {
             _contexts.global.RemoveRechargeDistance();
-        }
-
-        var projectiles = _contexts.game.GetEntities(GameMatcher.Projectile);
-        foreach (var projectile in projectiles)
-        {
-            projectile.DestroyBall();
-        }
-
-        if (_contexts.global.hasForceSpeed)
-        {
-            _contexts.global.RemoveForceSpeed();
         }
     }
 }

@@ -14,21 +14,19 @@ using UnityEngine;
 public class ShootPlayerSystem : ReactiveSystem<InputEntity>, IInitializeSystem, ITearDownSystem
 {
     private Contexts _contexts;
+    private LevelConfig config;
     private PoolObjectKeeper pool;
 
     private Transform player;
     private Transform shootPlace;
     private Transform rechargePlace;
 
-    // TODO: вынести это в конфиг
-    private readonly Vector3 initScale = new Vector3(.01f, .01f, 1f);
-    private readonly Vector3 normalScale = new Vector3(.4f, .4f, 1f);
-
     private static Log logger = LogManager.GetCurrentClassLogger();
 
     public ShootPlayerSystem(Contexts contexts) : base(contexts.input)
     {
         _contexts = contexts;
+        config = contexts.global.levelConfig.value;
         pool = PoolManager.instance.GetObjectPoolKeeper(TypeObjectPool.Ball);
     }
 
@@ -47,8 +45,8 @@ public class ShootPlayerSystem : ReactiveSystem<InputEntity>, IInitializeSystem,
         }
 
         player = _contexts.game.playerEntity.transform.value;
-        shootPlace = GameObject.Find("Shoot").transform;
-        rechargePlace = GameObject.Find("Recharge").transform;
+        shootPlace = player.Find("Shoot").transform;
+        rechargePlace = player.Find("Recharge").transform;
 
         _contexts.global.ReplaceRechargeDistance(shootPlace.localPosition - rechargePlace.localPosition);
 
@@ -136,7 +134,7 @@ public class ShootPlayerSystem : ReactiveSystem<InputEntity>, IInitializeSystem,
 
     private void CreateRechargeEntity()
     {
-        Transform ball = pool.RealeseObject(rechargePlace.position, rechargePlace.rotation, initScale).transform;
+        Transform ball = pool.RealeseObject(rechargePlace.position, rechargePlace.rotation, config.initScale).transform;
         ball.parent = rechargePlace;
 
         GameEntity projectile = _contexts.game.CreateEntity();
@@ -149,7 +147,7 @@ public class ShootPlayerSystem : ReactiveSystem<InputEntity>, IInitializeSystem,
         ball.gameObject.Link(projectile, _contexts.game);
 
         float duration = _contexts.global.levelConfig.value.rechargeTime;
-        ball.DOScale(normalScale, duration * 0.9f);
+        ball.DOScale(config.normalScale, duration * 0.9f);
     }
     #endregion
 }

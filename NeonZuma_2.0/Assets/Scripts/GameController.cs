@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Collections.Generic;
 
 using NLog;
 using UnityEngine;
@@ -83,7 +82,8 @@ public class GameController : MonoBehaviour
             //Initialization
             .Add(new InitializePathSystem(contexts))
             .Add(new InitializePlayerSystem(contexts))
-            
+            .Add(new InitializeBotSystem(contexts))
+
 
             //RayCasting
             .Add(new BallRayCastSystem(contexts))
@@ -139,6 +139,13 @@ public class GameController : MonoBehaviour
             .Add(new InvokingAbilitySystem(contexts))
 
 
+            //AI Bot
+            .Add(new BotHandleSystem(contexts))
+            .Add(new ScanBallTrackSystem(contexts))
+            .Add(new RotateBotSystem(contexts))
+            .Add(new ShootBotSystem(contexts))
+
+
             //Input
             .Add(new TouchHandleSystem(contexts))
             //Player
@@ -155,6 +162,7 @@ public class GameController : MonoBehaviour
     }
 
     #region Logger Methods
+
     private void InitializeLogger()
     {
         try
@@ -199,5 +207,6 @@ public class GameController : MonoBehaviour
 
         return tempFolder;
     }
+
     #endregion
 }

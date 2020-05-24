@@ -13,43 +13,49 @@ public static class GameComponentsLookup {
     public const int AnimationInfo = 2;
     public const int BackEdge = 3;
     public const int BallId = 4;
-    public const int ChainId = 5;
-    public const int ChainSpeed = 6;
-    public const int CheckTargetBall = 7;
-    public const int Color = 8;
-    public const int Counter = 9;
-    public const int Cut = 10;
-    public const int Destroyed = 11;
-    public const int DistanceBall = 12;
-    public const int Explosion = 13;
-    public const int Force = 14;
-    public const int FrontEdge = 15;
-    public const int GravitateCombo = 16;
-    public const int GroupDestroy = 17;
-    public const int GroupSpawn = 18;
-    public const int LineRenderer = 19;
-    public const int MoveAnimation = 20;
-    public const int NearToEnd = 21;
-    public const int Overlap = 22;
-    public const int ParentChainId = 23;
-    public const int ParentTrackId = 24;
-    public const int PathCreator = 25;
-    public const int Player = 26;
-    public const int Projectile = 27;
-    public const int Randomizer = 28;
-    public const int RayCast = 29;
-    public const int Recharge = 30;
-    public const int RemovedBall = 31;
-    public const int ResetChainEdges = 32;
-    public const int ScaleAnimation = 33;
-    public const int Shoot = 34;
-    public const int SpawnAccess = 35;
-    public const int Sprite = 36;
-    public const int TrackId = 37;
-    public const int Transform = 38;
-    public const int UpdateSpeed = 39;
+    public const int Bot = 5;
+    public const int BotState = 6;
+    public const int ChainId = 7;
+    public const int ChainSpeed = 8;
+    public const int CheckTargetBall = 9;
+    public const int Color = 10;
+    public const int Counter = 11;
+    public const int Cut = 12;
+    public const int Destroyed = 13;
+    public const int DistanceBall = 14;
+    public const int Explosion = 15;
+    public const int Force = 16;
+    public const int FrontEdge = 17;
+    public const int GravitateCombo = 18;
+    public const int GroupDestroy = 19;
+    public const int GroupSpawn = 20;
+    public const int LineRenderer = 21;
+    public const int MoveAnimation = 22;
+    public const int NearToEnd = 23;
+    public const int Overlap = 24;
+    public const int ParentChainId = 25;
+    public const int ParentTrackId = 26;
+    public const int PathCreator = 27;
+    public const int Player = 28;
+    public const int Projectile = 29;
+    public const int ProjectileInstance = 30;
+    public const int Randomizer = 31;
+    public const int RayCast = 32;
+    public const int Recharge = 33;
+    public const int RemovedBall = 34;
+    public const int RequiredTask = 35;
+    public const int ResetChainEdges = 36;
+    public const int ScaleAnimation = 37;
+    public const int Shoot = 38;
+    public const int ShootPlace = 39;
+    public const int SpawnAccess = 40;
+    public const int Sprite = 41;
+    public const int TargetBall = 42;
+    public const int TrackId = 43;
+    public const int Transform = 44;
+    public const int UpdateSpeed = 45;
 
-    public const int TotalComponents = 40;
+    public const int TotalComponents = 46;
 
     public static readonly string[] componentNames = {
         "AddedBall",
@@ -57,6 +63,8 @@ public static class GameComponentsLookup {
         "AnimationInfo",
         "BackEdge",
         "BallId",
+        "Bot",
+        "BotState",
         "ChainId",
         "ChainSpeed",
         "CheckTargetBall",
@@ -80,15 +88,19 @@ public static class GameComponentsLookup {
         "PathCreator",
         "Player",
         "Projectile",
+        "ProjectileInstance",
         "Randomizer",
         "RayCast",
         "Recharge",
         "RemovedBall",
+        "RequiredTask",
         "ResetChainEdges",
         "ScaleAnimation",
         "Shoot",
+        "ShootPlace",
         "SpawnAccess",
         "Sprite",
+        "TargetBall",
         "TrackId",
         "Transform",
         "UpdateSpeed"
@@ -100,6 +112,8 @@ public static class GameComponentsLookup {
         typeof(AnimationInfoComponent),
         typeof(BackEdgeComponent),
         typeof(BallIdComponent),
+        typeof(BotComponent),
+        typeof(BotStateComponent),
         typeof(ChainIdComponent),
         typeof(ChainSpeedComponent),
         typeof(CheckTargetBallComponent),
@@ -123,15 +137,19 @@ public static class GameComponentsLookup {
         typeof(PathCreatorComponent),
         typeof(PlayerComponent),
         typeof(ProjectileComponent),
+        typeof(ProjectileInstanceComponent),
         typeof(RandomizerComponent),
         typeof(RayCastComponent),
         typeof(RechargeComponent),
         typeof(RemovedBallComponent),
+        typeof(RequiredTaskComponent),
         typeof(ResetChainEdges),
         typeof(ScaleAnimationComponent),
         typeof(ShootComponent),
+        typeof(ShootPlaceComponent),
         typeof(SpawnAccessComponent),
         typeof(SpriteComponent),
+        typeof(TargetBallComponent),
         typeof(TrackIdComponent),
         typeof(TransformComponent),
         typeof(UpdateSpeedComponent)
