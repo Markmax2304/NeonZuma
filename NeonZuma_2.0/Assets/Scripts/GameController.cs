@@ -132,6 +132,7 @@ public class GameController : MonoBehaviour
 
             //Score
             .Add(new ScoreCounterSystem(contexts))
+            .Add(new ShowGameScoreSystem(contexts))
 
 
             //Ability

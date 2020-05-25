@@ -62,7 +62,7 @@ public class MatchInsertedBallInChainSystem : ReactiveSystem<GameEntity>
             PassBallsWithSameColor(balls, checkedBall.color.value, checkedBallIndex, (ball) => count++);
 
             // score row combo
-            IterateRowCombo(count);
+            IterateRowCombo(count, checkedBall.own.value);
 
             if (count >= 3)
             {
@@ -78,7 +78,7 @@ public class MatchInsertedBallInChainSystem : ReactiveSystem<GameEntity>
                 PassBallsWithSameColor(balls, checkedBall.color.value, checkedBallIndex, (ball) => ball.AddGroupDestroy(destroyId));
 
                 // score stuff
-                _contexts.manage.CreateEntity().AddScorePiece(count);
+                _contexts.manage.CreateEntity().AddScorePiece(count, checkedBall.own.value);
             }
         }
     }
@@ -94,18 +94,43 @@ public class MatchInsertedBallInChainSystem : ReactiveSystem<GameEntity>
     }
 
     #region Private Methods
-    private void IterateRowCombo(int count)
+    private void IterateRowCombo(int count, OwnType type)
     {
-        if (_contexts.manage.shootInRowCombo.isProjectile)
+        if (_contexts.manage.shootInRowCombo.player.isProjectile)
         {
             if (count >= 3)
             {
-                int rowCombo = _contexts.manage.shootInRowCombo.value;
-                _contexts.manage.ReplaceShootInRowCombo(rowCombo + 1, false);
+                int rowCombo = _contexts.manage.shootInRowCombo.player.value;
+
+                var info = new ShootInRowComboComponent.NestedComboInfo();
+                info.value = rowCombo + 1;
+                info.isProjectile = false;
+
+                switch (type)
+                {
+                    case OwnType.Player:
+                        _contexts.manage.ReplaceShootInRowCombo(info, _contexts.manage.shootInRowCombo.bot);
+                        break;
+                    case OwnType.Bot:
+                        _contexts.manage.ReplaceShootInRowCombo(_contexts.manage.shootInRowCombo.player, info);
+                        break;
+                }
             }
             else
             {
-                _contexts.manage.ReplaceShootInRowCombo(0, false);
+                var info = new ShootInRowComboComponent.NestedComboInfo();
+                info.value = 0;
+                info.isProjectile = false;
+
+                switch (type)
+                {
+                    case OwnType.Player:
+                        _contexts.manage.ReplaceShootInRowCombo(info, _contexts.manage.shootInRowCombo.bot);
+                        break;
+                    case OwnType.Bot:
+                        _contexts.manage.ReplaceShootInRowCombo(_contexts.manage.shootInRowCombo.player, info);
+                        break;
+                }
             }
         }
     }

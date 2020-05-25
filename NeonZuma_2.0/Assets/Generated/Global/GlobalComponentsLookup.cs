@@ -21,8 +21,9 @@ public static class GlobalComponentsLookup {
     public const int Pointer = 10;
     public const int RechargeDistance = 11;
     public const int Rollback = 12;
+    public const int ScoreHandler = 13;
 
-    public const int TotalComponents = 13;
+    public const int TotalComponents = 14;
 
     public static readonly string[] componentNames = {
         "BallColors",
@@ -37,7 +38,8 @@ public static class GlobalComponentsLookup {
         "LevelConfig",
         "Pointer",
         "RechargeDistance",
-        "Rollback"
+        "Rollback",
+        "ScoreHandler"
     };
 
     public static readonly System.Type[] componentTypes = {
@@ -53,6 +55,7 @@ public static class GlobalComponentsLookup {
         typeof(LevelConfigComponent),
         typeof(PointerComponent),
         typeof(RechargeDistanceComponent),
-        typeof(RollbackComponent)
+        typeof(RollbackComponent),
+        typeof(ScoreHandlerComponent)
     };
 }

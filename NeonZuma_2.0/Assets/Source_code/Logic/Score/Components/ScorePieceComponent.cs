@@ -8,4 +8,5 @@ using Entitas;
 public class ScorePieceComponent : IComponent
 {
     public int value;
+    public OwnType own;
 }

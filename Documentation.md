@@ -8,6 +8,7 @@ This NeonZuma documentation of project based on Entitas framework. It looks like
     - [Ability](#Ability)
     - [Animation](#Animation)
     - [Balls](#Balls)
+    - [Bot](#Bot)
     - [Chain](#Chain)
     - [Collision](#Collision)
     - [GameManagement](#GameManagement)
@@ -105,6 +106,28 @@ ___
 |***GroupDestroy***|Game|||int|Номер для группирования шаров при их уничтожении, чтобы можно было объединить несколько шаров в одну группу<br/>|
 |***GroupSpawn***|Game|||int|Количество шаров, которое должно быть заспавнено одновременно<br/>|
 |***RemovedBall***|Game|||:triangular_flag_on_post:|Флаг о том, что шар исчез из игровой зоны игрока<br/>|
+___
+[:arrow_up:Context](#Context)
+### Bot
+|System|Types|Description|
+|------|:-----|:-----------|
+|***InitializeBot***|<ul><li>Initialize</li><li>TearDown</li></ul>||
+|***RotateBot***|Execute||
+___
+|Reactive System|Types|Entity|Triggers|Description|
+|---------------|:-----|:------:|:--------|:-----------|
+|***BotHandle***|:x:|Game|RequiredTask||
+|***ScanBallTrack***|:x:|Game|BotState||
+|***ShootBot***|Initialize|Game|BotState||
+___
+|Component|Contexts|Unique|Event|Fields|Description|
+|---------|:--------|:------:|:-----:|:------|:-----------|
+|***Bot***|Game|||:triangular_flag_on_post:||
+|***BotState***|Game|||BotStateType||
+|***ProjectileInstance***|Game|||GameEntity||
+|***RequiredTask***|Game|||:triangular_flag_on_post:||
+|***ShootPlace***|Game|||Transform||
+|***TargetBall***|Game|||GameEntity||
 ___
 [:arrow_up:Context](#Context)
 ### Chain
@@ -211,12 +234,13 @@ ___
 ### Projectile
 |System|Types|Description|
 |------|:-----|:-----------|
-|***ShootingForce***|<ul><li>Execute</li><li>Initialize</li></ul>|Логика движения снаряда во время полёта<br/>|
+|***ShootingForce***|<ul><li>Execute</li><li>Initialize</li><li>TearDown</li></ul>|Логика движения снаряда во время полёта<br/>|
 ___
 |Component|Contexts|Unique|Event|Fields|Description|
 |---------|:--------|:------:|:-----:|:------|:-----------|
 |***Force***|Game|||Vector2|Направление в котором должен лететь снаряд<br/>|
 |***ForceSpeed***|Global|:white_check_mark:||float|Скорость с которой должен лететь снаряд<br/>|
+|***Own***|Game|||OwnType||
 |***Projectile***|Game|||:triangular_flag_on_post:|Флаг о том, что данная сущность является снарядом<br/>|
 ___
 [:arrow_up:Context](#Context)
@@ -224,13 +248,15 @@ ___
 |Reactive System|Types|Entity|Triggers|Description|
 |---------------|:-----|:------:|:--------|:-----------|
 |***ScoreCounter***|<ul><li>Initialize</li><li>TearDown</li></ul>|Manage|ScorePiece|Логика подсчёта очков на игровом уровне<br/>|
+|***ShowGameScore***|:x:|Manage|TotalScore||
 ___
 |Component|Contexts|Unique|Event|Fields|Description|
 |---------|:--------|:------:|:-----:|:------|:-----------|
-|***MoveBackCombo***|Manage|:white_check_mark:||int|Комбо откатов цепей назада подряд<br/>|
-|***ScorePiece***|Manage|||int|Данные о том, сколько очков нужно прибавить к общему счётчику<br/>|
-|***ShootInRowCombo***|Manage|:white_check_mark:||<ul><li>int</li><li>bool</li></ul>|Комбо уничтожений шаров выстрелом шара подряд<br/>Также есть флаг о том, что это уничтожение было именно шаром. Однако, его стоит вынести в отдельный компонент<br/>|
-|***TotalScore***|Manage|:white_check_mark:||int|Общий счётчик очков на уровне<br/>|
+|***MoveBackCombo***|Manage|:white_check_mark:||<ul><li>int</li><li>int</li></ul>|Комбо откатов цепей назада подряд<br/>|
+|***ScoreHandler***|Global|:white_check_mark:||<ul><li>Text</li><li>Text</li></ul>||
+|***ScorePiece***|Manage|||<ul><li>int</li><li>OwnType</li></ul>|Данные о том, сколько очков нужно прибавить к общему счётчику<br/>|
+|***ShootInRowCombo***|Manage|:white_check_mark:||<ul><li>NestedComboInfo</li><li>NestedComboInfo</li><li>struct NestedComboInfo    {        public int</li><li>bool</li></ul>|Комбо уничтожений шаров выстрелом шара подряд<br/>Также есть флаг о том, что это уничтожение было именно шаром. Однако, его стоит вынести в отдельный компонент<br/>|
+|***TotalScore***|Manage|:white_check_mark:||<ul><li>int</li><li>int</li></ul>|Общий счётчик очков на уровне<br/>|
 ___
 [:arrow_up:Context](#Context)
 ## Utils

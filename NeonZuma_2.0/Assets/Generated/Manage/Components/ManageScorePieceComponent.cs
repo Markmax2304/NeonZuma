@@ -11,17 +11,19 @@ public partial class ManageEntity {
     public ScorePieceComponent scorePiece { get { return (ScorePieceComponent)GetComponent(ManageComponentsLookup.ScorePiece); } }
     public bool hasScorePiece { get { return HasComponent(ManageComponentsLookup.ScorePiece); } }
 
-    public void AddScorePiece(int newValue) {
+    public void AddScorePiece(int newValue, OwnType newOwn) {
         var index = ManageComponentsLookup.ScorePiece;
         var component = (ScorePieceComponent)CreateComponent(index, typeof(ScorePieceComponent));
         component.value = newValue;
+        component.own = newOwn;
         AddComponent(index, component);
     }
 
-    public void ReplaceScorePiece(int newValue) {
+    public void ReplaceScorePiece(int newValue, OwnType newOwn) {
         var index = ManageComponentsLookup.ScorePiece;
         var component = (ScorePieceComponent)CreateComponent(index, typeof(ScorePieceComponent));
         component.value = newValue;
+        component.own = newOwn;
         ReplaceComponent(index, component);
     }
 

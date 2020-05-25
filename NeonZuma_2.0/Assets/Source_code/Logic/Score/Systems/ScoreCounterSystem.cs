@@ -8,40 +8,53 @@ using Entitas;
 /// </summary>
 public class ScoreCounterSystem : ReactiveSystem<ManageEntity>, IInitializeSystem, ITearDownSystem
 {
-    private Contexts _contexts;
+    private Contexts contexts;
     private int scorePerBall;
     private int decreaseRowCombo;
 
     public ScoreCounterSystem(Contexts contexts) : base(contexts.manage)
     {
-        _contexts = contexts;
+        this.contexts = contexts;
     }
 
     public void Initialize()
     {
-        scorePerBall = _contexts.global.levelConfig.value.scorePerBall;
-        decreaseRowCombo = _contexts.global.levelConfig.value.AmountBallAfterApplyRowCombo;
+        scorePerBall = contexts.global.levelConfig.value.scorePerBall;
+        decreaseRowCombo = contexts.global.levelConfig.value.AmountBallAfterApplyRowCombo;
 
-        _contexts.manage.SetTotalScore(0);
-        _contexts.manage.SetMoveBackCombo(0);
-        _contexts.manage.SetShootInRowCombo(0, false);
+        contexts.manage.SetTotalScore(0, 0);
+        contexts.manage.SetMoveBackCombo(0, 0);
+
+        var info = new ShootInRowComboComponent.NestedComboInfo();
+        info.value = 0;
+        info.isProjectile = false;
+        contexts.manage.SetShootInRowCombo(info, info);
     }
 
     protected override void Execute(List<ManageEntity> entities)
     {
         foreach (var scoreEntity in entities)
         {
-            int moveBackCombo = _contexts.manage.moveBackCombo.value + 1;
-            int shootInRowCombo = _contexts.manage.shootInRowCombo.value - decreaseRowCombo;
-            if (shootInRowCombo < 0)
-                shootInRowCombo = 0;
-            int addingToScore = scoreEntity.scorePiece.value * scorePerBall * moveBackCombo + shootInRowCombo * scorePerBall;
+            int player = contexts.manage.totalScore.player;
+            int bot = contexts.manage.totalScore.bot;
+
+            switch (scoreEntity.scorePiece.own)
+            {
+                case OwnType.Player:
+                    player += scoreEntity.scorePiece.value * scorePerBall;
+                    break;
+
+                case OwnType.Bot:
+                    bot += scoreEntity.scorePiece.value * scorePerBall;
+                    break;
+            }
+            
 
             // TODO: vfx effect
-            Debug.Log($"+ {scoreEntity.scorePiece.value} x {moveBackCombo} + {shootInRowCombo} x {scorePerBall} = {addingToScore}");
+            //Debug.Log($"+ {scoreEntity.scorePiece.value} x {moveBackCombo} + {shootInRowCombo} x {scorePerBall} = {addingToScore}");
 
-            int totalScore = _contexts.manage.totalScore.value;
-            _contexts.manage.ReplaceTotalScore(totalScore + addingToScore);
+            
+            contexts.manage.ReplaceTotalScore(player, bot);
 
             scoreEntity.isDestroyed = true;
         }
@@ -60,8 +73,8 @@ public class ScoreCounterSystem : ReactiveSystem<ManageEntity>, IInitializeSyste
     public void TearDown()
     {
         // TODO: save result somewhere
-        _contexts.manage.RemoveTotalScore();
-        _contexts.manage.RemoveMoveBackCombo();
-        _contexts.manage.RemoveShootInRowCombo();
+        contexts.manage.RemoveTotalScore();
+        contexts.manage.RemoveMoveBackCombo();
+        contexts.manage.RemoveShootInRowCombo();
     }
 }

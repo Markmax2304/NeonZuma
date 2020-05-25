@@ -72,6 +72,7 @@ public class ShootBotSystem : ReactiveSystem<GameEntity>, IInitializeSystem
         GameEntity projectile = botEntity.projectileInstance.value;
         projectile.transform.value.parent = null;
         projectile.isProjectile = true;
+        projectile.AddOwn(OwnType.Bot);
         projectile.AddForce(direction);
         projectile.AddRayCast(projectile.transform.value.position);
 

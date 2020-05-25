@@ -12,22 +12,22 @@ public partial class ManageContext {
     public TotalScoreComponent totalScore { get { return totalScoreEntity.totalScore; } }
     public bool hasTotalScore { get { return totalScoreEntity != null; } }
 
-    public ManageEntity SetTotalScore(int newValue) {
+    public ManageEntity SetTotalScore(int newPlayer, int newBot) {
         if (hasTotalScore) {
             throw new Entitas.EntitasException("Could not set TotalScore!\n" + this + " already has an entity with TotalScoreComponent!",
                 "You should check if the context already has a totalScoreEntity before setting it or use context.ReplaceTotalScore().");
         }
         var entity = CreateEntity();
-        entity.AddTotalScore(newValue);
+        entity.AddTotalScore(newPlayer, newBot);
         return entity;
     }
 
-    public void ReplaceTotalScore(int newValue) {
+    public void ReplaceTotalScore(int newPlayer, int newBot) {
         var entity = totalScoreEntity;
         if (entity == null) {
-            entity = SetTotalScore(newValue);
+            entity = SetTotalScore(newPlayer, newBot);
         } else {
-            entity.ReplaceTotalScore(newValue);
+            entity.ReplaceTotalScore(newPlayer, newBot);
         }
     }
 
@@ -49,17 +49,19 @@ public partial class ManageEntity {
     public TotalScoreComponent totalScore { get { return (TotalScoreComponent)GetComponent(ManageComponentsLookup.TotalScore); } }
     public bool hasTotalScore { get { return HasComponent(ManageComponentsLookup.TotalScore); } }
 
-    public void AddTotalScore(int newValue) {
+    public void AddTotalScore(int newPlayer, int newBot) {
         var index = ManageComponentsLookup.TotalScore;
         var component = (TotalScoreComponent)CreateComponent(index, typeof(TotalScoreComponent));
-        component.value = newValue;
+        component.player = newPlayer;
+        component.bot = newBot;
         AddComponent(index, component);
     }
 
-    public void ReplaceTotalScore(int newValue) {
+    public void ReplaceTotalScore(int newPlayer, int newBot) {
         var index = ManageComponentsLookup.TotalScore;
         var component = (TotalScoreComponent)CreateComponent(index, typeof(TotalScoreComponent));
-        component.value = newValue;
+        component.player = newPlayer;
+        component.bot = newBot;
         ReplaceComponent(index, component);
     }
 
