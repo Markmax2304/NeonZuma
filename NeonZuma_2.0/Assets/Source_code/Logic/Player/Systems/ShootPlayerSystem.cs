@@ -97,6 +97,7 @@ public class ShootPlayerSystem : ReactiveSystem<InputEntity>, IInitializeSystem,
         projectile.transform.value.parent = null;
         projectile.isShoot = false;
         projectile.isProjectile = true;
+        projectile.AddOwn(OwnType.Player);
         projectile.AddForce(direction);
         projectile.AddRayCast(projectile.transform.value.position);
 

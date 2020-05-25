@@ -127,8 +127,8 @@ public class ConnectChainsSystem : ReactiveSystem<InputEntity>, IInitializeSyste
                     }
 
                     // combo
-                    int combo = _contexts.manage.moveBackCombo.value;
-                    _contexts.manage.ReplaceMoveBackCombo(combo + 1);
+                    int combo = _contexts.manage.moveBackCombo.player;
+                    _contexts.manage.ReplaceMoveBackCombo(combo + 1, 0);
 
                     // move back
                     backChain.ReplaceChainSpeed(-moveBackSpeed * (1 + increaseMoveBack * combo));
@@ -151,7 +151,7 @@ public class ConnectChainsSystem : ReactiveSystem<InputEntity>, IInitializeSyste
                 }
                 else
                 {
-                    _contexts.manage.ReplaceMoveBackCombo(0);
+                    _contexts.manage.ReplaceMoveBackCombo(0, 0);
                     track.isUpdateSpeed = true;
                     if (_contexts.global.isDebugAccess)
                     {

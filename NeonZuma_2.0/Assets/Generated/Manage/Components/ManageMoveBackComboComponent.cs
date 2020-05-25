@@ -12,22 +12,22 @@ public partial class ManageContext {
     public MoveBackComboComponent moveBackCombo { get { return moveBackComboEntity.moveBackCombo; } }
     public bool hasMoveBackCombo { get { return moveBackComboEntity != null; } }
 
-    public ManageEntity SetMoveBackCombo(int newValue) {
+    public ManageEntity SetMoveBackCombo(int newPlayer, int newBot) {
         if (hasMoveBackCombo) {
             throw new Entitas.EntitasException("Could not set MoveBackCombo!\n" + this + " already has an entity with MoveBackComboComponent!",
                 "You should check if the context already has a moveBackComboEntity before setting it or use context.ReplaceMoveBackCombo().");
         }
         var entity = CreateEntity();
-        entity.AddMoveBackCombo(newValue);
+        entity.AddMoveBackCombo(newPlayer, newBot);
         return entity;
     }
 
-    public void ReplaceMoveBackCombo(int newValue) {
+    public void ReplaceMoveBackCombo(int newPlayer, int newBot) {
         var entity = moveBackComboEntity;
         if (entity == null) {
-            entity = SetMoveBackCombo(newValue);
+            entity = SetMoveBackCombo(newPlayer, newBot);
         } else {
-            entity.ReplaceMoveBackCombo(newValue);
+            entity.ReplaceMoveBackCombo(newPlayer, newBot);
         }
     }
 
@@ -49,17 +49,19 @@ public partial class ManageEntity {
     public MoveBackComboComponent moveBackCombo { get { return (MoveBackComboComponent)GetComponent(ManageComponentsLookup.MoveBackCombo); } }
     public bool hasMoveBackCombo { get { return HasComponent(ManageComponentsLookup.MoveBackCombo); } }
 
-    public void AddMoveBackCombo(int newValue) {
+    public void AddMoveBackCombo(int newPlayer, int newBot) {
         var index = ManageComponentsLookup.MoveBackCombo;
         var component = (MoveBackComboComponent)CreateComponent(index, typeof(MoveBackComboComponent));
-        component.value = newValue;
+        component.player = newPlayer;
+        component.bot = newBot;
         AddComponent(index, component);
     }
 
-    public void ReplaceMoveBackCombo(int newValue) {
+    public void ReplaceMoveBackCombo(int newPlayer, int newBot) {
         var index = ManageComponentsLookup.MoveBackCombo;
         var component = (MoveBackComboComponent)CreateComponent(index, typeof(MoveBackComboComponent));
-        component.value = newValue;
+        component.player = newPlayer;
+        component.bot = newBot;
         ReplaceComponent(index, component);
     }
 

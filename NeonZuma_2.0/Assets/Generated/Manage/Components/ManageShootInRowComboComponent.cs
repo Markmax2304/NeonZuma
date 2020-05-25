@@ -12,22 +12,22 @@ public partial class ManageContext {
     public ShootInRowComboComponent shootInRowCombo { get { return shootInRowComboEntity.shootInRowCombo; } }
     public bool hasShootInRowCombo { get { return shootInRowComboEntity != null; } }
 
-    public ManageEntity SetShootInRowCombo(int newValue, bool newIsProjectile) {
+    public ManageEntity SetShootInRowCombo(ShootInRowComboComponent.NestedComboInfo newPlayer, ShootInRowComboComponent.NestedComboInfo newBot) {
         if (hasShootInRowCombo) {
             throw new Entitas.EntitasException("Could not set ShootInRowCombo!\n" + this + " already has an entity with ShootInRowComboComponent!",
                 "You should check if the context already has a shootInRowComboEntity before setting it or use context.ReplaceShootInRowCombo().");
         }
         var entity = CreateEntity();
-        entity.AddShootInRowCombo(newValue, newIsProjectile);
+        entity.AddShootInRowCombo(newPlayer, newBot);
         return entity;
     }
 
-    public void ReplaceShootInRowCombo(int newValue, bool newIsProjectile) {
+    public void ReplaceShootInRowCombo(ShootInRowComboComponent.NestedComboInfo newPlayer, ShootInRowComboComponent.NestedComboInfo newBot) {
         var entity = shootInRowComboEntity;
         if (entity == null) {
-            entity = SetShootInRowCombo(newValue, newIsProjectile);
+            entity = SetShootInRowCombo(newPlayer, newBot);
         } else {
-            entity.ReplaceShootInRowCombo(newValue, newIsProjectile);
+            entity.ReplaceShootInRowCombo(newPlayer, newBot);
         }
     }
 
@@ -49,19 +49,19 @@ public partial class ManageEntity {
     public ShootInRowComboComponent shootInRowCombo { get { return (ShootInRowComboComponent)GetComponent(ManageComponentsLookup.ShootInRowCombo); } }
     public bool hasShootInRowCombo { get { return HasComponent(ManageComponentsLookup.ShootInRowCombo); } }
 
-    public void AddShootInRowCombo(int newValue, bool newIsProjectile) {
+    public void AddShootInRowCombo(ShootInRowComboComponent.NestedComboInfo newPlayer, ShootInRowComboComponent.NestedComboInfo newBot) {
         var index = ManageComponentsLookup.ShootInRowCombo;
         var component = (ShootInRowComboComponent)CreateComponent(index, typeof(ShootInRowComboComponent));
-        component.value = newValue;
-        component.isProjectile = newIsProjectile;
+        component.player = newPlayer;
+        component.bot = newBot;
         AddComponent(index, component);
     }
 
-    public void ReplaceShootInRowCombo(int newValue, bool newIsProjectile) {
+    public void ReplaceShootInRowCombo(ShootInRowComboComponent.NestedComboInfo newPlayer, ShootInRowComboComponent.NestedComboInfo newBot) {
         var index = ManageComponentsLookup.ShootInRowCombo;
         var component = (ShootInRowComboComponent)CreateComponent(index, typeof(ShootInRowComboComponent));
-        component.value = newValue;
-        component.isProjectile = newIsProjectile;
+        component.player = newPlayer;
+        component.bot = newBot;
         ReplaceComponent(index, component);
     }
 

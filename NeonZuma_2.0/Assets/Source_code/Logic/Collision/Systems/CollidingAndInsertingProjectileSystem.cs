@@ -98,7 +98,7 @@ public class CollidingAndInsertingProjectileSystem : ReactiveSystem<InputEntity>
                 }
 
                 // combo
-                _contexts.manage.ReplaceMoveBackCombo(0);
+                _contexts.manage.ReplaceMoveBackCombo(0, 0);
             }
             else
             {
@@ -223,7 +223,7 @@ public class CollidingAndInsertingProjectileSystem : ReactiveSystem<InputEntity>
         postChainAction += delegate ()
         {
             entity.isCheckTargetBall = true;
-            _contexts.manage.shootInRowCombo.isProjectile = true;
+            _contexts.manage.shootInRowCombo.player.isProjectile = true;
 
             if (_contexts.global.isDebugAccess)
             {

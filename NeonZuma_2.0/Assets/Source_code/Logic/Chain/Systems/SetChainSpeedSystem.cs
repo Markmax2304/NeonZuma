@@ -122,7 +122,7 @@ public class SetChainSpeedSystem : ReactiveSystem<GameEntity>, IInitializeSystem
         {
             float gravitateSpeed = _contexts.global.levelConfig.value.gravitateSpeed;
             float increaseSpeed = _contexts.global.levelConfig.value.increaseMoveBackFactor;
-            frontChain.ReplaceChainSpeed(-gravitateSpeed * (1 + increaseSpeed * _contexts.manage.moveBackCombo.value));
+            frontChain.ReplaceChainSpeed(-gravitateSpeed * (1 + increaseSpeed * _contexts.manage.moveBackCombo.player));
         }
     }
 

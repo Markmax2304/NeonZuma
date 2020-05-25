@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using Entitas;
 using Entitas.CodeGeneration.Attributes;
 
@@ -11,6 +9,12 @@ using Entitas.CodeGeneration.Attributes;
 [Manage, Unique]
 public class ShootInRowComboComponent : IComponent
 {
-    public int value;
-    public bool isProjectile;
+    public NestedComboInfo player;
+    public NestedComboInfo bot;
+
+    public struct NestedComboInfo
+    {
+        public int value;
+        public bool isProjectile;
+    }
 }

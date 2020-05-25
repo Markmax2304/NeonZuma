@@ -33,29 +33,30 @@ public static class GameComponentsLookup {
     public const int MoveAnimation = 22;
     public const int NearToEnd = 23;
     public const int Overlap = 24;
-    public const int ParentChainId = 25;
-    public const int ParentTrackId = 26;
-    public const int PathCreator = 27;
-    public const int Player = 28;
-    public const int Projectile = 29;
-    public const int ProjectileInstance = 30;
-    public const int Randomizer = 31;
-    public const int RayCast = 32;
-    public const int Recharge = 33;
-    public const int RemovedBall = 34;
-    public const int RequiredTask = 35;
-    public const int ResetChainEdges = 36;
-    public const int ScaleAnimation = 37;
-    public const int Shoot = 38;
-    public const int ShootPlace = 39;
-    public const int SpawnAccess = 40;
-    public const int Sprite = 41;
-    public const int TargetBall = 42;
-    public const int TrackId = 43;
-    public const int Transform = 44;
-    public const int UpdateSpeed = 45;
+    public const int Own = 25;
+    public const int ParentChainId = 26;
+    public const int ParentTrackId = 27;
+    public const int PathCreator = 28;
+    public const int Player = 29;
+    public const int Projectile = 30;
+    public const int ProjectileInstance = 31;
+    public const int Randomizer = 32;
+    public const int RayCast = 33;
+    public const int Recharge = 34;
+    public const int RemovedBall = 35;
+    public const int RequiredTask = 36;
+    public const int ResetChainEdges = 37;
+    public const int ScaleAnimation = 38;
+    public const int Shoot = 39;
+    public const int ShootPlace = 40;
+    public const int SpawnAccess = 41;
+    public const int Sprite = 42;
+    public const int TargetBall = 43;
+    public const int TrackId = 44;
+    public const int Transform = 45;
+    public const int UpdateSpeed = 46;
 
-    public const int TotalComponents = 46;
+    public const int TotalComponents = 47;
 
     public static readonly string[] componentNames = {
         "AddedBall",
@@ -83,6 +84,7 @@ public static class GameComponentsLookup {
         "MoveAnimation",
         "NearToEnd",
         "Overlap",
+        "Own",
         "ParentChainId",
         "ParentTrackId",
         "PathCreator",
@@ -132,6 +134,7 @@ public static class GameComponentsLookup {
         typeof(MoveAnimationComponent),
         typeof(NearToEndComponent),
         typeof(OverlapComponent),
+        typeof(OwnComponent),
         typeof(ParentChainId),
         typeof(ParentTrackIdComponent),
         typeof(PathCreatorComponent),
